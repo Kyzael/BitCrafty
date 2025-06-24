@@ -1,4 +1,3 @@
-
 // Load data from bitcraft_flat.json
 let items = [];
 let crafts = [];
@@ -373,7 +372,9 @@ function buildGraph() {
     physics: false,
     manipulation: false
   };
-  const network = new vis.Network(container, data, options);
+  // Make network globally accessible
+  window.network = new vis.Network(container, data, options);
+  const network = window.network;
 
   // Custom selection styling: only bold/enlarge, don't fill
   network.on("selectNode", function(params) {
@@ -523,25 +524,25 @@ function updateCraftQueueUI() {
       if (step.craft) {
         let recipeInputs = (step.craft.Materials || []).map(inp => `${inp.qty} ${inp.item}`).join(' + ');
         let byproductsHtml = '';
-        if (step.craft.Outputs && step.craft.Outputs.length > 1) {
-          byproductsHtml = '<div style="font-size:0.95em;color:#888;margin-left:1em;">Possible outputs: ' +
-            step.craft.Outputs.map(bp => `${bp.qty} ${bp.item}${bp.note ? ' (' + bp.note + ')' : ''}`).join(', ') + '</div>';
-        }
+        // if (step.craft.Outputs && step.craft.Outputs.length > 1) {
+        //   byproductsHtml = '<div style="font-size:0.95em;color:#888;margin-left:1em;">Possible outputs: ' +
+        //     step.craft.Outputs.map(bp => `${bp.qty} ${bp.item}${bp.note ? ' (' + bp.note + ')' : ''}`).join(', ') + '</div>';
+        // }
         // If multiple crafts, show a select dropdown
         if (step.craftsForItem && step.craftsForItem.length > 1) {
           const selectId = `craft-select-${step.id}-${step.depth}-${idx}`;
           pathsHtml += `<li style="margin-left:${step.depth * 1.5}em;">
             <span>CRAFT ${itemLink} ← ${recipeInputs} (yields ${getOutputQty(step.craft, step.name)})</span>
-            <select id="${selectId}" data-itemid="${step.id}" data-depth="${step.depth}">
+            <select id="${selectId}" data-itemid="${step.id}" data-depth="${step.depth}"
+              style="background:#23241f;color:#f8f8f2;border:1.5px solid #a6e22e;border-radius:4px;padding:6px 12px;font-size:1em;margin-left:10px;box-shadow:0 2px 8px rgba(0,0,0,0.18);font-family:monospace;">
               ${step.craftsForItem.map((c, i) => {
                 let inputs = (c.Materials || []).map(inp => `${inp.qty} ${inp.item}`).join(' + ');
                 return `<option value="${i}" ${i === step.craftIdx ? 'selected' : ''}>CRAFT ← ${inputs} (yields ${getOutputQty(c, step.name)})</option>`;
               }).join('')}
             </select>
-            ${byproductsHtml}
           </li>`;
         } else {
-          pathsHtml += `<li style="margin-left:${step.depth * 1.5}em;">CRAFT ${itemLink} ← ${recipeInputs} (yields ${getOutputQty(step.craft, step.name)})${byproductsHtml}</li>`;
+          pathsHtml += `<li style="margin-left:${step.depth * 1.5}em;">CRAFT ${itemLink} ← ${recipeInputs} (yields ${getOutputQty(step.craft, step.name)})</li>`;
         }
       } else {
         pathsHtml += `<li style="margin-left:${step.depth * 1.5}em;">Gather/Obtain <strong>${itemLink}</strong></li>`;
@@ -573,10 +574,16 @@ function updateCraftQueueUI() {
   document.querySelectorAll('.tree-item-link').forEach(link => {
     link.onclick = function(e) {
       e.preventDefault();
-      const itemId = Number(this.getAttribute('data-itemid'));
+      const idAttr = this.getAttribute('data-itemid');
+      let nodeId = idAttr;
+      // If the id is a number string, use as number; if string (craft-...), use as is
+      if (!isNaN(Number(nodeId))) nodeId = Number(nodeId);
       // Focus/select the node in the network
-      // (network is in buildGraph scope, so you may need to refactor if you want to focus)
-      showItemDetails(itemId);
+      if (typeof network !== 'undefined' && network && typeof network.selectNodes === 'function') {
+        network.selectNodes([nodeId]);
+        network.focus(nodeId, { scale: 1.2, animation: true });
+      }
+      showItemDetails(nodeId);
     };
   });
 }
@@ -638,7 +645,7 @@ function showItemDetails(id) {
       // Count how many recipes (crafts) this item is used in as an input
       const usedInCount = crafts.filter(craft => (craft.Materials || []).some(mat => mat.item === item.Name)).length;
       detailsDiv.innerHTML = `
-        <div style="max-width:600px;margin:20px auto 0 auto;background:#272822;color:#f8f8f2;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.25);padding:20px 28px;">
+        <div style="max-width:600px;margin:20px auto 0 auto;background:#272822;color:#f8f8f2;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.25);padding:20px 28px;min-height:120px;">
           <h2 style="color:#a6e22e;margin-top:0;">${item.Name}</h2>
           <p><strong style=\"color:#fd971f;\">Tier:</strong> <span style=\"color:#f8f8f2;\">${item.Tier}</span> <span style=\"margin-left:1em;\"><strong style=\"color:#f92672;\">Rank:</strong> <span style=\"color:#f8f8f2;\">${item.Rank}</span></span></p>
           <p><strong style=\"color:#e6db74;\">Used in Recipes:</strong> <span style=\"color:#f8f8f2;\">${usedInCount}</span></p>
@@ -646,6 +653,9 @@ function showItemDetails(id) {
             <button id="queue-craft" style="background:#a6e22e;color:#272822;border:none;border-radius:3px;padding:6px 16px;cursor:pointer;margin-right:8px;">Queue 1</button>
             <button id="queue-craft-5" style="background:#66d9ef;color:#272822;border:none;border-radius:3px;padding:6px 16px;cursor:pointer;margin-right:8px;">Queue 5</button>
             <button id="queue-craft-10" style="background:#fd971f;color:#272822;border:none;border-radius:3px;padding:6px 16px;cursor:pointer;">Queue 10</button>
+          </div>
+          <div style="margin-top:32px;text-align:right;">
+            <button id="goto-node" style="background:#272822;color:#a6e22e;border:1.5px solid #a6e22e;border-radius:3px;padding:6px 16px;cursor:pointer;">Go to Node</button>
           </div>
         </div>
       `;
@@ -662,6 +672,23 @@ function showItemDetails(id) {
         for (let i = 0; i < 10; i++) craftQueue.push(id);
         updateCraftQueueUI();
       };
+      document.getElementById("goto-node").onclick = () => {
+        let nodeId = id;
+        // Ensure correct type: number for items, string for crafts
+        if (typeof id === 'string' && id.startsWith('craft-')) {
+          nodeId = id;
+        } else {
+          nodeId = Number(id);
+        }
+        if (typeof window.network !== 'undefined' && window.network && typeof window.network.selectNodes === 'function') {
+          window.network.selectNodes([nodeId]);
+          window.network.focus(nodeId, {
+            scale: 1.2,
+            animation: { duration: 600, easingFunction: 'easeInOutQuad' },
+            locked: true
+          });
+        }
+      };
     }
   } else if (typeof id === 'string' && id.startsWith('craft-')) {
     // Craft node
@@ -676,14 +703,34 @@ function showItemDetails(id) {
         return val;
       }
       detailsDiv.innerHTML = `
-        <div style="max-width:600px;margin:20px auto 0 auto;background:#272822;color:#f8f8f2;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.25);padding:20px 28px;">
+        <div style="max-width:600px;margin:20px auto 0 auto;background:#272822;color:#f8f8f2;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.25);padding:20px 28px;min-height:120px;">
           <h2 style="color:#f92672;margin-top:0;">${craft.Name}</h2>
           <p><strong style=\"color:#66d9ef;\">Profession:</strong> <span style=\"color:#f8f8f2;\">${parseLevel(req.Profession)}</span></p>
           <p><strong style=\"color:#a6e22e;\">Tool:</strong> <span style=\"color:#f8f8f2;\">${parseLevel(req.Tool)}</span></p>
           <p><strong style=\"color:#fd971f;\">Building:</strong> <span style=\"color:#f8f8f2;\">${parseLevel(req.Building)}</span></p>
+          <div style="margin-top:32px;text-align:right;">
+            <button id="goto-node" style="background:#272822;color:#f92672;border:1.5px solid #f92672;border-radius:3px;padding:6px 16px;cursor:pointer;">Go to Node</button>
+          </div>
         </div>
       `;
       detailsDiv.classList.add("active");
+      document.getElementById("goto-node").onclick = () => {
+        let nodeId = id;
+        // Ensure correct type: number for items, string for crafts
+        if (typeof id === 'string' && id.startsWith('craft-')) {
+          nodeId = id;
+        } else {
+          nodeId = Number(id);
+        }
+        if (typeof window.network !== 'undefined' && window.network && typeof window.network.selectNodes === 'function') {
+          window.network.selectNodes([nodeId]);
+          window.network.focus(nodeId, {
+            scale: 1.2,
+            animation: { duration: 600, easingFunction: 'easeInOutQuad' },
+            locked: true
+          });
+        }
+      };
     }
   }
 }

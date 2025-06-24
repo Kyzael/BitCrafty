@@ -23,7 +23,10 @@
     { "Name": "Plain Roasted Fish", "Tier": 1, "Rank": "Common" },
     { "Name": "Plain Mashed Bulbs", "Tier": 1, "Rank": "Common" },
     { "Name": "Basic Mushroom", "Tier": 1, "Rank": "Common" },
-    { "Name": "Plain Mushroom Skewer", "Tier": 1, "Rank": "Common" }
+    { "Name": "Plain Mushroom Skewer", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Berry", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Flower", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Food Waste", "Tier": 1, "Rank": "Common" }
   ],
   "crafts": [
     {
@@ -90,6 +93,24 @@
       "Name": "Make Basic Fertilizer (Fish)", 
       "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1" },
       "Materials": [ { "item": "Breezy Fin Darter", "qty": 2 } ],
+      "Outputs": [ { "item": "Basic Fertilizer", "qty": 1 }]
+    },
+    {
+      "Name": "Make Basic Fertilizer (Berry)", 
+      "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1" },
+      "Materials": [ { "item": "Basic Berry", "qty": 2 } ],
+      "Outputs": [ { "item": "Basic Fertilizer", "qty": 1 }]
+    },
+    {
+      "Name": "Make Basic Fertilizer (Flower)", 
+      "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1" },
+      "Materials": [ { "item": "Basic Flower", "qty": 5 } ],
+      "Outputs": [ { "item": "Basic Fertilizer", "qty": 1 }]
+    },
+    {
+      "Name": "Make Basic Fertilizer (Food Waste)", 
+      "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1" },
+      "Materials": [ { "item": "Basic Food Waste", "qty": 2 } ],
       "Outputs": [ { "item": "Basic Fertilizer", "qty": 1 }]
     },
     {
