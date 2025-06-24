@@ -43,21 +43,21 @@
     { "Name": "Basic Citric Berry", "Tier": 1, "Rank": "Rare" },
     { "Name": "Rough Glass Vial", "Tier": 1, "Rank": "Common" },
     { "Name": "Water Bucket", "Tier": 1, "Rank": "Common" },
-    { "name": "Empty Bucket", "Tier": 1, "Rank": "Common" },
+    { "Name": "Empty Bucket", "Tier": 1, "Rank": "Common" },
     { "Name": "Basic Metal Solvent", "Tier": 1, "Rank": "Epic" }
   ],
   "crafts": [
-    {
-      "Name": "Assemble Empty Bucket",
-      "Requirements": { "Profession": "Carpentry-1", "Tool": "Saw-1", "Building": "Carpentry-Station-1" },
-      "Materials": [ { "item": "Rough Plank", "qty": 1 } ],
-      "Outputs": [ { "item": "Empty Bucket", "qty": 10 } ]
-    },
     {
       "Name": "Fill Water Bucket",
       "Requirements": { "Profession": "Cooking-1", "Building": "Well-1" },
       "Materials": [ { "item": "Empty Bucket", "qty": 1 } ],
       "Outputs": [ { "item": "Water Bucket", "qty": 1 } ]
+    },
+    {
+      "Name": "Assemble Empty Bucket",
+      "Requirements": { "Profession": "Carpentry-1", "Tool":"Saw-1", "Building": "Carpentry-Station-1" },
+      "Materials": [ { "item": "Rough Plank", "qty": 1 } ],
+      "Outputs": [ { "item": "Empty Bucket", "qty": 10 } ]
     },
     {
       "Name": "Mix Basic Metal Solvent",
