@@ -530,12 +530,21 @@ function updateCraftQueueUI() {
   // Calculate and show resources
   const resources = calculateResources(Object.entries(queueCount).map(([id, qty]) => Array(Number(qty)).fill(Number(id))).flat());
   const resDiv = document.getElementById("resource-summary");
-  if (resDiv)
+  if (resDiv) {
+    // Only show true base resources (not craftable, or in BASE_CRAFT_ITEMS)
+    const baseResourceEntries = Object.entries(resources).filter(([id, qty]) => {
+      const item = getItemById(Number(id));
+      if (!item) return false;
+      if (BASE_CRAFT_ITEMS.has(item.Name)) return true;
+      // Not craftable if no crafts output this item
+      return getCraftsByOutputId(Number(id)).length === 0;
+    });
     resDiv.innerHTML =
       '<div class="sidebar-card">' +
       '<h3>Required Base Resources</h3>' +
-      '<ul>' + Object.entries(resources).map(([id, qty]) => `<li>${getItemById(Number(id)).Name}: ${qty}</li>`).join('') + '</ul>' +
+      '<ul>' + baseResourceEntries.map(([id, qty]) => `<li>${getItemById(Number(id)).Name}: ${qty}</li>`).join('') + '</ul>' +
       '</div>';
+  }
 
   // Show crafting paths for combined quantities
   let pathsHtml = '<div class="sidebar-card"><h3>Crafting Paths</h3>';
@@ -546,11 +555,6 @@ function updateCraftQueueUI() {
       const itemLink = `<a href=\"#\" class=\"tree-item-link\" data-itemid=\"${step.id}\">${step.name}</a>`;
       if (step.craft) {
         let recipeInputs = (step.craft.Materials || []).map(inp => `${inp.qty} ${inp.item}`).join(' + ');
-        let byproductsHtml = '';
-        // if (step.craft.Outputs && step.craft.Outputs.length > 1) {
-        //   byproductsHtml = '<div style="font-size:0.95em;color:#888;margin-left:1em;">Possible outputs: ' +
-        //     step.craft.Outputs.map(bp => `${bp.qty} ${bp.item}${bp.note ? ' (' + bp.note + ')' : ''}`).join(', ') + '</div>';
-        // }
         // If multiple crafts, show a select dropdown
         if (step.craftsForItem && step.craftsForItem.length > 1) {
           const selectId = `craft-select-${step.id}-${step.depth}-${idx}`;
@@ -612,60 +616,148 @@ function updateCraftQueueUI() {
 }
 
 function calculateResources(queue) {
-  // Recursively calculate base resources for all items in the queue, using selected crafts and surplus
+  // Improved: batch items that are outputs of the same craft, so we only craft the minimum needed to satisfy all outputs at once
   const resourceCount = {};
-  function helper(itemId, qty = 1, surplus = {}) {
+  const surplus = {};
+  // Count each unique item in the queue
+  const queueCount = {};
+  queue.forEach(id => {
+    queueCount[id] = (queueCount[id] || 0) + 1;
+  });
+
+  // Map: craftId -> { craft, outputNeeds: {itemId: qty, ...} }
+  const craftNeeds = {};
+  // Items that are not craftable (base resources)
+  const baseNeeds = {};
+
+  // First, group queue items by their selected craft (if any)
+  Object.entries(queueCount).forEach(([id, qty]) => {
+    const itemId = Number(id);
     const item = getItemById(itemId);
-    // If this is a flagged base crafting item, treat as base
+    if (BASE_CRAFT_ITEMS.has(item.Name)) {
+      baseNeeds[itemId] = (baseNeeds[itemId] || 0) + qty;
+      return;
+    }
+    const craftsForItem = getCraftsByOutputId(itemId);
+    if (craftsForItem.length === 0) {
+      baseNeeds[itemId] = (baseNeeds[itemId] || 0) + qty;
+      return;
+    }
+    let craftIdx = selectedCrafts[itemId] || 0;
+    if (craftIdx >= craftsForItem.length) craftIdx = 0;
+    const craft = craftsForItem[craftIdx];
+    if (!craftNeeds[craft.id]) {
+      craftNeeds[craft.id] = { craft, outputNeeds: {} };
+    }
+    craftNeeds[craft.id].outputNeeds[itemId] = (craftNeeds[craft.id].outputNeeds[itemId] || 0) + qty;
+  });
+
+  // Now, for each craft, determine how many times to run it to satisfy all outputs at once
+  Object.values(craftNeeds).forEach(({ craft, outputNeeds }) => {
+    // For each output, determine how many are needed after surplus
+    const outputQtys = {};
+    Object.keys(outputNeeds).forEach(itemId => {
+      outputQtys[itemId] = getOutputQty(craft, getItemById(Number(itemId)).Name);
+    });
+    // For each output, check surplus
+    const needed = {};
+    Object.entries(outputNeeds).forEach(([itemId, qty]) => {
+      let avail = surplus[itemId] || 0;
+      if (avail >= qty) {
+        surplus[itemId] -= qty;
+        needed[itemId] = 0;
+      } else if (avail > 0) {
+        needed[itemId] = qty - avail;
+        surplus[itemId] = 0;
+      } else {
+        needed[itemId] = qty;
+      }
+    });
+    // Find the minimum number of crafts needed to satisfy all outputs
+    let craftsNeeded = 0;
+    Object.entries(needed).forEach(([itemId, qty]) => {
+      const outQty = outputQtys[itemId] || 1;
+      if (outQty === 0) {
+        // If output is 0, treat as base resource
+        baseNeeds[itemId] = (baseNeeds[itemId] || 0) + qty;
+      } else {
+        craftsNeeded = Math.max(craftsNeeded, Math.ceil(qty / outQty));
+      }
+    });
+    if (craftsNeeded === 0) return; // All needs satisfied by surplus
+    // For each output, add surplus
+    Object.entries(outputNeeds).forEach(([itemId, qty]) => {
+      const outQty = outputQtys[itemId] || 1;
+      const produced = craftsNeeded * outQty;
+      const used = needed[itemId] || 0;
+      if (produced > used) {
+        surplus[itemId] = (surplus[itemId] || 0) + (produced - used);
+      }
+      // Add to resourceCount for reporting
+      resourceCount[itemId] = (resourceCount[itemId] || 0) + used;
+    });
+    // Now, recurse for inputs
+    (craft.Materials || []).forEach(input => {
+      const inputId = getItemIdByName(input.item);
+      if (inputId) {
+        const inputQty = craftsNeeded * input.qty;
+        // Recurse as if these are new queue items
+        // Use a helper to process inputs (could be base or craftable)
+        processInput(inputId, inputQty);
+      }
+    });
+  });
+
+  // Process base needs
+  Object.entries(baseNeeds).forEach(([itemId, qty]) => {
+    resourceCount[itemId] = (resourceCount[itemId] || 0) + qty;
+  });
+
+  // Helper for recursion
+  function processInput(itemId, qty) {
+    const item = getItemById(itemId);
     if (BASE_CRAFT_ITEMS.has(item.Name)) {
       resourceCount[itemId] = (resourceCount[itemId] || 0) + qty;
       return;
     }
     const craftsForItem = getCraftsByOutputId(itemId);
     if (craftsForItem.length === 0) {
-      // Base resource
       resourceCount[itemId] = (resourceCount[itemId] || 0) + qty;
       return;
     }
-    // Use the selected craft for this item, or default to first
     let craftIdx = selectedCrafts[itemId] || 0;
     if (craftIdx >= craftsForItem.length) craftIdx = 0;
     const craft = craftsForItem[craftIdx];
-    // Use surplus if available
+    // Check surplus
+    let avail = surplus[itemId] || 0;
     let needed = qty;
-    let available = surplus[itemId] || 0;
-    if (available >= needed) {
+    if (avail >= needed) {
       surplus[itemId] -= needed;
       return;
-    } else if (available > 0) {
-      needed -= available;
+    } else if (avail > 0) {
+      needed -= avail;
       surplus[itemId] = 0;
     }
-    // Calculate crafts needed and new surplus
-    const outputQty = getOutputQty(craft, getItemById(itemId).Name);
-    // If outputQty is 0, treat as base resource
-    if (outputQty === 0) {
+    const outQty = getOutputQty(craft, getItemById(itemId).Name);
+    if (outQty === 0) {
       resourceCount[itemId] = (resourceCount[itemId] || 0) + needed;
       return;
     }
-    const craftsNeeded = Math.ceil(needed / outputQty);
-    const totalProduced = craftsNeeded * outputQty;
-    const newSurplus = { ...surplus };
-    newSurplus[itemId] = (newSurplus[itemId] || 0) + (totalProduced - needed);
+    const craftsNeeded = Math.ceil(needed / outQty);
+    const produced = craftsNeeded * outQty;
+    if (produced > needed) {
+      surplus[itemId] = (surplus[itemId] || 0) + (produced - needed);
+    }
+    resourceCount[itemId] = (resourceCount[itemId] || 0) + needed;
     (craft.Materials || []).forEach(input => {
       const inputId = getItemIdByName(input.item);
       if (inputId) {
         const inputQty = craftsNeeded * input.qty;
-        helper(inputId, inputQty, newSurplus);
+        processInput(inputId, inputQty);
       }
     });
   }
-  // Count each unique item in the queue
-  const queueCount = {};
-  queue.forEach(id => {
-    queueCount[id] = (queueCount[id] || 0) + 1;
-  });
-  Object.entries(queueCount).forEach(([id, qty]) => helper(Number(id), qty, {}));
+
   return resourceCount;
 }
 
