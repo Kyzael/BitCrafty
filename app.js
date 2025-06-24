@@ -417,6 +417,11 @@ function getCraftsByOutputId(itemId) {
   return crafts.filter(craft => (craft.Outputs || []).some(out => out.item === itemName));
 }
 
+// Set of items that are always treated as base crafting items (do not progress past these)
+const BASE_CRAFT_ITEMS = new Set([
+  'Basic Embergrain'
+]);
+
 // Helper: get output quantity for a craft and item name (returns lowest value if range, as integer)
 function getOutputQty(craft, itemName) {
   const out = (craft.Outputs || []).find(o => o.item.trim() === itemName.trim());
@@ -436,6 +441,10 @@ function getOutputQty(craft, itemName) {
 // Recursively trace the path to obtain an item (choose first craft by default, or selected)
 function tracePath(itemId, qty = 1, depth = 0, surplus = {}) {
   const item = getItemById(itemId);
+  // If this is a flagged base crafting item, treat as base
+  if (BASE_CRAFT_ITEMS.has(item.Name)) {
+    return [{ depth, id: itemId, name: item.Name, qty }];
+  }
   const craftsForItem = getCraftsByOutputId(itemId);
   if (craftsForItem.length === 0) {
     // Base resource
@@ -606,6 +615,12 @@ function calculateResources(queue) {
   // Recursively calculate base resources for all items in the queue, using selected crafts and surplus
   const resourceCount = {};
   function helper(itemId, qty = 1, surplus = {}) {
+    const item = getItemById(itemId);
+    // If this is a flagged base crafting item, treat as base
+    if (BASE_CRAFT_ITEMS.has(item.Name)) {
+      resourceCount[itemId] = (resourceCount[itemId] || 0) + qty;
+      return;
+    }
     const craftsForItem = getCraftsByOutputId(itemId);
     if (craftsForItem.length === 0) {
       // Base resource

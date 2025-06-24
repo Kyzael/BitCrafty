@@ -30,7 +30,6 @@
     { "Name": "Basic Embergrain Seeds", "Tier": 1, "Rank": "Common" },
     { "Name": "Basic Embergrain Plant", "Tier": 1, "Rank": "Common" },
     { "Name": "Basic Embergrain", "Tier": 1, "Rank": "Common" },
-    { "Name": "Basic Embergrain Plant Seeds", "Tier": 1, "Rank": "Common" },
     { "Name": "Rough Straw", "Tier": 1, "Rank": "Rare" },
     { "Name": "Basic Embergrain Dough", "Tier": 1, "Rank": "Common" },
     { "Name": "Plain Cooked Berries", "Tier": 1, "Rank": "Common" },
@@ -135,7 +134,7 @@
       "Name": "Husk Basic Embergrain Products",
       "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1"  }, 
       "Materials": [ { "item": "Basic Embergrain Plant", "qty": 1 } ],
-      "Outputs": [ { "item": "Basic Embergrain ", "qty": "30-50" }, { "item": "Basic Embergrain Plant Seeds", "qty": "1-3" }, { "item": "Rough Straw", "qty": "0-1" } ]
+      "Outputs": [ { "item": "Basic Embergrain", "qty": "30-50" }, { "item": "Basic Embergrain Seeds", "qty": "1-3" }, { "item": "Rough Straw", "qty": "0-1" } ]
     },
     {
       "Name": "Mix Embergrain Dough",
