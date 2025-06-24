@@ -1,0 +1,109 @@
+{
+  "items": [
+    { "Name": "Rough Wood Trunk", "Tier": 1, "Rank": "Common" },
+    { "Name": "Rough Wood Log", "Tier": 1, "Rank": "Common" },
+    { "Name": "Rough Stripped Wood", "Tier": 1, "Rank": "Common" },
+    { "Name": "Rough Plank", "Tier": 1, "Rank": "Common" },
+    { "Name": "Campfire Kit", "Tier": 1, "Rank": "Common" },
+    { "Name": "Rough Pebbles", "Tier": 1, "Rank": "Common" },
+    { "Name": "Plain Ground Meat and Mashed Bulbs", "Tier": 1, "Rank": "Common" },
+    { "Name": "Plain Roasted Meat", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Raw Meat", "Tier": 1, "Rank": "Common" },
+    { "Name": "Sagi Bird", "Tier": 1, "Rank": "Common" },
+    { "Name": "Rough Raw Pelt", "Tier": 1, "Rank": "Common" },
+    { "Name": "Rough Animal Hair", "Tier": 1, "Rank": "Rare" },
+    { "Name": "Basic Amber Resin", "Tier": 1, "Rank": "Rare" },
+    { "Name": "Rough Stone Chunk", "Tier": 1, "Rank": "Common" },
+    { "Name": "Rough Braxite", "Tier": 1, "Rank": "Rare" },
+    { "Name": "Breezy Fin Darter", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Fish Oil", "Tier": 1, "Rank": "Common" },
+    { "Name": "Breezy Fin Darter Fillet", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Chum", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Fertilizer", "Tier": 1, "Rank": "Common" },
+    { "Name": "Plain Roasted Fish", "Tier": 1, "Rank": "Common" },
+    { "Name": "Plain Mashed Bulbs", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Mushroom", "Tier": 1, "Rank": "Common" },
+    { "Name": "Plain Mushroom Skewer", "Tier": 1, "Rank": "Common" }
+  ],
+  "crafts": [
+    {
+      "Name": "Split into Rough Wood Log",
+      "Requirements": { "Profession": "Forestry-1", "Tool": "Axe-1", "Building": "Forestry-Station-1" },
+      "Materials": [ { "item": "Rough Wood Trunk", "qty": 1 } ],
+      "Outputs": [ { "item": "Rough Wood Log", "qty": 6 }, { "item": "Basic Amber Resin", "qty": "0-1"} ]
+    },
+    {
+      "Name": "Saw Rough Stripped Wood",
+      "Requirements": { "Profession": "Carpentry-1", "Tool": "Saw-1", "Building": "Carpentry-Station-1" },
+      "Materials": [ { "item": "Rough Wood Log", "qty": 3 } ],
+      "Outputs": [ { "item": "Rough Stripped Wood", "qty": 1 } ]
+    },
+    {
+      "Name": "Craft Rough Plank",
+      "Requirements": { "Profession": "Carpentry-1", "Tool": "Saw-1", "Building": "Carpentry-Station-1" },
+      "Materials": [ { "item": "Rough Stripped Wood", "qty": 1 } ],
+      "Outputs": [ { "item": "Rough Plank", "qty": 1 } ]
+    },
+    {
+      "Name": "Craft Campfire Kit",
+      "Requirements": { "Profession": "Carpentry-1", "Tool": "Saw-1", "Building": "Carpentry-Station-1" },
+      "Materials": [ { "item": "Rough Plank", "qty": 4 }, { "item": "Rough Pebbles", "qty": 4 } ],
+      "Outputs": [ { "item": "Campfire Kit", "qty": 1 } ]
+    },
+    {
+      "Name": "Smash Rough Stone Chunk",
+      "Requirements": { "Profession": "Mining-1", "Tool": "Pickaxe-1", "Building": "Mining-Station-1" },
+      "Materials": [ { "item": "Rough Stone Chunk", "qty": 1 } ],
+      "Outputs": [ { "item": "Rough Pebbles", "qty": "8-20" }, { "item": "Rough Braxite", "qty": "0-4", "note": "Rough Braxite (0-4)" } ]
+    },
+    {
+      "Name": "Cook Plain Ground Meat and Mashed Bulbs",
+      "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1" },
+      "Materials": [ { "item": "Plain Roasted Meat", "qty": 2 }, { "item": "Plain Mashed Bulbs", "qty": 1 } ],
+      "Outputs": [ { "item": "Plain Ground Meat and Mashed Bulbs", "qty": 1 } ]
+    },
+    {
+      "Name": "Cook Plain Roasted Meat",
+      "Requirements": { "Profession": "Cooking-1" },
+      "Materials": [ { "item": "Basic Raw Meat", "qty": 1 } ],
+      "Outputs": [ { "item": "Plain Roasted Meat", "qty": 1 } ]
+    },
+    {
+      "Name": "Harvest Rough Animal",
+      "Requirements": { "Profession": "Hunting-1", "Tool": "Bow-1", "Building": "Hunting-Station-1" },
+      "Materials": [ { "item": "Sagi Bird", "qty": 1 } ],
+      "Outputs": [ { "item": "Basic Raw Meat", "qty": 4 }, { "item": "Rough Raw Pelt", "qty": 2 }, { "item": "Rough Animal Hair", "qty": "0-1" } ]
+    },
+    {
+      "Name": "Craft Basic Chum",
+      "Requirements": { "Profession": "Fishing-1", "Tool": "Rod-1", "Building": "Fishing-Station-1" },
+      "Materials": [ { "item": "Breezy Fin Darter", "qty": 10 }, { "item":"Basic Raw Meat", "qty": 5 } ],
+      "Outputs": [ { "item": "Basic Chum", "qty": 1 }]
+    },
+    {
+      "Name": "Craft Breezy Fin Darter Products",
+      "Requirements": { "Profession": "Fishing-1", "Tool": "Rod-1", "Building": "Fishing-Station-1" },
+      "Materials": [ { "item": "Breezy Fin Darter", "qty": 1 }],
+      "Outputs": [ { "item": "Breezy Fin Darter Fillet", "qty": "1-2" },{ "item": "Basic Fish Oil", "qty": "1" } ]
+    },
+    {
+      "Name": "Make Basic Fertilizer (Fish)", 
+      "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1" },
+      "Materials": [ { "item": "Breezy Fin Darter", "qty": 2 } ],
+      "Outputs": [ { "item": "Basic Fertilizer", "qty": 1 }]
+    },
+    {
+      "Name": "Cook Plain Roasted Fish",
+      "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1" },
+      "Materials": [ { "item": "Breezy Fin Darter", "qty": 1 } ],
+      "Outputs": [ { "item": "Plain Roasted Fish", "qty": 1 }]
+    },
+    {
+      "Name": "Cook Plain Mushroom Skewer",
+      "Method": "Crafting",
+      "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1" },
+      "Materials": [ { "item": "Basic Mushroom", "qty": 5 } ],
+      "Outputs": [ { "item": "Plain Mushroom Skewer", "qty": 1 } ]
+    }
+  ]
+}
