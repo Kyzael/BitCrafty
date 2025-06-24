@@ -417,10 +417,20 @@ function getCraftsByOutputId(itemId) {
   return crafts.filter(craft => (craft.Outputs || []).some(out => out.item === itemName));
 }
 
-// Helper: get output quantity for a craft and item name
+// Helper: get output quantity for a craft and item name (returns lowest value if range, as integer)
 function getOutputQty(craft, itemName) {
-  const out = (craft.Outputs || []).find(o => o.item === itemName);
-  return out ? out.qty : 1;
+  const out = (craft.Outputs || []).find(o => o.item.trim() === itemName.trim());
+  if (!out) return 1;
+  if (typeof out.qty === 'number') return out.qty;
+  if (typeof out.qty === 'string') {
+    // Handle range like "8-20" or "0-4"
+    const match = out.qty.match(/^(\d+)-(\d+)$/);
+    if (match) return parseInt(match[1], 10);
+    // Handle single number as string
+    const single = out.qty.match(/^(\d+)$/);
+    if (single) return parseInt(single[1], 10);
+  }
+  return 1;
 }
 
 // Recursively trace the path to obtain an item (choose first craft by default, or selected)
@@ -447,8 +457,12 @@ function tracePath(itemId, qty = 1, depth = 0, surplus = {}) {
   }
   // Calculate crafts needed and new surplus
   const outputQty = getOutputQty(craft, item.Name);
+  // If outputQty is 0, treat as base resource
+  if (outputQty === 0) {
+    return [{ depth, id: itemId, name: item.Name, qty: needed }];
+  }
   const craftsNeeded = Math.ceil(needed / outputQty);
-  const totalProduced = craftsNeeded * (typeof outputQty === 'string' ? parseInt(outputQty.split('-')[1] || outputQty) : outputQty);
+  const totalProduced = craftsNeeded * outputQty;
   const newSurplus = { ...surplus };
   newSurplus[itemId] = (newSurplus[itemId] || 0) + (totalProduced - needed);
   let paths = [{ depth, id: itemId, name: item.Name, qty: needed, craft, craftIdx, craftsForItem, craftsNeeded, totalProduced, used: needed }];
@@ -614,8 +628,13 @@ function calculateResources(queue) {
     }
     // Calculate crafts needed and new surplus
     const outputQty = getOutputQty(craft, getItemById(itemId).Name);
+    // If outputQty is 0, treat as base resource
+    if (outputQty === 0) {
+      resourceCount[itemId] = (resourceCount[itemId] || 0) + needed;
+      return;
+    }
     const craftsNeeded = Math.ceil(needed / outputQty);
-    const totalProduced = craftsNeeded * (typeof outputQty === 'string' ? parseInt(outputQty.split('-')[1] || outputQty) : outputQty);
+    const totalProduced = craftsNeeded * outputQty;
     const newSurplus = { ...surplus };
     newSurplus[itemId] = (newSurplus[itemId] || 0) + (totalProduced - needed);
     (craft.Materials || []).forEach(input => {

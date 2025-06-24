@@ -26,9 +26,57 @@
     { "Name": "Plain Mushroom Skewer", "Tier": 1, "Rank": "Common" },
     { "Name": "Basic Berry", "Tier": 1, "Rank": "Common" },
     { "Name": "Basic Flower", "Tier": 1, "Rank": "Common" },
-    { "Name": "Basic Food Waste", "Tier": 1, "Rank": "Common" }
+    { "Name": "Basic Food Waste", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Embergrain Seeds", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Embergrain Plant", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Embergrain", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Embergrain Plant Seeds", "Tier": 1, "Rank": "Common" },
+    { "Name": "Rough Straw", "Tier": 1, "Rank": "Rare" },
+    { "Name": "Basic Embergrain Dough", "Tier": 1, "Rank": "Common" },
+    { "Name": "Plain Cooked Berries", "Tier": 1, "Rank": "Common" },
+    { "Name": "Plain Raw Berry Pie", "Tier": 1, "Rank": "Common" },
+    { "Name": "Plain Berry Pie", "Tier": 1, "Rank": "Common" },
+    { "Name": "Moonlit Crawdad", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Bait", "Tier": 1, "Rank": "Common" },
+    { "Name": "Crushed Rough Shells", "Tier": 1, "Rank": "Uncommon" },
+    { "Name": "Plain Skewered Baitfish", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Citric Berry", "Tier": 1, "Rank": "Rare" },
+    { "Name": "Rough Glass Vial", "Tier": 1, "Rank": "Common" },
+    { "Name": "Water Bucket", "Tier": 1, "Rank": "Common" },
+    { "name": "Empty Bucket", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Metal Solvent", "Tier": 1, "Rank": "Epic" }
   ],
   "crafts": [
+    {
+      "Name": "Assemble Empty Bucket",
+      "Requirements": { "Profession": "Carpentry-1", "Tool": "Saw-1", "Building": "Carpentry-Station-1" },
+      "Materials": [ { "item": "Rough Plank", "qty": 1 } ],
+      "Outputs": [ { "item": "Empty Bucket", "qty": 10 } ]
+    },
+    {
+      "Name": "Fill Water Bucket",
+      "Requirements": { "Profession": "Cooking-1", "Building": "Well-1" },
+      "Materials": [ { "item": "Empty Bucket", "qty": 1 } ],
+      "Outputs": [ { "item": "Water Bucket", "qty": 1 } ]
+    },
+    {
+      "Name": "Mix Basic Metal Solvent",
+      "Requirements": { "Profession": "Scholar-1", "Tool": "Quill-1", "Building": "Scholar-Station-1" },
+      "Materials": [ { "item": "Basic Citric Berry", "qty": 1 }, { "item": "Rough Glass Vial", "qty": 1 }, { "item": "Water Bucket", "qty": 1 }, { "item": "Rough Pebbles", "qty": 5 } ],
+      "Outputs": [ { "item": "Basic Metal Solvent", "qty": 1 } ]
+    },
+    {
+      "Name": "Process Moonlit Crawdad",
+      "Requirements": { "Profession": "Fishing-1", "Tool": "Rod-1", "Building": "Farming-Station-1" },
+      "Materials": [ { "item": "Moonlit Crawdad", "qty": 1 } ],
+      "Outputs": [ { "item": "Basic Bait", "qty": 2 }, { "item": "Crushed Rough Shells", "qty": "0-1"} ]
+    },
+    {
+      "Name": "Cook Plain Skewered Baitfish",
+      "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Fire-1" },
+      "Materials": [ { "item": "Moonlit Crawdad", "qty": 3 } ],
+      "Outputs": [ { "item": "Plain Skewered Baitfish", "qty": 2 } ]
+    },
     {
       "Name": "Split into Rough Wood Log",
       "Requirements": { "Profession": "Forestry-1", "Tool": "Axe-1", "Building": "Forestry-Station-1" },
@@ -57,7 +105,7 @@
       "Name": "Smash Rough Stone Chunk",
       "Requirements": { "Profession": "Mining-1", "Tool": "Pickaxe-1", "Building": "Mining-Station-1" },
       "Materials": [ { "item": "Rough Stone Chunk", "qty": 1 } ],
-      "Outputs": [ { "item": "Rough Pebbles", "qty": "8-20" }, { "item": "Rough Braxite", "qty": "0-4", "note": "Rough Braxite (0-4)" } ]
+      "Outputs": [ { "item": "Rough Pebbles", "qty": "8-20" }, { "item": "Rough Braxite", "qty": "0-4" } ]
     },
     {
       "Name": "Cook Plain Ground Meat and Mashed Bulbs",
@@ -67,9 +115,45 @@
     },
     {
       "Name": "Cook Plain Roasted Meat",
-      "Requirements": { "Profession": "Cooking-1" },
+      "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1"  },
       "Materials": [ { "item": "Basic Raw Meat", "qty": 1 } ],
       "Outputs": [ { "item": "Plain Roasted Meat", "qty": 1 } ]
+    },
+    {
+      "Name": "Cook Plain Berries",
+      "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1"  }, 
+      "Materials": [ { "item": "Basic Berry", "qty": 15 } ],
+      "Outputs": [ { "item": "Plain Cooked Berries", "qty": 1 } ]
+    },
+    {
+      "Name": "Grow Basic Embergrain Plant",
+      "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1"  }, 
+      "Materials": [ { "item": "Basic Embergrain Seeds", "qty": 1 }, { "item": "Basic Fertilizer", "qty": 1 } ],
+      "Outputs": [ { "item": "Basic Embergrain Plant", "qty": "1" }]
+    },
+    {
+      "Name": "Husk Basic Embergrain Products",
+      "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1"  }, 
+      "Materials": [ { "item": "Basic Embergrain Plant", "qty": 1 } ],
+      "Outputs": [ { "item": "Basic Embergrain ", "qty": "30-50" }, { "item": "Basic Embergrain Plant Seeds", "qty": "1-3" }, { "item": "Rough Straw", "qty": "0-1" } ]
+    },
+    {
+      "Name": "Mix Embergrain Dough",
+      "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1"  }, 
+      "Materials": [ { "item": "Basic Embergrain", "qty": 20 } ],
+      "Outputs": [ { "item": "Basic Embergrain Dough", "qty": 1 } ]
+    },
+    {
+      "Name": "Prepare Plain Raw Berry Pie",
+      "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1" },
+      "Materials": [ { "item": "Plain Cooked Berries", "qty": 2 }, { "item": "Basic Embergrain Dough", "qty": 1 } ],
+      "Outputs": [ { "item": "Plain Raw Berry Pie", "qty": 1 } ]
+    },
+        {
+      "Name": "Bake Plain Berry Pie",
+      "Requirements": { "Profession": "Cooking-1", "Building": "Oven-1" },
+      "Materials": [ { "item": "Plain Raw Berry Pie", "qty": 1 }, { "item": "Basic Embergrain Dough", "qty": 1 } ],
+      "Outputs": [ { "item": "Plain Berry Pie", "qty": 1 } ]
     },
     {
       "Name": "Harvest Rough Animal",
