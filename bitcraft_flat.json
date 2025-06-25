@@ -21,7 +21,6 @@
     { "Name": "Basic Chum", "Tier": 1, "Rank": "Common" },
     { "Name": "Basic Fertilizer", "Tier": 1, "Rank": "Common" },
     { "Name": "Plain Roasted Fish", "Tier": 1, "Rank": "Common" },
-    { "Name": "Plain Mashed Bulbs", "Tier": 1, "Rank": "Common" },
     { "Name": "Basic Mushroom", "Tier": 1, "Rank": "Common" },
     { "Name": "Plain Mushroom Skewer", "Tier": 1, "Rank": "Common" },
     { "Name": "Basic Berry", "Tier": 1, "Rank": "Common" },
@@ -43,171 +42,252 @@
     { "Name": "Rough Glass Vial", "Tier": 1, "Rank": "Common" },
     { "Name": "Water Bucket", "Tier": 1, "Rank": "Common" },
     { "Name": "Empty Bucket", "Tier": 1, "Rank": "Common" },
-    { "Name": "Basic Metal Solvent", "Tier": 1, "Rank": "Epic" }
+    { "Name": "Basic Metal Solvent", "Tier": 1, "Rank": "Epic" },
+    { "Name": "Basic Starbulb", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Starbulb Seeds", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Starbulb Plant", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Crop Oil", "Tier": 1, "Rank": "Uncommon" },
+    { "Name": "Plain Mashed Bulbs", "Tier": 1, "Rank": "Common" },
+	  { "Name": "Rough Wispweave Filament", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Wispweave Seeds", "Tier": 1, "Rank": "Common" },
+    { "Name": "Basic Wispweave Plant", "Tier": 1, "Rank": "Common" },
+    { "Name": "Rough Plant Roots", "Tier": 1, "Rank": "Common" },
+    { "Name": "Rough Plant Fiber", "Tier": 1, "Rank": "Common" },
+    { "Name": "Rough Spool of Thread", "Tier": 1, "Rank": "Common" },
+    { "Name": "Rough Cloth Strip", "Tier": 1, "Rank": "Common" },
+    { "Name": "Rough Cloth", "Tier": 1, "Rank": "Common" },
+    { "Name": "Rough Cloth Tarp", "Tier": 1, "Rank": "Common" },
+    { "Name": "Rough Rope", "Tier": 1, "Rank": "Common" }
   ],
   "crafts": [
-    {
-      "Name": "Fill Water Bucket",
-      "Requirements": { "Profession": "Cooking-1", "Building": "Well-1" },
-      "Materials": [ { "item": "Empty Bucket", "qty": 1 } ],
-      "Outputs": [ { "item": "Water Bucket", "qty": 1 } ]
-    },
-    {
-      "Name": "Assemble Empty Bucket",
-      "Requirements": { "Profession": "Carpentry-1", "Tool":"Saw-1", "Building": "Carpentry-Station-1" },
-      "Materials": [ { "item": "Rough Plank", "qty": 1 } ],
-      "Outputs": [ { "item": "Empty Bucket", "qty": 10 } ]
-    },
-    {
-      "Name": "Mix Basic Metal Solvent",
-      "Requirements": { "Profession": "Scholar-1", "Tool": "Quill-1", "Building": "Scholar-Station-1" },
-      "Materials": [ { "item": "Basic Citric Berry", "qty": 1 }, { "item": "Rough Glass Vial", "qty": 1 }, { "item": "Water Bucket", "qty": 1 }, { "item": "Rough Pebbles", "qty": 5 } ],
-      "Outputs": [ { "item": "Basic Metal Solvent", "qty": 1 } ]
-    },
-    {
-      "Name": "Process Moonlit Crawdad",
-      "Requirements": { "Profession": "Fishing-1", "Tool": "Rod-1", "Building": "Farming-Station-1" },
-      "Materials": [ { "item": "Moonlit Crawdad", "qty": 1 } ],
-      "Outputs": [ { "item": "Basic Bait", "qty": 2 }, { "item": "Crushed Rough Shells", "qty": "0-1"} ]
-    },
-    {
-      "Name": "Cook Plain Skewered Baitfish",
-      "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Fire-1" },
-      "Materials": [ { "item": "Moonlit Crawdad", "qty": 3 } ],
-      "Outputs": [ { "item": "Plain Skewered Baitfish", "qty": 2 } ]
-    },
-    {
-      "Name": "Split into Rough Wood Log",
-      "Requirements": { "Profession": "Forestry-1", "Tool": "Axe-1", "Building": "Forestry-Station-1" },
-      "Materials": [ { "item": "Rough Wood Trunk", "qty": 1 } ],
-      "Outputs": [ { "item": "Rough Wood Log", "qty": 6 }, { "item": "Basic Amber Resin", "qty": "0-1"} ]
-    },
-    {
-      "Name": "Saw Rough Stripped Wood",
-      "Requirements": { "Profession": "Carpentry-1", "Tool": "Saw-1", "Building": "Carpentry-Station-1" },
-      "Materials": [ { "item": "Rough Wood Log", "qty": 3 } ],
-      "Outputs": [ { "item": "Rough Stripped Wood", "qty": 1 } ]
-    },
-    {
-      "Name": "Craft Rough Plank",
-      "Requirements": { "Profession": "Carpentry-1", "Tool": "Saw-1", "Building": "Carpentry-Station-1" },
-      "Materials": [ { "item": "Rough Stripped Wood", "qty": 1 } ],
-      "Outputs": [ { "item": "Rough Plank", "qty": 1 } ]
-    },
-    {
-      "Name": "Craft Campfire Kit",
-      "Requirements": { "Profession": "Carpentry-1", "Tool": "Saw-1", "Building": "Carpentry-Station-1" },
-      "Materials": [ { "item": "Rough Plank", "qty": 4 }, { "item": "Rough Pebbles", "qty": 4 } ],
-      "Outputs": [ { "item": "Campfire Kit", "qty": 1 } ]
-    },
-    {
-      "Name": "Smash Rough Stone Chunk",
-      "Requirements": { "Profession": "Mining-1", "Tool": "Pickaxe-1", "Building": "Mining-Station-1" },
-      "Materials": [ { "item": "Rough Stone Chunk", "qty": 1 } ],
-      "Outputs": [ { "item": "Rough Pebbles", "qty": "8-20" }, { "item": "Rough Braxite", "qty": "0-4" } ]
-    },
-    {
-      "Name": "Cook Plain Ground Meat and Mashed Bulbs",
-      "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1" },
-      "Materials": [ { "item": "Plain Roasted Meat", "qty": 2 }, { "item": "Plain Mashed Bulbs", "qty": 1 } ],
-      "Outputs": [ { "item": "Plain Ground Meat and Mashed Bulbs", "qty": 1 } ]
-    },
-    {
-      "Name": "Cook Plain Roasted Meat",
-      "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1"  },
-      "Materials": [ { "item": "Basic Raw Meat", "qty": 1 } ],
-      "Outputs": [ { "item": "Plain Roasted Meat", "qty": 1 } ]
-    },
-    {
-      "Name": "Cook Plain Berries",
-      "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1"  }, 
-      "Materials": [ { "item": "Basic Berry", "qty": 15 } ],
-      "Outputs": [ { "item": "Plain Cooked Berries", "qty": 1 } ]
-    },
-    {
-      "Name": "Grow Basic Embergrain Plant",
-      "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1"  }, 
-      "Materials": [ { "item": "Basic Embergrain Seeds", "qty": 1 }, { "item": "Basic Fertilizer", "qty": 1 } ],
-      "Outputs": [ { "item": "Basic Embergrain Plant", "qty": "1" }]
-    },
-    {
-      "Name": "Husk Basic Embergrain Products",
-      "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1"  }, 
-      "Materials": [ { "item": "Basic Embergrain Plant", "qty": 1 } ],
-      "Outputs": [ { "item": "Basic Embergrain", "qty": "30-50" }, { "item": "Basic Embergrain Seeds", "qty": "1-3" }, { "item": "Rough Straw", "qty": "0-1" } ]
-    },
-    {
-      "Name": "Mix Embergrain Dough",
-      "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1"  }, 
-      "Materials": [ { "item": "Basic Embergrain", "qty": 20 } ],
-      "Outputs": [ { "item": "Basic Embergrain Dough", "qty": 1 } ]
-    },
-    {
-      "Name": "Prepare Plain Raw Berry Pie",
-      "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1" },
-      "Materials": [ { "item": "Plain Cooked Berries", "qty": 2 }, { "item": "Basic Embergrain Dough", "qty": 1 } ],
-      "Outputs": [ { "item": "Plain Raw Berry Pie", "qty": 1 } ]
-    },
-        {
-      "Name": "Bake Plain Berry Pie",
-      "Requirements": { "Profession": "Cooking-1", "Building": "Oven-1" },
-      "Materials": [ { "item": "Plain Raw Berry Pie", "qty": 1 }, { "item": "Basic Embergrain Dough", "qty": 1 } ],
-      "Outputs": [ { "item": "Plain Berry Pie", "qty": 1 } ]
-    },
-    {
-      "Name": "Harvest Rough Animal",
-      "Requirements": { "Profession": "Hunting-1", "Tool": "Bow-1", "Building": "Hunting-Station-1" },
-      "Materials": [ { "item": "Sagi Bird", "qty": 1 } ],
-      "Outputs": [ { "item": "Basic Raw Meat", "qty": 4 }, { "item": "Rough Raw Pelt", "qty": 2 }, { "item": "Rough Animal Hair", "qty": "0-1" } ]
-    },
-    {
-      "Name": "Craft Basic Chum",
-      "Requirements": { "Profession": "Fishing-1", "Tool": "Rod-1", "Building": "Fishing-Station-1" },
-      "Materials": [ { "item": "Breezy Fin Darter", "qty": 10 }, { "item":"Basic Raw Meat", "qty": 5 } ],
-      "Outputs": [ { "item": "Basic Chum", "qty": 1 }]
-    },
-    {
-      "Name": "Craft Breezy Fin Darter Products",
-      "Requirements": { "Profession": "Fishing-1", "Tool": "Rod-1", "Building": "Fishing-Station-1" },
-      "Materials": [ { "item": "Breezy Fin Darter", "qty": 1 }],
-      "Outputs": [ { "item": "Breezy Fin Darter Fillet", "qty": "1-2" },{ "item": "Basic Fish Oil", "qty": "1" } ]
-    },
-    {
-      "Name": "Make Basic Fertilizer (Fish)", 
-      "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1" },
-      "Materials": [ { "item": "Breezy Fin Darter", "qty": 2 } ],
-      "Outputs": [ { "item": "Basic Fertilizer", "qty": 1 }]
-    },
-    {
-      "Name": "Make Basic Fertilizer (Berry)", 
-      "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1" },
-      "Materials": [ { "item": "Basic Berry", "qty": 2 } ],
-      "Outputs": [ { "item": "Basic Fertilizer", "qty": 1 }]
-    },
-    {
-      "Name": "Make Basic Fertilizer (Flower)", 
-      "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1" },
-      "Materials": [ { "item": "Basic Flower", "qty": 5 } ],
-      "Outputs": [ { "item": "Basic Fertilizer", "qty": 1 }]
-    },
-    {
-      "Name": "Make Basic Fertilizer (Food Waste)", 
-      "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1" },
-      "Materials": [ { "item": "Basic Food Waste", "qty": 2 } ],
-      "Outputs": [ { "item": "Basic Fertilizer", "qty": 1 }]
-    },
-    {
-      "Name": "Cook Plain Roasted Fish",
-      "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1" },
-      "Materials": [ { "item": "Breezy Fin Darter", "qty": 1 } ],
-      "Outputs": [ { "item": "Plain Roasted Fish", "qty": 1 }]
-    },
-    {
-      "Name": "Cook Plain Mushroom Skewer",
-      "Method": "Crafting",
-      "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1" },
-      "Materials": [ { "item": "Basic Mushroom", "qty": 5 } ],
-      "Outputs": [ { "item": "Plain Mushroom Skewer", "qty": 1 } ]
-    }
+  {
+  "Name": "Extract Rough Plant Fibre",
+  "Requirements": { "Profession": "Foraging-1", "Tool": "Machete-1","Building": "Foraging-Station-1" },
+  "Materials": [ { "item": "Rough Plant Roots", "qty": 1 } ],
+  "Outputs": [ { "item": "Rough Plant Fiber", "qty": 100} ]
+  },
+  {
+  "Name": "Craft Rough Spool of Thread",
+  "Requirements": { "Profession": "Tailoring-1", "Tool": "Scissors-1","Building": "Tailoring-Station-1" },
+  "Materials": [ { "item": "Rough Plant Fiber", "qty": 40 } ],
+  "Outputs": [ { "item": "Rough Spool of Thread", "qty": 1} ]
+  },
+  {
+  "Name": "Weave Rough Cloth Strip",
+  "Requirements": { "Profession": "Tailoring-1", "Building": "Loom-1" },
+  "Materials": [ { "item": "Rough Spool of Thread", "qty": 1 } ],
+  "Outputs": [ { "item": "Rough Cloth Strip", "qty": 1} ]
+  },
+  {
+  "Name": "Braid Rough Rope from Rough Cloth Strip",
+  "Requirements": { "Profession": "Tailoring-1", "Tool": "Scissors-1","Building": "Tailoring-Station-1" },
+  "Materials": [ { "item": "Rough Cloth Strip", "qty": 1 }],
+  "Outputs": [ { "item": "Rough Rope", "qty": 1} ]
+  },
+  {
+  "Name": "Weave Rough Cloth",
+  "Requirements": { "Profession": "Tailoring-1", "Tool": "Scissors-1","Building": "Tailoring-Station-1" },
+  "Materials": [ { "item": "Rough Cloth Strip", "qty": 1 },{ "item": "Rough Wispweave Filament", "qty": 5 } ],
+  "Outputs": [ { "item": "Rough Cloth", "qty": 1} ]
+  },
+  {
+  "Name": "Weave Rough Cloth Tarp",
+  "Requirements": { "Profession": "Tailoring-1", "Tool": "Scissors-1","Building": "Tailoring-Station-1" },
+  "Materials": [ { "item": "Rough Cloth", "qty": 10 } ],
+  "Outputs": [ { "item": "Rough Cloth Tarp", "qty": 1} ]
+  },
+  {
+  "Name": "Grow Basic Wispweave Plant",
+  "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1"  }, 
+  "Materials": [ { "item": "Basic Wispweave Seeds", "qty": 1 }, { "item": "Basic Fertilizer", "qty": 1 } ],
+  "Outputs": [ { "item": "Basic Wispweave Plant", "qty": "1" }]
+  },
+  {
+  "Name": "Husk into Basic Wispweave Products",
+  "Requirements": { "Profession": "Farming-1","Tool": "Hoe-1", "Building": "Farming-Station-1" },
+  "Materials": [ { "item": "Basic Wispweave Plant", "qty": 1 } ],
+  "Outputs": [ { "item": "Basic Wispweave Seeds", "qty": "1-3"}, { "item": "Rough Wispweave Filament", "qty": "2-5"}]
+  },
+  {
+  "Name": "Grow Basic Starbulb Plant",
+  "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1"  }, 
+  "Materials": [ { "item": "Basic Starbulb Seeds", "qty": 1 }, { "item": "Basic Fertilizer", "qty": 1 } ],
+  "Outputs": [ { "item": "Basic Starbulb Plant", "qty": "1" }]
+  },
+  {
+  "Name": "Husk into Basic Starbulb Products",
+  "Requirements": { "Profession": "Farming-1","Tool": "Hoe-1", "Building": "Farming-Station-1" },
+  "Materials": [ { "item": "Basic Starbulb Plant", "qty": 1 } ],
+  "Outputs": [ { "item": "Basic Starbulb Seeds", "qty": "1-3"}, { "item": "Basic Starbulb", "qty": "5-10"},{ "item": "Basic Crop Oil", "qty": "0-1"} ]
+  },
+  {
+  "Name": "Cook Plain Mashed Bulbs",
+  "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1"  }, 
+  "Materials": [ { "item": "Basic Starbulb", "qty": 5 } ],
+  "Outputs": [ { "item": "Plain Mashed Bulbs", "qty": 1 } ]
+  },
+  {
+  "Name": "Grow Basic Embergrain Plant",
+  "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1"  }, 
+  "Materials": [ { "item": "Basic Embergrain Seeds", "qty": 1 }, { "item": "Basic Fertilizer", "qty": 1 } ],
+  "Outputs": [ { "item": "Basic Embergrain Plant", "qty": "1" }]
+  },
+  {
+  "Name": "Husk Basic Embergrain Products",
+  "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1"  }, 
+  "Materials": [ { "item": "Basic Embergrain Plant", "qty": 1 } ],
+  "Outputs": [ { "item": "Basic Embergrain", "qty": "30-50" }, { "item": "Basic Embergrain Seeds", "qty": "1-3" }, { "item": "Rough Straw", "qty": "0-1" } ]
+  },
+  {
+  "Name": "Mix Embergrain Dough",
+  "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1"  }, 
+  "Materials": [ { "item": "Basic Embergrain", "qty": 20 } ],
+  "Outputs": [ { "item": "Basic Embergrain Dough", "qty": 1 } ]
+  },
+  {
+  "Name": "Fill Water Bucket",
+  "Requirements": { "Profession": "Cooking-1", "Building": "Well-1" },
+  "Materials": [ { "item": "Empty Bucket", "qty": 1 } ],
+  "Outputs": [ { "item": "Water Bucket", "qty": 1 } ]
+  },
+  {
+  "Name": "Assemble Empty Bucket",
+  "Requirements": { "Profession": "Carpentry-1", "Tool":"Saw-1", "Building": "Carpentry-Station-1" },
+  "Materials": [ { "item": "Rough Plank", "qty": 1 } ],
+  "Outputs": [ { "item": "Empty Bucket", "qty": 10 } ]
+  },
+  {
+  "Name": "Mix Basic Metal Solvent",
+  "Requirements": { "Profession": "Scholar-1", "Tool": "Quill-1", "Building": "Scholar-Station-1" },
+  "Materials": [ { "item": "Basic Citric Berry", "qty": 1 }, { "item": "Rough Glass Vial", "qty": 1 }, { "item": "Water Bucket", "qty": 1 }, { "item": "Rough Pebbles", "qty": 5 } ],
+  "Outputs": [ { "item": "Basic Metal Solvent", "qty": 1 } ]
+  },
+  {
+  "Name": "Process Moonlit Crawdad",
+  "Requirements": { "Profession": "Fishing-1", "Tool": "Rod-1", "Building": "Farming-Station-1" },
+  "Materials": [ { "item": "Moonlit Crawdad", "qty": 1 } ],
+  "Outputs": [ { "item": "Basic Bait", "qty": 2 }, { "item": "Crushed Rough Shells", "qty": "0-1"} ]
+  },
+  {
+  "Name": "Cook Plain Skewered Baitfish",
+  "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Fire-1" },
+  "Materials": [ { "item": "Moonlit Crawdad", "qty": 3 } ],
+  "Outputs": [ { "item": "Plain Skewered Baitfish", "qty": 2 } ]
+  },
+  {
+  "Name": "Split into Rough Wood Log",
+  "Requirements": { "Profession": "Forestry-1", "Tool": "Axe-1", "Building": "Forestry-Station-1" },
+  "Materials": [ { "item": "Rough Wood Trunk", "qty": 1 } ],
+  "Outputs": [ { "item": "Rough Wood Log", "qty": 6 }, { "item": "Basic Amber Resin", "qty": "0-1"} ]
+  },
+  {
+  "Name": "Saw Rough Stripped Wood",
+  "Requirements": { "Profession": "Carpentry-1", "Tool": "Saw-1", "Building": "Carpentry-Station-1" },
+  "Materials": [ { "item": "Rough Wood Log", "qty": 3 } ],
+  "Outputs": [ { "item": "Rough Stripped Wood", "qty": 1 } ]
+  },
+  {
+  "Name": "Craft Rough Plank",
+  "Requirements": { "Profession": "Carpentry-1", "Tool": "Saw-1", "Building": "Carpentry-Station-1" },
+  "Materials": [ { "item": "Rough Stripped Wood", "qty": 1 } ],
+  "Outputs": [ { "item": "Rough Plank", "qty": 1 } ]
+  },
+  {
+  "Name": "Craft Campfire Kit",
+  "Requirements": { "Profession": "Carpentry-1", "Tool": "Saw-1", "Building": "Carpentry-Station-1" },
+  "Materials": [ { "item": "Rough Plank", "qty": 4 }, { "item": "Rough Pebbles", "qty": 4 } ],
+  "Outputs": [ { "item": "Campfire Kit", "qty": 1 } ]
+  },
+  {
+  "Name": "Smash Rough Stone Chunk",
+  "Requirements": { "Profession": "Mining-1", "Tool": "Pickaxe-1", "Building": "Mining-Station-1" },
+  "Materials": [ { "item": "Rough Stone Chunk", "qty": 1 } ],
+  "Outputs": [ { "item": "Rough Pebbles", "qty": "8-20" }, { "item": "Rough Braxite", "qty": "0-4" } ]
+  },
+  {
+  "Name": "Cook Plain Ground Meat and Mashed Bulbs",
+  "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1" },
+  "Materials": [ { "item": "Plain Roasted Meat", "qty": 2 }, { "item": "Plain Mashed Bulbs", "qty": 1 } ],
+  "Outputs": [ { "item": "Plain Ground Meat and Mashed Bulbs", "qty": 1 } ]
+  },
+  {
+  "Name": "Cook Plain Roasted Meat",
+  "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1"  },
+  "Materials": [ { "item": "Basic Raw Meat", "qty": 1 } ],
+  "Outputs": [ { "item": "Plain Roasted Meat", "qty": 1 } ]
+  },
+  {
+  "Name": "Cook Plain Berries",
+  "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1"  }, 
+  "Materials": [ { "item": "Basic Berry", "qty": 15 } ],
+  "Outputs": [ { "item": "Plain Cooked Berries", "qty": 1 } ]
+  },
+  {
+  "Name": "Prepare Plain Raw Berry Pie",
+  "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1" },
+  "Materials": [ { "item": "Plain Cooked Berries", "qty": 2 }, { "item": "Basic Embergrain Dough", "qty": 1 } ],
+  "Outputs": [ { "item": "Plain Raw Berry Pie", "qty": 1 } ]
+  },
+  {
+  "Name": "Bake Plain Berry Pie",
+  "Requirements": { "Profession": "Cooking-1", "Building": "Oven-1" },
+  "Materials": [ { "item": "Plain Raw Berry Pie", "qty": 1 }, { "item": "Basic Embergrain Dough", "qty": 1 } ],
+  "Outputs": [ { "item": "Plain Berry Pie", "qty": 1 } ]
+  },
+  {
+  "Name": "Harvest Rough Animal",
+  "Requirements": { "Profession": "Hunting-1", "Tool": "Bow-1", "Building": "Hunting-Station-1" },
+  "Materials": [ { "item": "Sagi Bird", "qty": 1 } ],
+  "Outputs": [ { "item": "Basic Raw Meat", "qty": 4 }, { "item": "Rough Raw Pelt", "qty": 2 }, { "item": "Rough Animal Hair", "qty": "0-1" } ]
+  },
+  {
+  "Name": "Craft Basic Chum",
+  "Requirements": { "Profession": "Fishing-1", "Tool": "Rod-1", "Building": "Fishing-Station-1" },
+  "Materials": [ { "item": "Breezy Fin Darter", "qty": 10 }, { "item":"Basic Raw Meat", "qty": 5 } ],
+  "Outputs": [ { "item": "Basic Chum", "qty": 1 }]
+  },
+  {
+  "Name": "Craft Breezy Fin Darter Products",
+  "Requirements": { "Profession": "Fishing-1", "Tool": "Rod-1", "Building": "Fishing-Station-1" },
+  "Materials": [ { "item": "Breezy Fin Darter", "qty": 1 }],
+  "Outputs": [ { "item": "Breezy Fin Darter Fillet", "qty": "1-2" },{ "item": "Basic Fish Oil", "qty": "1" } ]
+  },
+  {
+  "Name": "Make Basic Fertilizer (Fish)", 
+  "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1" },
+  "Materials": [ { "item": "Breezy Fin Darter", "qty": 2 } ],
+  "Outputs": [ { "item": "Basic Fertilizer", "qty": 1 }]
+  },
+  {
+  "Name": "Make Basic Fertilizer (Berry)", 
+  "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1" },
+  "Materials": [ { "item": "Basic Berry", "qty": 2 } ],
+  "Outputs": [ { "item": "Basic Fertilizer", "qty": 1 }]
+  },
+  {
+  "Name": "Make Basic Fertilizer (Flower)", 
+  "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1" },
+  "Materials": [ { "item": "Basic Flower", "qty": 5 } ],
+  "Outputs": [ { "item": "Basic Fertilizer", "qty": 1 }]
+  },
+  {
+  "Name": "Make Basic Fertilizer (Food Waste)", 
+  "Requirements": { "Profession": "Farming-1", "Tool": "Hoe-1", "Building": "Farming-Station-1" },
+  "Materials": [ { "item": "Basic Food Waste", "qty": 2 } ],
+  "Outputs": [ { "item": "Basic Fertilizer", "qty": 1 }]
+  },
+  {
+  "Name": "Cook Plain Roasted Fish",
+  "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1" },
+  "Materials": [ { "item": "Breezy Fin Darter", "qty": 1 } ],
+  "Outputs": [ { "item": "Plain Roasted Fish", "qty": 1 }]
+  },
+  {
+  "Name": "Cook Plain Mushroom Skewer",
+  "Method": "Crafting",
+  "Requirements": { "Profession": "Cooking-1", "Tool": "Pot-1", "Building": "Cooking-Station-1" },
+  "Materials": [ { "item": "Basic Mushroom", "qty": 5 } ],
+  "Outputs": [ { "item": "Plain Mushroom Skewer", "qty": 1 } ]
+  }
   ]
 }
