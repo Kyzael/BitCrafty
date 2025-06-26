@@ -133,58 +133,21 @@ function setupUI() {
     // Always use full height for graph
     mainContent.style.height = '100vh';
 
-    // Filtering logic with fading
-    function applyFilters() {
-      const { nodes, edges } = store.getState().graphData;
-      if (!nodes || !edges) return;
-      const checkedProfs = Array.from(document.querySelectorAll('.prof-filter:checked')).map(cb => cb.value);
-      const search = document.getElementById('item-search').value.trim().toLowerCase();
-      
-      // Get current data from store
-      const itemsObj = store.getState().items;
-      const craftsObj = store.getState().crafts;
-      const itemsArr = Object.values(itemsObj);
-      
-      // Determine which nodes are filtered in
-      const filteredIds = new Set(nodes.get().filter(n => {
-        // For item nodes, show if any craft uses a checked profession to make it
-        if (typeof n.id === 'number') {
-          // Find crafts that output this item
-          const craftsForItem = craftsArr.filter(craft => (craft.Outputs || []).some(out => itemsArr.find(i => i.Name === out.item)?.id === n.id));
-          // If no crafts produce this item, it is a base material: always show
-          if (craftsForItem.length === 0) {
-            return !search || n.label.toLowerCase().includes(search);
-          }
-          // If any craft for this item matches a checked profession, show it
-          return craftsForItem.some(craft => {
-            const req = craft.Requirements;
-            if (!req || !req.Profession) return false;
-            const match = /([A-Za-z ]+)-\d+/.exec(req.Profession);
-            const prof = match ? match[1] : req.Profession;
-            return checkedProfs.includes(prof);
-          }) && (!search || n.label.toLowerCase().includes(search));
-        } else if (typeof n.id === 'string' && n.id.startsWith('craft-')) {
-          // For craft nodes, show if its profession is checked
-          const craft = craftsArr.find(c => c.id === n.id);
-          if (!craft || !craft.Requirements || !craft.Requirements.Profession) return false;
-          const match = /([A-Za-z ]+)-\d+/.exec(craft.Requirements.Profession);
-          const prof = match ? match[1] : craft.Requirements.Profession;
-          return checkedProfs.includes(prof) && (!search || n.label.toLowerCase().includes(search));
+    // Simplified event handlers without filtering logic
+    document.querySelectorAll('.prof-filter').forEach(cb => cb.addEventListener('change', function() {
+        console.log('Profession filter changed:', this.value, this.checked);
+        // TODO: Add efficient filtering when needed
+    }));
+    
+    document.getElementById('item-search').addEventListener('input', function() {
+        const val = this.value.trim().toLowerCase();
+        if (!val) {
+            searchDropdown.style.display = 'none';
+            return;
         }
-        return false;
-      }).map(n => n.id));
-      // Fade out nodes/edges that are not filtered in
-      nodes.forEach(function(node) {
-        nodes.update({ id: node.id, opacity: filteredIds.has(node.id) ? 1 : 0.25 });
-      });
-      edges.forEach(function(edge) {
-        const fromVisible = filteredIds.has(edge.from);
-        const toVisible = filteredIds.has(edge.to);
-        edges.update({ id: edge.id, opacity: (fromVisible && toVisible) ? 1 : 0.15 });
-      });
-    }
-    document.querySelectorAll('.prof-filter').forEach(cb => cb.addEventListener('change', applyFilters));
-    document.getElementById('item-search').addEventListener('input', applyFilters);
+        // Handle search dropdown display only
+        updateSearchDropdown(val);
+    });
 
     // Free-text search dropdown for item navigation
     const searchInput = document.getElementById('item-search');
@@ -200,49 +163,41 @@ function setupUI() {
     searchDropdown.style.overflowY = 'auto';
     document.body.appendChild(searchDropdown);
 
-    searchInput.addEventListener('input', function(e) {
-      const val = searchInput.value.trim().toLowerCase();
-      if (!val) {
-        searchDropdown.style.display = 'none';
-        applyFilters();
-        return;
-      }
-      const matches = Object.values(store.getState().items).filter(i => i.Name && i.Name.toLowerCase().includes(val));
+    function updateSearchDropdown(searchValue) {
+      const matches = Object.values(store.getState().items).filter(i => i.name && i.name.toLowerCase().includes(searchValue));
       if (matches.length === 0) {
         searchDropdown.style.display = 'none';
-        applyFilters();
         return;
       }
-      searchDropdown.innerHTML = matches.map(i => `<div class=\"search-result\" data-id=\"${i.id}\" style=\"padding:4px 10px;cursor:pointer;\">${i.Name}</div>`).join('');
+      searchDropdown.innerHTML = matches.map(i => `<div class="search-result" data-id="${i.id}" style="padding:4px 10px;cursor:pointer;">${i.name}</div>`).join('');
       const rect = searchInput.getBoundingClientRect();
       searchDropdown.style.left = rect.left + 'px';
       searchDropdown.style.top = (rect.bottom + window.scrollY) + 'px';
       searchDropdown.style.width = rect.width + 'px';
       searchDropdown.style.display = 'block';
-      applyFilters();
-    });
+    }
+
     document.addEventListener('click', function(e) {
       if (!searchDropdown.contains(e.target) && e.target !== searchInput) {
         searchDropdown.style.display = 'none';
       }
     });
+    
     searchDropdown.addEventListener('mousedown', function(e) {
       if (e.target.classList.contains('search-result')) {
-        const id = Number(e.target.getAttribute('data-id'));
+        const id = e.target.getAttribute('data-id');
         const itemsObj = store.getState().items;
-        searchInput.value = itemsObj[id].Name;
+        searchInput.value = itemsObj[id].name;
         searchDropdown.style.display = 'none';
         // Focus/select the node in the network
         window.network.selectNodes([id]);
         window.network.focus(id, { scale: 1.2, animation: true });
         showItemDetails(id);
-        applyFilters();
       }
     });
 
     // Ensure the queue and sidebar are visible and updated after sidebar is created
     updateCraftQueueUI();
-    applyFilters();
 }
 
 function setupEventHandlers() {
