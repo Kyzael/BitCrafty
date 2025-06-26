@@ -1,75 +1,68 @@
-// Zustand store for BitCrafty app state management
-// This file centralizes state for graph, filtering, selection, and queue logic.
-// Usage: import useBitCraftyStore from './state.js';
-
+// Zustand store for BitCrafty
 import { create } from 'https://esm.sh/zustand';
 
-const useBitCraftyStore = create((set, get) => ({
-  // Data
-  items: [],
-  crafts: [],
-  requirements: [],
-  buildings: [],
-  professions: [],
-  tools: [],
-  graphData: { nodes: [], edges: [] },
-  // UI State
-  selectedNodeId: null,
-  filterText: '',
-  queue: [],
-  surplus: {},
-  // Actions
-  setItems: (items) => set({ items }),
-  setCrafts: (crafts) => set({ crafts }),
-  setRequirements: (requirements) => set({ requirements }),
-  setBuildings: (buildings) => set({ buildings }),
-  setProfessions: (professions) => set({ professions }),
-  setTools: (tools) => set({ tools }),
-  setGraphData: (graphData) => set({ graphData }),
-  setSelectedNodeId: (id) => set({ selectedNodeId: id }),
-  setFilterText: (text) => set({ filterText: text }),
-  setQueue: (queue) => set({ queue }),
-  setSurplus: (surplus) => set({ surplus }),
-  // Helpers
-  getItemById: (id) => get().items.find(i => i.id === id),
-  getCraftById: (id) => get().crafts.find(c => c.id === id),
-  // Filtering
-  filteredNodes: () => {
-    const { graphData, filterText, items, crafts } = get();
-    if (!filterText) return graphData.nodes;
-    const lower = filterText.toLowerCase();
-    return graphData.nodes.filter(node => {
-      if (node.type === 'item') {
-        const item = items.find(i => i.id === node.itemId);
-        return item && item.name.toLowerCase().includes(lower);
-      }
-      if (node.type === 'craft') {
-        const craft = crafts.find(c => c.id === node.craftId);
-        return craft && craft.name.toLowerCase().includes(lower);
-      }
-      return false;
-    });
+
+// Utility to convert array to Record by id
+function arrayToRecord(arr) {
+  const rec = arr.reduce((acc, obj) => {
+    acc[obj.id] = obj;
+    return acc;
+  }, {});
+  return rec;
+}
+
+async function loadData() {
+  const [items, crafts, requirements, professions, tools, buildings] = await Promise.all([
+    fetch('src/data/items.json').then(r => r.json()),
+    fetch('src/data/crafts.json').then(r => r.json()),
+    fetch('src/data/requirements.json').then(r => r.json()),
+    fetch('src/data/metadata/professions.json').then(r => r.json()),
+    fetch('src/data/metadata/tools.json').then(r => r.json()),
+    fetch('src/data/metadata/buildings.json').then(r => r.json()),
+  ]);
+  return {
+    items: arrayToRecord(items),
+    crafts: arrayToRecord(crafts),
+    requirements: arrayToRecord(requirements),
+    professions, // already an object keyed by id
+    tools,       // already an object keyed by id
+    buildings    // already an object keyed by id
+  };
+}
+
+
+const useStore = create((set, get) => ({
+  items: {},
+  crafts: {},
+  requirements: {},
+  professions: {},
+  tools: {},
+  buildings: {},
+  selectedItem: null,
+  queue: [], // [{itemId, qty}]
+  setItems: items => set({ items }),
+  setCrafts: crafts => set({ crafts }),
+  setRequirements: requirements => set({ requirements }),
+  setProfessions: professions => set({ professions }),
+  setTools: tools => set({ tools }),
+  setBuildings: buildings => set({ buildings }),
+  setSelectedItem: selectedItem => set({ selectedItem }),
+  addToQueue: (itemId, qty = 1) => set(state => {
+    // If already in queue, increment qty
+    const idx = state.queue.findIndex(q => q.itemId === itemId);
+    if (idx >= 0) {
+      const queue = [...state.queue];
+      queue[idx] = { ...queue[idx], qty: queue[idx].qty + qty };
+      return { queue };
+    }
+    return { queue: [...state.queue, { itemId, qty }] };
+  }),
+  removeFromQueue: itemId => set(state => ({ queue: state.queue.filter(q => q.itemId !== itemId) })),
+  clearQueue: () => set({ queue: [] }),
+  loadAllData: async () => {
+    const data = await loadData();
+    set(data);
   },
 }));
 
-// Data loader for new schema (including requirements and metadata)
-export async function loadBitCraftyData(setState) {
-  const [items, crafts, requirements, buildings, professions, tools] = await Promise.all([
-    fetch('data/items.json').then(r => r.json()),
-    fetch('data/crafts.json').then(r => r.json()),
-    fetch('data/requirements.json').then(r => r.json()),
-    fetch('data/metadata/buildings.json').then(r => r.json()),
-    fetch('data/metadata/professions.json').then(r => r.json()),
-    fetch('data/metadata/tools.json').then(r => r.json())
-  ]);
-  setState({
-    items,
-    crafts,
-    requirements,
-    buildings,
-    professions,
-    tools
-  });
-}
-
-export default useBitCraftyStore;
+export default useStore;
