@@ -933,6 +933,62 @@ function calculateResources(queue) {
   return resourceCount;
 }
 
+// Clear item details function
+function clearItemDetails() {
+  const detailsDiv = document.getElementById("item-details");
+  detailsDiv.innerHTML = '';
+  detailsDiv.classList.remove("active");
+  
+  // Clear any selected nodes in the network
+  if (typeof window.network !== 'undefined' && window.network && typeof window.network.unselectAll === 'function') {
+    window.network.unselectAll();
+  }
+}
+
+// Add clear button to item details
+function addClearButton(container) {
+  // Clear any existing clear button
+  const existingClearBtn = container.querySelector('#clear-item-btn');
+  if (existingClearBtn) {
+    existingClearBtn.remove();
+  }
+  
+  const clearButton = document.createElement('button');
+  clearButton.id = 'clear-item-btn';
+  clearButton.innerHTML = '✕';
+  clearButton.style.cssText = `
+    position: absolute;
+    bottom: 20px;
+    left: 28px;
+    background: #f92672;
+    color: #272822;
+    border: none;
+    border-radius: 3px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-weight: bold;
+    z-index: 10;
+    transition: background 0.2s;
+  `;
+  clearButton.onmouseover = function() {
+    this.style.background = '#ff6b9d';
+  };
+  clearButton.onmouseout = function() {
+    this.style.background = '#f92672';
+  };
+  clearButton.onclick = function() {
+    clearItemDetails();
+  };
+  
+  // Ensure the container has relative positioning
+  const innerContainer = container.querySelector('div[style*="max-width:600px"]');
+  if (innerContainer) {
+    innerContainer.style.position = 'relative';
+    innerContainer.appendChild(clearButton);
+  }
+}
+
 // Add a "Queue Craft" button to item details
 function showItemDetails(id) {
   // Parse entity type from ID format: [entity-type]:[category/namespace]:[identifier]
@@ -994,6 +1050,7 @@ function showItemDetails(id) {
         </div>
       `;
       detailsDiv.classList.add("active");
+      addClearButton(detailsDiv);
       document.getElementById("goto-node").onclick = () => {
         if (typeof window.network !== 'undefined' && window.network && typeof window.network.selectNodes === 'function') {
           window.network.selectNodes([id]);
@@ -1030,6 +1087,7 @@ function showItemDetails(id) {
         </div>
       `;
       detailsDiv.classList.add("active");
+      addClearButton(detailsDiv);
       document.getElementById("queue-craft").onclick = () => {
         store.getState().addToQueue(id, 1);
         updateCraftQueueUI();
@@ -1063,6 +1121,7 @@ function showItemDetails(id) {
       </div>
     `;
     detailsDiv.classList.add("active");
+    addClearButton(detailsDiv);
   }
 }
 
