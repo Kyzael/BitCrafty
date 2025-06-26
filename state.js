@@ -38,6 +38,7 @@ const useStore = create((set, get) => ({
   tools: {},
   buildings: {},
   selectedItem: null,
+  selectedCrafts: {}, // Track which craft recipe is selected for each item
   queue: [], // [{itemId, qty}]
   graphData: { nodes: null, edges: null }, // Store for vis.js graph data
   setItems: items => set({ items }),
@@ -47,6 +48,10 @@ const useStore = create((set, get) => ({
   setTools: tools => set({ tools }),
   setBuildings: buildings => set({ buildings }),
   setSelectedItem: selectedItem => set({ selectedItem }),
+  setSelectedCraft: (itemId, craftIdx) => set(state => ({
+    selectedCrafts: { ...state.selectedCrafts, [itemId]: craftIdx }
+  })),
+  getSelectedCraft: (itemId) => get().selectedCrafts[itemId] || 0,
   setGraphData: graphData => set({ graphData }),
   addToQueue: (itemId, qty = 1) => set(state => {
     // If already in queue, increment qty

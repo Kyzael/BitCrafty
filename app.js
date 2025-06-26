@@ -397,11 +397,6 @@ function buildGraph() {
 
 // --- Craft queue and resource calculation for new data structure ---
 // Queue and selected crafts are now managed by the store
-// let craftQueue = [];  // Moved to store
-// let selectedCrafts = {}; // TODO: Move to store
-
-// For backwards compatibility, keep selectedCrafts as module variable for now
-let selectedCrafts = {};
 
 // Helper: name to item id
 function getItemIdByName(name) {
@@ -470,7 +465,7 @@ function tracePath(itemId, qty = 1, depth = 0, surplus = {}, visited = new Set()
     return [{ depth, id: itemId, name: item.name, qty }];
   }
   // Use selected craft or default to first
-  let craftIdx = selectedCrafts[itemId] || 0;
+  let craftIdx = store.getState().getSelectedCraft(itemId);
   if (craftIdx >= craftsForItem.length) craftIdx = 0;
   const craft = craftsForItem[craftIdx];
   // Use surplus if available
@@ -624,7 +619,7 @@ function updateCraftQueueUI() {
         const select = document.getElementById(selectId);
         if (select) {
           select.onchange = (e) => {
-            selectedCrafts[step.id] = Number(e.target.value);
+            store.getState().setSelectedCraft(step.id, Number(e.target.value));
             updateCraftQueueUI();
           };
         }
@@ -676,7 +671,7 @@ function calculateResources(queue) {
       baseNeeds[itemId] = (baseNeeds[itemId] || 0) + qty;
       return;
     }
-    let craftIdx = selectedCrafts[itemId] || 0;
+    let craftIdx = store.getState().selectedCrafts[itemId] || 0;
     if (craftIdx >= craftsForItem.length) craftIdx = 0;
     const craft = craftsForItem[craftIdx];
     if (!craftNeeds[craft.id]) {
@@ -767,7 +762,7 @@ function calculateResources(queue) {
       visited.delete(visitKey);
       return;
     }
-    let craftIdx = selectedCrafts[itemId] || 0;
+    let craftIdx = store.getState().selectedCrafts[itemId] || 0;
     if (craftIdx >= craftsForItem.length) craftIdx = 0;
     const craft = craftsForItem[craftIdx];
     // Check surplus
