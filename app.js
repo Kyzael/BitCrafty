@@ -187,7 +187,7 @@ function setupUI() {
       if (e.target.classList.contains('search-result')) {
         const id = e.target.getAttribute('data-id');
         const itemsObj = store.getState().items;
-        searchInput.value = itemsObj[id].name;
+        searchInput.value = ''; // Clear the search box
         searchDropdown.style.display = 'none';
         // Focus/select the node in the network
         window.network.selectNodes([id]);
@@ -526,7 +526,7 @@ function updateCraftQueueUI() {
   const queue = store.getState().queue;
   
   if (queue.length === 0) {
-    queueDiv.innerHTML = '<div class="sidebar-card"><h3>Craft Queue</h3><p>No items queued.</p></div>';
+    queueDiv.innerHTML = '<div style="max-width:600px;margin:20px auto 0 auto;background:#272822;color:#f8f8f2;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.25);padding:20px 28px;min-height:120px;"><h3 style="color:#f92672;margin-top:0;">Craft Queue</h3><p>No items queued.</p></div>';
     const resDiv = document.getElementById("resource-summary");
     if (resDiv) resDiv.innerHTML = '';
     const pathDiv = document.getElementById("craft-paths");
@@ -541,15 +541,33 @@ function updateCraftQueueUI() {
     queueCount[id] = (queueCount[id] || 0) + queueItem.qty;
   });
   
-  queueDiv.innerHTML = '<div class="sidebar-card">' +
-    '<h3>Craft Queue</h3>' +
-    '<ul>' + Object.entries(queueCount).map(([id, qty]) => `<li>${getItemById(id).name} x${qty}</li>`).join('') + '</ul>' +
-    '<button id="clear-queue">Clear Queue</button>' +
+  queueDiv.innerHTML = '<div style="max-width:600px;margin:20px auto 0 auto;background:#272822;color:#f8f8f2;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.25);padding:20px 28px;min-height:120px;">' +
+    '<h3 style="color:#f92672;margin-top:0;">Craft Queue</h3>' +
+    '<ul style="list-style:none;padding:0;margin:8px 0;">' + Object.entries(queueCount).map(([id, qty]) => 
+      `<li style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid #444;">
+        <span style="color:#f8f8f2;">${getItemById(id).name} x${qty}</span>
+        <button class="remove-item-btn" data-itemid="${id}" 
+          style="background:#f92672;color:#272822;border:none;border-radius:3px;padding:4px 8px;cursor:pointer;font-size:0.8em;font-weight:bold;transition:background 0.2s;"
+          onmouseover="this.style.background='#ff6b9d'" 
+          onmouseout="this.style.background='#f92672'">✕</button>
+      </li>`
+    ).join('') + '</ul>' +
+    '<button id="clear-queue" style="background:#272822;color:#fd971f;border:1.5px solid #fd971f;border-radius:3px;padding:6px 16px;cursor:pointer;margin-top:8px;font-weight:bold;transition:all 0.2s;" onmouseover="this.style.background=\'#fd971f\'; this.style.color=\'#272822\'" onmouseout="this.style.background=\'#272822\'; this.style.color=\'#fd971f\'">Clear All</button>' +
     '</div>';
   document.getElementById("clear-queue").onclick = () => {
     store.getState().clearQueue();
     updateCraftQueueUI();
   };
+  
+  // Add event listeners for individual item remove buttons
+  document.querySelectorAll('.remove-item-btn').forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation(); // Prevent any parent click handlers
+      const itemId = e.target.getAttribute('data-itemid');
+      store.getState().removeFromQueue(itemId);
+      updateCraftQueueUI();
+    };
+  });
   // Calculate and show resources - convert queue format to array of item IDs
   const itemIds = [];
   Object.entries(queueCount).forEach(([id, qty]) => {
@@ -569,14 +587,14 @@ function updateCraftQueueUI() {
       return getCraftsByOutputId(id).length === 0;
     });
     resDiv.innerHTML =
-      '<div class="sidebar-card">' +
-      '<h3>Required Base Resources</h3>' +
+      '<div style="max-width:600px;margin:20px auto 0 auto;background:#272822;color:#f8f8f2;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.25);padding:20px 28px;min-height:120px;">' +
+      '<h3 style="color:#f92672;margin-top:0;">Required Base Resources</h3>' +
       '<ul>' + baseResourceEntries.map(([id, qty]) => `<li>${getItemById(id).name}: ${qty}</li>`).join('') + '</ul>' +
       '</div>';
   }
 
   // Show crafting paths for combined quantities
-  let pathsHtml = '<div class="sidebar-card"><h3>Crafting Paths</h3>';
+  let pathsHtml = '<div style="max-width:600px;margin:20px auto 0 auto;background:#272822;color:#f8f8f2;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.25);padding:20px 28px;min-height:120px;"><h3 style="color:#f92672;margin-top:0;">Crafting Paths</h3>';
   Object.entries(queueCount).forEach(([id, qty]) => {
     const path = tracePath(id, qty);
     pathsHtml += `<div><strong><a href="#" class="tree-item-link" data-itemid="${id}">${getItemById(id).name}</a> x${qty}</strong><ul style="margin-left:1em;">`;
@@ -590,7 +608,7 @@ function updateCraftQueueUI() {
           pathsHtml += `<li style="margin-left:${step.depth * 1.5}em;">
             <span>CRAFT ${itemLink} ← ${recipeInputs} (yields ${getOutputQty(step.craft, step.id)})</span>
             <select id="${selectId}" data-itemid="${step.id}" data-depth="${step.depth}"
-              style="background:#23241f;color:#f8f8f2;border:1.5px solid #a6e22e;border-radius:4px;padding:6px 12px;font-size:1em;margin-left:10px;box-shadow:0 2px 8px rgba(0,0,0,0.18);font-family:monospace;">
+              style="background:#272822;color:#f8f8f2;border:1.5px solid #a6e22e;border-radius:4px;padding:6px 12px;font-size:1em;margin-left:10px;box-shadow:0 2px 8px rgba(0,0,0,0.18);font-family:monospace;">
               ${step.craftsForItem.map((c, i) => {
                 let inputs = (c.materials || []).map(inp => `${inp.qty} ${getItemById(inp.item)?.name || inp.item}`).join(' + ');
                 return `<option value="${i}" ${i === step.craftIdx ? 'selected' : ''}>CRAFT ← ${inputs} (yields ${getOutputQty(c, step.id)})</option>`;
@@ -857,7 +875,7 @@ function showItemDetails(id) {
           <p><strong style="color:#a6e22e;">Tool:</strong> <span style="color:#f8f8f2;">${toolInfo}</span></p>
           <p><strong style="color:#fd971f;">Building:</strong> <span style="color:#f8f8f2;">${buildingInfo}</span></p>
           <div style="margin-top:32px;text-align:right;">
-            <button id="goto-node" style="background:#272822;color:#f92672;border:1.5px solid #f92672;border-radius:3px;padding:6px 16px;cursor:pointer;">Go to Node</button>
+            <button id="goto-node" style="background:#272822;color:#f92672;border:1.5px solid #f92672;border-radius:3px;padding:6px 16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='#f92672'; this.style.color='#272822'" onmouseout="this.style.background='#272822'; this.style.color='#f92672'">Go to Node</button>
           </div>
         </div>
       `;
@@ -888,12 +906,12 @@ function showItemDetails(id) {
           <p><strong style="color:#fd971f;">Tier:</strong> <span style="color:#f8f8f2;">${item.tier}</span> <span style="margin-left:1em;"><strong style="color:#f92672;">Rank:</strong> <span style="color:#f8f8f2;">${item.rank}</span></span></p>
           <p><strong style="color:#e6db74;">Used in Recipes:</strong> <span style="color:#f8f8f2;">${usedInCount}</span></p>
           <div style="margin-top:18px;">
-            <button id="queue-craft" style="background:#a6e22e;color:#272822;border:none;border-radius:3px;padding:6px 16px;cursor:pointer;margin-right:8px;">Queue 1</button>
-            <button id="queue-craft-5" style="background:#66d9ef;color:#272822;border:none;border-radius:3px;padding:6px 16px;cursor:pointer;margin-right:8px;">Queue 5</button>
-            <button id="queue-craft-10" style="background:#fd971f;color:#272822;border:none;border-radius:3px;padding:6px 16px;cursor:pointer;">Queue 10</button>
+            <button id="queue-craft" style="background:#272822;color:#a6e22e;border:1.5px solid #a6e22e;border-radius:3px;padding:6px 16px;cursor:pointer;margin-right:8px;transition:all 0.2s;" onmouseover="this.style.background='#a6e22e'; this.style.color='#272822'" onmouseout="this.style.background='#272822'; this.style.color='#a6e22e'">Queue 1</button>
+            <button id="queue-craft-5" style="background:#272822;color:#66d9ef;border:1.5px solid #66d9ef;border-radius:3px;padding:6px 16px;cursor:pointer;margin-right:8px;transition:all 0.2s;" onmouseover="this.style.background='#66d9ef'; this.style.color='#272822'" onmouseout="this.style.background='#272822'; this.style.color='#66d9ef'">Queue 5</button>
+            <button id="queue-craft-10" style="background:#272822;color:#fd971f;border:1.5px solid #fd971f;border-radius:3px;padding:6px 16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='#fd971f'; this.style.color='#272822'" onmouseout="this.style.background='#272822'; this.style.color='#fd971f'">Queue 10</button>
           </div>
           <div style="margin-top:32px;text-align:right;">
-            <button id="goto-node" style="background:#272822;color:#a6e22e;border:1.5px solid #a6e22e;border-radius:3px;padding:6px 16px;cursor:pointer;">Go to Node</button>
+            <button id="goto-node" style="background:#272822;color:#a6e22e;border:1.5px solid #a6e22e;border-radius:3px;padding:6px 16px;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='#a6e22e'; this.style.color='#272822'" onmouseout="this.style.background='#272822'; this.style.color='#a6e22e'">Go to Node</button>
           </div>
         </div>
       `;
