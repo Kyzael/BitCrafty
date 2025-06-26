@@ -1,18 +1,29 @@
-import useBitCraftyStore from './state.js';
+import useStore from './state.js';
 
 // Helper to access store outside React (for vanilla JS)
-const store = useBitCraftyStore;
+const store = useStore;
 
-// Load data from bitcraft_flat.json
-fetch('bitcraft_flat.json')
-  .then(response => response.json())
-  .then(data => {
-    const items = data.items.map((item, idx) => ({ ...item, id: idx + 1 }));
-    const crafts = data.crafts.map((craft, idx) => ({ ...craft, id: 'craft-' + (idx + 1) }));
-    store.getState().setItems(items);
-    store.getState().setCrafts(crafts);
+// Main initialization function
+async function initializeApp() {
+  try {
+    // Load all data using the store's loadAllData method
+    await store.getState().loadAllData();
+    
+    // Build the graph with the loaded data
     buildGraph();
 
+    // Setup UI components
+    setupUI();
+    
+    // Initialize event handlers
+    setupEventHandlers();
+    
+  } catch (error) {
+    console.error('Failed to initialize app:', error);
+  }
+}
+
+function setupUI() {
     // --- Sidebar, legend, and main content setup ---
     // Create sidebar and main content containers
     const sidebar = document.createElement('div');
@@ -51,7 +62,8 @@ fetch('bitcraft_flat.json')
 
 
     // Build dynamic profession list from crafts (now from store)
-    const craftsArr = store.getState().crafts;
+    const craftsObj = store.getState().crafts;
+    const craftsArr = Object.values(craftsObj);
     const professionSet = new Set();
     craftsArr.forEach(craft => {
       if (craft.Requirements && craft.Requirements.Profession) {
@@ -131,12 +143,18 @@ fetch('bitcraft_flat.json')
       if (!nodes || !edges) return;
       const checkedProfs = Array.from(document.querySelectorAll('.prof-filter:checked')).map(cb => cb.value);
       const search = document.getElementById('item-search').value.trim().toLowerCase();
+      
+      // Get current data from store
+      const itemsObj = store.getState().items;
+      const craftsObj = store.getState().crafts;
+      const itemsArr = Object.values(itemsObj);
+      
       // Determine which nodes are filtered in
       const filteredIds = new Set(nodes.get().filter(n => {
         // For item nodes, show if any craft uses a checked profession to make it
         if (typeof n.id === 'number') {
           // Find crafts that output this item
-          const craftsForItem = craftsArr.filter(craft => (craft.Outputs || []).some(out => store.getState().items.find(i => i.Name === out.item)?.id === n.id));
+          const craftsForItem = craftsArr.filter(craft => (craft.Outputs || []).some(out => itemsArr.find(i => i.Name === out.item)?.id === n.id));
           // If no crafts produce this item, it is a base material: always show
           if (craftsForItem.length === 0) {
             return !search || n.label.toLowerCase().includes(search);
@@ -193,7 +211,7 @@ fetch('bitcraft_flat.json')
         applyFilters();
         return;
       }
-      const matches = store.getState().items.filter(i => i.Name && i.Name.toLowerCase().includes(val));
+      const matches = Object.values(store.getState().items).filter(i => i.Name && i.Name.toLowerCase().includes(val));
       if (matches.length === 0) {
         searchDropdown.style.display = 'none';
         applyFilters();
@@ -215,7 +233,8 @@ fetch('bitcraft_flat.json')
     searchDropdown.addEventListener('mousedown', function(e) {
       if (e.target.classList.contains('search-result')) {
         const id = Number(e.target.getAttribute('data-id'));
-        searchInput.value = store.getState().items.find(i => i.id === id).Name;
+        const itemsObj = store.getState().items;
+        searchInput.value = itemsObj[id].Name;
         searchDropdown.style.display = 'none';
         // Focus/select the node in the network
         window.network.selectNodes([id]);
@@ -228,46 +247,64 @@ fetch('bitcraft_flat.json')
     // Ensure the queue and sidebar are visible and updated after sidebar is created
     updateCraftQueueUI();
     applyFilters();
-    applyFilters();
-  });
+}
+
+function setupEventHandlers() {
+    // Additional event handlers can be added here
+}
 
 function buildGraph() {
-  const items = store.getState().items;
-  const crafts = store.getState().crafts;
-  // Helper: name to item id
-  const itemByName = Object.fromEntries(items.map(i => [i.Name, i.id]));
+  // Get data from store as objects and convert to arrays
+  const itemsObj = store.getState().items;
+  const craftsObj = store.getState().crafts;
+  const items = Object.values(itemsObj);
+  const crafts = Object.values(craftsObj);
+  
+  // Helper: name to item id - update for new property names
+  const itemByName = Object.fromEntries(items.map(i => [i.name, i.id]));
 
   // Build profession color map (Monokai palette)
+  // Use the profession metadata with predefined colors
+  const requirements = store.getState().requirements;
+  const professions = store.getState().professions;
+  
   const professionSet = new Set();
+  const profColorMap = {};
+  
+  // Get profession names from crafts and build color map
   crafts.forEach(craft => {
-    if (craft.Requirements && craft.Requirements.Profession) {
-      const match = /([A-Za-z ]+)-\d+/.exec(craft.Requirements.Profession);
-      if (match) professionSet.add(match[1]);
-      else professionSet.add(craft.Requirements.Profession);
+    if (craft.requirement) {
+      const req = Object.values(requirements).find(r => r.id === craft.requirement);
+      if (req && req.profession && req.profession.name) {
+        const profId = req.profession.name;
+        const prof = Object.values(professions).find(p => p.id === profId);
+        if (prof) {
+          professionSet.add(prof.name);
+          profColorMap[prof.name] = prof.color;
+        }
+      }
     }
   });
-  const professions = Array.from(professionSet).sort();
-  const profColors = [
-    "#a6e22e", "#66d9ef", "#fd971f", "#e6db74", "#ae81ff", "#75715e", "#f8f8f2", "#39dca0", "#ffd866", "#fc9867", "#ab9df2", "#78dce8", "#ffcc66", "#c678dd", "#d19a66"
-  ];
-  const profColorMap = {};
-  professions.forEach((prof, i) => { profColorMap[prof] = profColors[i % profColors.length]; });
 
   // Item nodes: fill with profession color, dark text for readability
   const nodeList = items.map(item => {
-    const craftsForItem = crafts.filter(craft => (craft.Outputs || []).some(out => out.item === item.Name));
+    const craftsForItem = crafts.filter(craft => (craft.outputs || []).some(out => out.item === item.id));
     let prof = null;
     if (craftsForItem.length > 0) {
-      const req = craftsForItem[0].Requirements;
-      if (req && req.Profession) {
-        const match = /([A-Za-z ]+)-\d+/.exec(req.Profession);
-        prof = match ? match[1] : req.Profession;
+      const craft = craftsForItem[0];
+      if (craft.requirement) {
+        const req = Object.values(requirements).find(r => r.id === craft.requirement);
+        if (req && req.profession && req.profession.name) {
+          const profId = req.profession.name;
+          const profObj = Object.values(professions).find(p => p.id === profId);
+          if (profObj) prof = profObj.name;
+        }
       }
     }
     const color = prof && profColorMap[prof] ? profColorMap[prof] : '#a6e22e';
     return {
       id: item.id,
-      label: item.Name,
+      label: item.name,
       shape: "box",
       color: {
         background: color,
@@ -290,14 +327,18 @@ function buildGraph() {
   // Craft nodes: fill with profession color, dark text for readability
   crafts.forEach(craft => {
     let prof = null;
-    if (craft.Requirements && craft.Requirements.Profession) {
-      const match = /([A-Za-z ]+)-\d+/.exec(craft.Requirements.Profession);
-      prof = match ? match[1] : craft.Requirements.Profession;
+    if (craft.requirement) {
+      const req = Object.values(requirements).find(r => r.id === craft.requirement);
+      if (req && req.profession && req.profession.name) {
+        const profId = req.profession.name;
+        const profObj = Object.values(professions).find(p => p.id === profId);
+        if (profObj) prof = profObj.name;
+      }
     }
     const color = prof && profColorMap[prof] ? profColorMap[prof] : '#f92672';
     nodeList.push({
       id: craft.id,
-      label: craft.Name,
+      label: craft.name,
       shape: "roundRect",
       color: {
         background: color,
@@ -320,10 +361,11 @@ function buildGraph() {
   // Edges: item -> craft (inputs), craft -> item (outputs)
   const edgeList = [];
   crafts.forEach(craft => {
-    (craft.Materials || []).forEach(mat => {
-      if (itemByName[mat.item]) {
+    (craft.materials || []).forEach(mat => {
+      // mat.item is now an item ID directly
+      if (items.find(item => item.id === mat.item)) {
         edgeList.push({
-          from: itemByName[mat.item],
+          from: mat.item,
           to: craft.id,
           label: `${mat.qty}`,
           arrows: "to",
@@ -331,11 +373,12 @@ function buildGraph() {
         });
       }
     });
-    (craft.Outputs || []).forEach(out => {
-      if (itemByName[out.item]) {
+    (craft.outputs || []).forEach(out => {
+      // out.item is now an item ID directly
+      if (items.find(item => item.id === out.item)) {
         edgeList.push({
           from: craft.id,
-          to: itemByName[out.item],
+          to: out.item,
           label: `${out.qty}`,
           arrows: "to",
           color: { color: "#f92672" }
@@ -393,40 +436,44 @@ function buildGraph() {
 }
 
 // --- Craft queue and resource calculation for new data structure ---
-let craftQueue = [];
+// Queue and selected crafts are now managed by the store
+// let craftQueue = [];  // Moved to store
+// let selectedCrafts = {}; // TODO: Move to store
+
+// For backwards compatibility, keep selectedCrafts as module variable for now
 let selectedCrafts = {};
 
 // Helper: name to item id
 function getItemIdByName(name) {
   const items = store.getState().items;
-  const item = items.find(i => i.Name === name);
+  const item = Object.values(items).find(i => i.name === name);
   return item ? item.id : null;
 }
 
 // Helper: item id to item
 function getItemById(id) {
   const items = store.getState().items;
-  return items.find(i => i.id === id);
+  return items[id] || null;
 }
 
 // Helper: get all crafts that output a given item id
 function getCraftsByOutputId(itemId) {
   const crafts = store.getState().crafts;
-  const itemName = getItemById(itemId)?.Name;
+  const itemName = getItemById(itemId)?.name;
   if (!itemName) return [];
-  return crafts.filter(craft => (craft.Outputs || []).some(out => out.item === itemName));
+  return Object.values(crafts).filter(craft => (craft.outputs || []).some(out => out.item === itemId));
 }
 
 // Set of items that are always treated as base crafting items (do not progress past these)
 const BASE_CRAFT_ITEMS = new Set([
   'Basic Embergrain',
-  'Basic Starbulb',
+  'Basic Starbulb', 
   'Rough Wispweave Filament'
 ]);
 
-// Helper: get output quantity for a craft and item name (returns lowest value if range, as integer)
-function getOutputQty(craft, itemName) {
-  const out = (craft.Outputs || []).find(o => o.item.trim() === itemName.trim());
+// Helper: get output quantity for a craft and item ID (returns lowest value if range, as integer)
+function getOutputQty(craft, itemId) {
+  const out = (craft.outputs || []).find(o => o.item === itemId);
   if (!out) return 1;
   if (typeof out.qty === 'number') return out.qty;
   if (typeof out.qty === 'string') {
@@ -448,19 +495,19 @@ function tracePath(itemId, qty = 1, depth = 0, surplus = {}, visited = new Set()
   const visitKey = `${itemId}`;
   if (visited.has(visitKey)) {
     // Circular dependency detected, stop recursion
-    return [{ depth, id: itemId, name: item.Name, qty, circular: true }];
+    return [{ depth, id: itemId, name: item.name, qty, circular: true }];
   }
   visited.add(visitKey);
   // If this is a flagged base crafting item, treat as base
-  if (BASE_CRAFT_ITEMS.has(item.Name)) {
+  if (BASE_CRAFT_ITEMS.has(item.name)) {
     visited.delete(visitKey);
-    return [{ depth, id: itemId, name: item.Name, qty }];
+    return [{ depth, id: itemId, name: item.name, qty }];
   }
   const craftsForItem = getCraftsByOutputId(itemId);
   if (craftsForItem.length === 0) {
     visited.delete(visitKey);
     // Base resource
-    return [{ depth, id: itemId, name: item.Name, qty }];
+    return [{ depth, id: itemId, name: item.name, qty }];
   }
   // Use selected craft or default to first
   let craftIdx = selectedCrafts[itemId] || 0;
@@ -478,19 +525,19 @@ function tracePath(itemId, qty = 1, depth = 0, surplus = {}, visited = new Set()
     surplus[itemId] = 0;
   }
   // Calculate crafts needed and new surplus
-  const outputQty = getOutputQty(craft, item.Name);
+  const outputQty = getOutputQty(craft, itemId);
   // If outputQty is 0, treat as base resource
   if (outputQty === 0) {
     visited.delete(visitKey);
-    return [{ depth, id: itemId, name: item.Name, qty: needed }];
+    return [{ depth, id: itemId, name: item.name, qty: needed }];
   }
   const craftsNeeded = Math.ceil(needed / outputQty);
   const totalProduced = craftsNeeded * outputQty;
   const newSurplus = { ...surplus };
   newSurplus[itemId] = (newSurplus[itemId] || 0) + (totalProduced - needed);
-  let paths = [{ depth, id: itemId, name: item.Name, qty: needed, craft, craftIdx, craftsForItem, craftsNeeded, totalProduced, used: needed }];
-  (craft.Materials || []).forEach(input => {
-    const inputId = getItemIdByName(input.item);
+  let paths = [{ depth, id: itemId, name: item.name, qty: needed, craft, craftIdx, craftsForItem, craftsNeeded, totalProduced, used: needed }];
+  (craft.materials || []).forEach(input => {
+    const inputId = input.item; // Now using item ID directly
     if (inputId) {
       const inputQty = craftsNeeded * input.qty;
       paths = paths.concat(tracePath(inputId, inputQty, depth + 1, newSurplus, visited));
@@ -520,7 +567,10 @@ function updateCraftQueueUI() {
       document.body.appendChild(queueDiv);
     }
   }
-  if (craftQueue.length === 0) {
+  // Get queue from store
+  const queue = store.getState().queue;
+  
+  if (queue.length === 0) {
     queueDiv.innerHTML = '<div class="sidebar-card"><h3>Craft Queue</h3><p>No items queued.</p></div>';
     const resDiv = document.getElementById("resource-summary");
     if (resDiv) resDiv.innerHTML = '';
@@ -528,22 +578,31 @@ function updateCraftQueueUI() {
     if (pathDiv) pathDiv.innerHTML = '';
     return;
   }
+  
   // Count each unique item in the queue
   const queueCount = {};
-  craftQueue.forEach(id => {
-    queueCount[id] = (queueCount[id] || 0) + 1;
+  queue.forEach(queueItem => {
+    const id = queueItem.itemId;
+    queueCount[id] = (queueCount[id] || 0) + queueItem.qty;
   });
+  
   queueDiv.innerHTML = '<div class="sidebar-card">' +
     '<h3>Craft Queue</h3>' +
     '<ul>' + Object.entries(queueCount).map(([id, qty]) => `<li>${getItemById(Number(id)).Name} x${qty}</li>`).join('') + '</ul>' +
     '<button id="clear-queue">Clear Queue</button>' +
     '</div>';
   document.getElementById("clear-queue").onclick = () => {
-    craftQueue = [];
+    store.getState().clearQueue();
     updateCraftQueueUI();
   };
-  // Calculate and show resources
-  const resources = calculateResources(Object.entries(queueCount).map(([id, qty]) => Array(Number(qty)).fill(Number(id))).flat());
+  // Calculate and show resources - convert queue format to array of item IDs
+  const itemIds = [];
+  Object.entries(queueCount).forEach(([id, qty]) => {
+    for (let i = 0; i < qty; i++) {
+      itemIds.push(Number(id));
+    }
+  });
+  const resources = calculateResources(itemIds);
   const resDiv = document.getElementById("resource-summary");
   if (resDiv) {
     // Only show true base resources (not craftable, or in BASE_CRAFT_ITEMS)
@@ -794,7 +853,8 @@ function showItemDetails(id) {
   const detailsDiv = document.getElementById("item-details");
   if (typeof id === 'number') {
     const item = getItemById(id);
-    const crafts = store.getState().crafts;
+    const craftsObj = store.getState().crafts;
+    const crafts = Object.values(craftsObj);
     if (item) {
       // Count how many recipes (crafts) this item is used in as an input
       const usedInCount = crafts.filter(craft => (craft.Materials || []).some(mat => mat.item === item.Name)).length;
@@ -815,15 +875,15 @@ function showItemDetails(id) {
       `;
       detailsDiv.classList.add("active");
       document.getElementById("queue-craft").onclick = () => {
-        craftQueue.push(id);
+        store.getState().addToQueue(id, 1);
         updateCraftQueueUI();
       };
       document.getElementById("queue-craft-5").onclick = () => {
-        for (let i = 0; i < 5; i++) craftQueue.push(id);
+        store.getState().addToQueue(id, 5);
         updateCraftQueueUI();
       };
       document.getElementById("queue-craft-10").onclick = () => {
-        for (let i = 0; i < 10; i++) craftQueue.push(id);
+        store.getState().addToQueue(id, 10);
         updateCraftQueueUI();
       };
       document.getElementById("goto-node").onclick = () => {
@@ -846,8 +906,8 @@ function showItemDetails(id) {
     }
   } else if (typeof id === 'string' && id.startsWith('craft-')) {
     // Craft node
-    const crafts = store.getState().crafts;
-    const craft = crafts.find(c => c.id === id);
+    const craftsObj = store.getState().crafts;
+    const craft = Object.values(craftsObj).find(c => c.id === id);
     if (craft) {
       // Parse requirements and extract level
       const req = craft.Requirements || {};
@@ -889,3 +949,6 @@ function showItemDetails(id) {
     }
   }
 }
+
+// Initialize the application when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializeApp);

@@ -1,7 +1,6 @@
 // Zustand store for BitCrafty
 import { create } from 'https://esm.sh/zustand';
 
-
 // Utility to convert array to Record by id
 function arrayToRecord(arr) {
   const rec = arr.reduce((acc, obj) => {
@@ -13,12 +12,12 @@ function arrayToRecord(arr) {
 
 async function loadData() {
   const [items, crafts, requirements, professions, tools, buildings] = await Promise.all([
-    fetch('src/data/items.json').then(r => r.json()),
-    fetch('src/data/crafts.json').then(r => r.json()),
-    fetch('src/data/requirements.json').then(r => r.json()),
-    fetch('src/data/metadata/professions.json').then(r => r.json()),
-    fetch('src/data/metadata/tools.json').then(r => r.json()),
-    fetch('src/data/metadata/buildings.json').then(r => r.json()),
+    fetch('data/items.json').then(r => r.json()),
+    fetch('data/crafts.json').then(r => r.json()),
+    fetch('data/requirements.json').then(r => r.json()),
+    fetch('data/metadata/professions.json').then(r => r.json()),
+    fetch('data/metadata/tools.json').then(r => r.json()),
+    fetch('data/metadata/buildings.json').then(r => r.json()),
   ]);
   return {
     items: arrayToRecord(items),
@@ -40,6 +39,7 @@ const useStore = create((set, get) => ({
   buildings: {},
   selectedItem: null,
   queue: [], // [{itemId, qty}]
+  graphData: { nodes: null, edges: null }, // Store for vis.js graph data
   setItems: items => set({ items }),
   setCrafts: crafts => set({ crafts }),
   setRequirements: requirements => set({ requirements }),
@@ -47,6 +47,7 @@ const useStore = create((set, get) => ({
   setTools: tools => set({ tools }),
   setBuildings: buildings => set({ buildings }),
   setSelectedItem: selectedItem => set({ selectedItem }),
+  setGraphData: graphData => set({ graphData }),
   addToQueue: (itemId, qty = 1) => set(state => {
     // If already in queue, increment qty
     const idx = state.queue.findIndex(q => q.itemId === itemId);
