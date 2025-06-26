@@ -1,0 +1,12 @@
+[
+  { "id": "profession:foraging",   "name": "Foraging",   "color": "#66d9ef" },
+  { "id": "profession:tailoring",  "name": "Tailoring",  "color": "#a6e22e" },
+  { "id": "profession:farming",    "name": "Farming",    "color": "#e6db74" },
+  { "id": "profession:cooking",    "name": "Cooking",    "color": "#f92672" },
+  { "id": "profession:carpentry",  "name": "Carpentry",  "color": "#fd971f" },
+  { "id": "profession:scholar",    "name": "Scholar",    "color": "#ae81ff" },
+  { "id": "profession:fishing",    "name": "Fishing",    "color": "#66d9ef" },
+  { "id": "profession:forestry",   "name": "Forestry",   "color": "#fd971f" },
+  { "id": "profession:mining",     "name": "Mining",     "color": "#ae81ff" },
+  { "id": "profession:hunting",    "name": "Hunting",    "color": "#f92672" }
+]

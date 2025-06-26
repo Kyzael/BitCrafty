@@ -1,0 +1,5 @@
+[
+  { "id": "requirement:foraging:basic-tier1", "profession": { "name": "profession:foraging", "level": 1 }, "tool": { "name": "tool:metal:machete", "level": 1 }, "building": { "name": "building:foraging:station", "level": 1 } },
+  { "id": "requirement:tailoring:basic-tools", "profession": { "name": "profession:tailoring", "level": 1 }, "tool": { "name": "tool:metal:scissors", "level": 1 }, "building": { "name": "building:tailoring:station", "level": 1 } },
+  { "id": "requirement:tailoring:loom-tier1", "profession": { "name": "profession:tailoring", "level": 1 }, "building": { "name": "building:tailoring:loom", "level": 1 } }
+]

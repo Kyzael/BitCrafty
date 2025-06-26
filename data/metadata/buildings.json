@@ -1,0 +1,16 @@
+[
+  { "id": "building:foraging:station",   "name": "Foraging Station" },
+  { "id": "building:tailoring:station",  "name": "Tailoring Station" },
+  { "id": "building:tailoring:loom",     "name": "Loom" },
+  { "id": "building:farming:station",    "name": "Farming Station" },
+  { "id": "building:cooking:station",    "name": "Cooking Station" },
+  { "id": "building:cooking:well",       "name": "Well" },
+  { "id": "building:carpentry:station",  "name": "Carpentry Station" },
+  { "id": "building:scholar:station",    "name": "Scholar Station" },
+  { "id": "building:fishing:station",    "name": "Fishing Station" },
+  { "id": "building:forestry:station",   "name": "Forestry Station" },
+  { "id": "building:mining:station",     "name": "Mining Station" },
+  { "id": "building:hunting:station",    "name": "Hunting Station" },
+  { "id": "building:cooking:fire",       "name": "Fire" },
+  { "id": "building:cooking:oven",       "name": "Oven" }
+]
