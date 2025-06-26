@@ -74,17 +74,20 @@ function setupUI() {
     // Sort profession names for consistent display
     const professionNames = professions.map(p => p.name).sort();
     
-    let legendHtml = `<h3 style="margin-top:0;color:#f8f8f2;">Legend & Filters</h3><div style="margin-top:10px;display:flex;flex-wrap:wrap;align-items:center;gap:1.5em;">`;
+    let legendHtml = `<h3 style="margin-top:0;color:#f8f8f2;">Legend & Filters</h3>
+    <div style="margin-top:10px;display:grid;grid-template-columns:repeat(2, 1fr);gap:6px 16px;">`;
+    
     professionNames.forEach(profName => {
-      legendHtml += `<label style="display:flex;align-items:center;gap=6px;">
-        <input type="checkbox" class="prof-filter" value="${profName}" checked>
-        <span style="display:inline-block;width:18px;height:18px;background:${profColorMap[profName]};border-radius:3px;"></span>
-        ${profName}
-      </label>`;
+      legendHtml += `<div class="prof-filter-toggle" data-profession="${profName}" data-active="true" style="display:flex;align-items:center;gap:6px;cursor:pointer;padding:4px 8px;border-radius:6px;transition:all 0.3s ease;user-select:none;white-space:nowrap;min-width:0;">
+        <span style="display:inline-block;width:16px;height:16px;background:${profColorMap[profName]};border-radius:3px;transition:all 0.3s ease;flex-shrink:0;"></span>
+        <span style="color:#f8f8f2;font-weight:500;transition:all 0.3s ease;font-size:0.9em;overflow:hidden;text-overflow:ellipsis;">${profName}</span>
+      </div>`;
     });
-    legendHtml += `<input type="text" id="item-search" placeholder="Search item name..." style="margin-left:1em;padding:10px 16px;min-width:180px;width:calc(100% - 32px);max-width:360px;background:#1e1f1c;color:#f8f8f2;border:1.5px solid #444;font-size:1.1em;border-radius:5px;box-sizing:border-box;">`;
-    legendHtml += `<button id="clear-subtree-filter" style="margin-left:1em;padding:8px 16px;background:#272822;color:#e6db74;border:1.5px solid #e6db74;border-radius:5px;cursor:pointer;font-size:1em;font-weight:bold;transition:all 0.2s;display:none;" onmouseover="this.style.background='#e6db74'; this.style.color='#272822'" onmouseout="this.style.background='#272822'; this.style.color='#e6db74'">Clear Subtree Filter</button>`;
-    legendHtml += `</div>`;
+    
+    legendHtml += `</div>
+    <div style="margin-top:12px;display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
+      <input type="text" id="item-search" placeholder="Search item name..." style="padding:10px 16px;min-width:180px;width:240px;background:#1e1f1c;color:#f8f8f2;border:1.5px solid #444;font-size:1.1em;border-radius:5px;box-sizing:border-box;">
+    </div>`;
     const legendDiv = document.createElement('div');
     legendDiv.id = 'legend';
     legendDiv.style.background = '#272822';
@@ -135,14 +138,36 @@ function setupUI() {
     mainContent.style.height = '100vh';
 
     // Simplified event handlers with efficient filtering logic
-    document.querySelectorAll('.prof-filter').forEach(cb => cb.addEventListener('change', function() {
-        console.log('Profession filter changed:', this.value, this.checked);
+    document.querySelectorAll('.prof-filter-toggle').forEach(toggle => {
+      toggle.addEventListener('click', function() {
+        const profession = this.getAttribute('data-profession');
+        const isActive = this.getAttribute('data-active') === 'true';
+        const newState = !isActive;
+        
+        // Update the toggle state
+        this.setAttribute('data-active', newState.toString());
+        
+        // Update visual appearance
+        const colorBox = this.querySelector('span:first-child');
+        const textSpan = this.querySelector('span:last-child');
+        
+        if (newState) {
+          // Active state - normal colors
+          this.style.opacity = '1';
+          this.style.filter = 'none';
+          colorBox.style.opacity = '1';
+          textSpan.style.color = '#f8f8f2';
+        } else {
+          // Inactive state - greyed out
+          this.style.opacity = '0.4';
+          this.style.filter = 'grayscale(0.8)';
+          colorBox.style.opacity = '0.6';
+          textSpan.style.color = '#666';
+        }
+        
+        console.log('Profession filter changed:', profession, newState);
         applyProfessionFilters();
-    }));
-    
-    // Clear subtree filter button handler
-    document.getElementById('clear-subtree-filter').addEventListener('click', function() {
-        clearSubtreeFilter();
+      });
     });
     
     document.getElementById('item-search').addEventListener('input', function() {
@@ -473,6 +498,10 @@ function buildGraph() {
     if (params.nodes.length > 0) {
       const nodeId = params.nodes[0];
       applySubtreeFilter(nodeId);
+    } else {
+      // Double-click on empty space - clear selection, item details, and subtree filter
+      clearItemDetails();
+      clearSubtreeFilter();
     }
   });
 
@@ -947,46 +976,7 @@ function clearItemDetails() {
 
 // Add clear button to item details
 function addClearButton(container) {
-  // Clear any existing clear button
-  const existingClearBtn = container.querySelector('#clear-item-btn');
-  if (existingClearBtn) {
-    existingClearBtn.remove();
-  }
-  
-  const clearButton = document.createElement('button');
-  clearButton.id = 'clear-item-btn';
-  clearButton.innerHTML = '✕';
-  clearButton.style.cssText = `
-    position: absolute;
-    bottom: 20px;
-    left: 28px;
-    background: #f92672;
-    color: #272822;
-    border: none;
-    border-radius: 3px;
-    padding: 4px 8px;
-    cursor: pointer;
-    font-size: 0.8em;
-    font-weight: bold;
-    z-index: 10;
-    transition: background 0.2s;
-  `;
-  clearButton.onmouseover = function() {
-    this.style.background = '#ff6b9d';
-  };
-  clearButton.onmouseout = function() {
-    this.style.background = '#f92672';
-  };
-  clearButton.onclick = function() {
-    clearItemDetails();
-  };
-  
-  // Ensure the container has relative positioning
-  const innerContainer = container.querySelector('div[style*="max-width:600px"]');
-  if (innerContainer) {
-    innerContainer.style.position = 'relative';
-    innerContainer.appendChild(clearButton);
-  }
+  // Clear button functionality removed - now use double-click on empty space to clear
 }
 
 // Add a "Queue Craft" button to item details
@@ -1050,7 +1040,6 @@ function showItemDetails(id) {
         </div>
       `;
       detailsDiv.classList.add("active");
-      addClearButton(detailsDiv);
       document.getElementById("goto-node").onclick = () => {
         if (typeof window.network !== 'undefined' && window.network && typeof window.network.selectNodes === 'function') {
           window.network.selectNodes([id]);
@@ -1087,7 +1076,6 @@ function showItemDetails(id) {
         </div>
       `;
       detailsDiv.classList.add("active");
-      addClearButton(detailsDiv);
       document.getElementById("queue-craft").onclick = () => {
         store.getState().addToQueue(id, 1);
         updateCraftQueueUI();
@@ -1121,16 +1109,18 @@ function showItemDetails(id) {
       </div>
     `;
     detailsDiv.classList.add("active");
-    addClearButton(detailsDiv);
   }
 }
 
 // Efficient profession filtering using Zustand store and fast operations
 function applyProfessionFilters() {
-  // Get checked profession filters
+  // Get active profession filters from toggle elements
   const checkedProfessions = new Set();
-  document.querySelectorAll('.prof-filter:checked').forEach(cb => {
-    checkedProfessions.add(cb.value);
+  document.querySelectorAll('.prof-filter-toggle').forEach(toggle => {
+    const isActive = toggle.getAttribute('data-active') === 'true';
+    if (isActive) {
+      checkedProfessions.add(toggle.getAttribute('data-profession'));
+    }
   });
   
   // Get graph data from store
@@ -1285,22 +1275,16 @@ function applySubtreeFilter(rootNodeId) {
   nodes.update(nodeUpdates);
   edges.update(edgeUpdates);
   
-  // Show the clear filter button
-  const clearButton = document.getElementById('clear-subtree-filter');
-  if (clearButton) {
-    clearButton.style.display = 'inline-block';
-  }
-  
   // Get the root node name for user feedback
   const rootNodeData = nodes.get(rootNodeId);
   const rootNodeName = rootNodeData ? rootNodeData.label : 'Unknown';
   
   console.log(`Dependency subtree filter applied for "${rootNodeName}": ${visibleNodes.size} nodes visible (showing inputs only)`);
   
-  // Focus on the filtered subtree
+  // Focus on the root node that was double-clicked
   if (window.network) {
-    window.network.fit({
-      nodes: Array.from(visibleNodes),
+    window.network.focus(rootNodeId, {
+      scale: 1.2,
       animation: { duration: 800, easingFunction: 'easeInOutQuad' }
     });
   }
@@ -1321,12 +1305,6 @@ function clearSubtreeFilter() {
   // Reset subtree filter state
   subtreeFilterActive = false;
   subtreeVisibleNodes.clear();
-  
-  // Hide the clear filter button
-  const clearButton = document.getElementById('clear-subtree-filter');
-  if (clearButton) {
-    clearButton.style.display = 'none';
-  }
   
   // Reapply profession filters (which will show all nodes not filtered by profession)
   applyProfessionFilters();
