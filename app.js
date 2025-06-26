@@ -417,9 +417,9 @@ function getCraftsByOutputId(itemId) {
 
 // Set of items that are always treated as base crafting items (do not progress past these)
 const BASE_CRAFT_ITEMS = new Set([
-  'Basic Embergrain',
-  'Basic Starbulb', 
-  'Rough Wispweave Filament'
+  'item:grain:embergrain',
+  'item:starbulb:basic', 
+  'item:wispweave:filament-rough'
 ]);
 
 // Helper: get output quantity for a craft and item ID (returns lowest value if range, as integer)
@@ -450,7 +450,7 @@ function tracePath(itemId, qty = 1, depth = 0, surplus = {}, visited = new Set()
   }
   visited.add(visitKey);
   // If this is a flagged base crafting item, treat as base
-  if (BASE_CRAFT_ITEMS.has(item.name)) {
+  if (BASE_CRAFT_ITEMS.has(itemId)) {
     visited.delete(visitKey);
     return [{ depth, id: itemId, name: item.name, qty }];
   }
@@ -539,7 +539,7 @@ function updateCraftQueueUI() {
   
   queueDiv.innerHTML = '<div class="sidebar-card">' +
     '<h3>Craft Queue</h3>' +
-    '<ul>' + Object.entries(queueCount).map(([id, qty]) => `<li>${getItemById(Number(id)).Name} x${qty}</li>`).join('') + '</ul>' +
+    '<ul>' + Object.entries(queueCount).map(([id, qty]) => `<li>${getItemById(id).name} x${qty}</li>`).join('') + '</ul>' +
     '<button id="clear-queue">Clear Queue</button>' +
     '</div>';
   document.getElementById("clear-queue").onclick = () => {
@@ -550,7 +550,7 @@ function updateCraftQueueUI() {
   const itemIds = [];
   Object.entries(queueCount).forEach(([id, qty]) => {
     for (let i = 0; i < qty; i++) {
-      itemIds.push(Number(id));
+      itemIds.push(id);
     }
   });
   const resources = calculateResources(itemIds);
@@ -558,43 +558,43 @@ function updateCraftQueueUI() {
   if (resDiv) {
     // Only show true base resources (not craftable, or in BASE_CRAFT_ITEMS)
     const baseResourceEntries = Object.entries(resources).filter(([id, qty]) => {
-      const item = getItemById(Number(id));
+      const item = getItemById(id);
       if (!item) return false;
-      if (BASE_CRAFT_ITEMS.has(item.Name)) return true;
+      if (BASE_CRAFT_ITEMS.has(id)) return true;
       // Not craftable if no crafts output this item
-      return getCraftsByOutputId(Number(id)).length === 0;
+      return getCraftsByOutputId(id).length === 0;
     });
     resDiv.innerHTML =
       '<div class="sidebar-card">' +
       '<h3>Required Base Resources</h3>' +
-      '<ul>' + baseResourceEntries.map(([id, qty]) => `<li>${getItemById(Number(id)).Name}: ${qty}</li>`).join('') + '</ul>' +
+      '<ul>' + baseResourceEntries.map(([id, qty]) => `<li>${getItemById(id).name}: ${qty}</li>`).join('') + '</ul>' +
       '</div>';
   }
 
   // Show crafting paths for combined quantities
   let pathsHtml = '<div class="sidebar-card"><h3>Crafting Paths</h3>';
   Object.entries(queueCount).forEach(([id, qty]) => {
-    const path = tracePath(Number(id), qty);
-    pathsHtml += `<div><strong><a href="#" class="tree-item-link" data-itemid="${id}">${getItemById(Number(id)).Name}</a> x${qty}</strong><ul style="margin-left:1em;">`;
+    const path = tracePath(id, qty);
+    pathsHtml += `<div><strong><a href="#" class="tree-item-link" data-itemid="${id}">${getItemById(id).name}</a> x${qty}</strong><ul style="margin-left:1em;">`;
     path.forEach((step, idx) => {
       const itemLink = `<a href=\"#\" class=\"tree-item-link\" data-itemid=\"${step.id}\">${step.name}</a>`;
       if (step.craft) {
-        let recipeInputs = (step.craft.Materials || []).map(inp => `${inp.qty} ${inp.item}`).join(' + ');
+        let recipeInputs = (step.craft.materials || []).map(inp => `${inp.qty} ${getItemById(inp.item)?.name || inp.item}`).join(' + ');
         // If multiple crafts, show a select dropdown
         if (step.craftsForItem && step.craftsForItem.length > 1) {
           const selectId = `craft-select-${step.id}-${step.depth}-${idx}`;
           pathsHtml += `<li style="margin-left:${step.depth * 1.5}em;">
-            <span>CRAFT ${itemLink} ← ${recipeInputs} (yields ${getOutputQty(step.craft, step.name)})</span>
+            <span>CRAFT ${itemLink} ← ${recipeInputs} (yields ${getOutputQty(step.craft, step.id)})</span>
             <select id="${selectId}" data-itemid="${step.id}" data-depth="${step.depth}"
               style="background:#23241f;color:#f8f8f2;border:1.5px solid #a6e22e;border-radius:4px;padding:6px 12px;font-size:1em;margin-left:10px;box-shadow:0 2px 8px rgba(0,0,0,0.18);font-family:monospace;">
               ${step.craftsForItem.map((c, i) => {
-                let inputs = (c.Materials || []).map(inp => `${inp.qty} ${inp.item}`).join(' + ');
-                return `<option value="${i}" ${i === step.craftIdx ? 'selected' : ''}>CRAFT ← ${inputs} (yields ${getOutputQty(c, step.name)})</option>`;
+                let inputs = (c.materials || []).map(inp => `${inp.qty} ${getItemById(inp.item)?.name || inp.item}`).join(' + ');
+                return `<option value="${i}" ${i === step.craftIdx ? 'selected' : ''}>CRAFT ← ${inputs} (yields ${getOutputQty(c, step.id)})</option>`;
               }).join('')}
             </select>
           </li>`;
         } else {
-          pathsHtml += `<li style="margin-left:${step.depth * 1.5}em;">CRAFT ${itemLink} ← ${recipeInputs} (yields ${getOutputQty(step.craft, step.name)})</li>`;
+          pathsHtml += `<li style="margin-left:${step.depth * 1.5}em;">CRAFT ${itemLink} ← ${recipeInputs} (yields ${getOutputQty(step.craft, step.id)})</li>`;
         }
       } else {
         pathsHtml += `<li style="margin-left:${step.depth * 1.5}em;">Gather/Obtain <strong>${itemLink}</strong></li>`;
@@ -608,7 +608,7 @@ function updateCraftQueueUI() {
 
   // Add event listeners for craft selects and tree item links
   Object.entries(queueCount).forEach(([id, qty]) => {
-    const path = tracePath(Number(id), qty);
+    const path = tracePath(id, qty);
     path.forEach((step, idx) => {
       if (step.craftsForItem && step.craftsForItem.length > 1) {
         const selectId = `craft-select-${step.id}-${step.depth}-${idx}`;
@@ -628,8 +628,7 @@ function updateCraftQueueUI() {
       e.preventDefault();
       const idAttr = this.getAttribute('data-itemid');
       let nodeId = idAttr;
-      // If the id is a number string, use as number; if string (craft-...), use as is
-      if (!isNaN(Number(nodeId))) nodeId = Number(nodeId);
+      // IDs are now strings with entity type prefixes (e.g., item:material:wood, craft:carpenter:plank)
       // Focus/select the node in the network
       if (typeof network !== 'undefined' && network && typeof network.selectNodes === 'function') {
         network.selectNodes([nodeId]);
@@ -657,9 +656,9 @@ function calculateResources(queue) {
 
   // First, group queue items by their selected craft (if any)
   Object.entries(queueCount).forEach(([id, qty]) => {
-    const itemId = Number(id);
+    const itemId = id;
     const item = getItemById(itemId);
-    if (BASE_CRAFT_ITEMS.has(item.Name)) {
+    if (BASE_CRAFT_ITEMS.has(itemId)) {
       baseNeeds[itemId] = (baseNeeds[itemId] || 0) + qty;
       return;
     }
@@ -682,7 +681,7 @@ function calculateResources(queue) {
     // For each output, determine how many are needed after surplus
     const outputQtys = {};
     Object.keys(outputNeeds).forEach(itemId => {
-      outputQtys[itemId] = getOutputQty(craft, getItemById(Number(itemId)).Name);
+      outputQtys[itemId] = getOutputQty(craft, itemId);
     });
     // For each output, check surplus
     const needed = {};
@@ -722,8 +721,8 @@ function calculateResources(queue) {
       resourceCount[itemId] = (resourceCount[itemId] || 0) + used;
     });
     // Now, recurse for inputs
-    (craft.Materials || []).forEach(input => {
-      const inputId = getItemIdByName(input.item);
+    (craft.materials || []).forEach(input => {
+      const inputId = input.item; // Now using item ID directly
       if (inputId) {
         const inputQty = craftsNeeded * input.qty;
         // Recurse as if these are new queue items
@@ -748,7 +747,7 @@ function calculateResources(queue) {
     }
     visited.add(visitKey);
     const item = getItemById(itemId);
-    if (BASE_CRAFT_ITEMS.has(item.Name)) {
+    if (BASE_CRAFT_ITEMS.has(itemId)) {
       resourceCount[itemId] = (resourceCount[itemId] || 0) + qty;
       visited.delete(visitKey);
       return;
@@ -773,7 +772,7 @@ function calculateResources(queue) {
       needed -= avail;
       surplus[itemId] = 0;
     }
-    const outQty = getOutputQty(craft, getItemById(itemId).Name);
+    const outQty = getOutputQty(craft, itemId);
     if (outQty === 0) {
       resourceCount[itemId] = (resourceCount[itemId] || 0) + needed;
       visited.delete(visitKey);
@@ -785,8 +784,8 @@ function calculateResources(queue) {
       surplus[itemId] = (surplus[itemId] || 0) + (produced - needed);
     }
     resourceCount[itemId] = (resourceCount[itemId] || 0) + needed;
-    (craft.Materials || []).forEach(input => {
-      const inputId = getItemIdByName(input.item);
+    (craft.materials || []).forEach(input => {
+      const inputId = input.item; // Now using item ID directly
       if (inputId) {
         const inputQty = craftsNeeded * input.qty;
         processInput(inputId, inputQty, visited);
@@ -800,11 +799,12 @@ function calculateResources(queue) {
 
 // Add a "Queue Craft" button to item details
 function showItemDetails(id) {
-  // Check if this is an item node (string id) or a craft node (string id like 'craft-...')
+  // Parse entity type from ID format: [entity-type]:[category/namespace]:[identifier]
   const detailsDiv = document.getElementById("item-details");
+  const entityType = id.split(':')[0];
   
   // Check if it's a craft node
-  if (typeof id === 'string' && id.startsWith('craft-')) {
+  if (entityType === 'craft') {
     // Craft node
     const craftsObj = store.getState().crafts;
     const craft = Object.values(craftsObj).find(c => c.id === id);
@@ -869,7 +869,7 @@ function showItemDetails(id) {
         }
       };
     }
-  } else {
+  } else if (entityType === 'item') {
     // Item node
     const item = getItemById(id);
     const craftsObj = store.getState().crafts;
@@ -917,6 +917,16 @@ function showItemDetails(id) {
         }
       };
     }
+  } else {
+    // Unknown entity type or malformed ID
+    detailsDiv.innerHTML = `
+      <div style="max-width:600px;margin:20px auto 0 auto;background:#272822;color:#f8f8f2;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.25);padding:20px 28px;min-height:120px;">
+        <h2 style="color:#f92672;margin-top:0;">Unknown Entity</h2>
+        <p><strong style="color:#e6db74;">ID:</strong> <span style="color:#f8f8f2;">${id}</span></p>
+        <p style="color:#fd971f;">Unable to display details for this entity type.</p>
+      </div>
+    `;
+    detailsDiv.classList.add("active");
   }
 }
 
