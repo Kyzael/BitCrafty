@@ -83,6 +83,7 @@ function setupUI() {
       </label>`;
     });
     legendHtml += `<input type="text" id="item-search" placeholder="Search item name..." style="margin-left:1em;padding:10px 16px;min-width:180px;width:calc(100% - 32px);max-width:360px;background:#1e1f1c;color:#f8f8f2;border:1.5px solid #444;font-size:1.1em;border-radius:5px;box-sizing:border-box;">`;
+    legendHtml += `<button id="clear-subtree-filter" style="margin-left:1em;padding:8px 16px;background:#272822;color:#e6db74;border:1.5px solid #e6db74;border-radius:5px;cursor:pointer;font-size:1em;font-weight:bold;transition:all 0.2s;display:none;" onmouseover="this.style.background='#e6db74'; this.style.color='#272822'" onmouseout="this.style.background='#272822'; this.style.color='#e6db74'">Clear Subtree Filter</button>`;
     legendHtml += `</div>`;
     const legendDiv = document.createElement('div');
     legendDiv.id = 'legend';
@@ -133,11 +134,16 @@ function setupUI() {
     // Always use full height for graph
     mainContent.style.height = '100vh';
 
-    // Simplified event handlers without filtering logic
+    // Simplified event handlers with efficient filtering logic
     document.querySelectorAll('.prof-filter').forEach(cb => cb.addEventListener('change', function() {
         console.log('Profession filter changed:', this.value, this.checked);
-        // TODO: Add efficient filtering when needed
+        applyProfessionFilters();
     }));
+    
+    // Clear subtree filter button handler
+    document.getElementById('clear-subtree-filter').addEventListener('click', function() {
+        clearSubtreeFilter();
+    });
     
     document.getElementById('item-search').addEventListener('input', function() {
         const val = this.value.trim().toLowerCase();
@@ -454,8 +460,21 @@ function buildGraph() {
   window.network = new vis.Network(container, data, options);
   const network = window.network;
 
+  // Initialize filters after network is created
+  network.on('stabilizationIterationsDone', function() {
+    initializeFilters();
+  });
+
   // Track previously selected nodes for efficient updates
   let previouslySelected = [];
+
+  // Add double-click handler for subtree filtering
+  network.on("doubleClick", function(params) {
+    if (params.nodes.length > 0) {
+      const nodeId = params.nodes[0];
+      applySubtreeFilter(nodeId);
+    }
+  });
 
   network.on("selectNode", function(params) {
     // Reset previously selected nodes to normal font size
@@ -479,6 +498,15 @@ function buildGraph() {
     previouslySelected = [];
     document.getElementById("item-details").classList.remove("active");
   });
+
+  // Initialize filters after graph is built
+  initializeFilters();
+}
+
+// Initialize filters after graph is built
+function initializeFilters() {
+  // Apply initial filter state (all checked by default)
+  applyProfessionFilters();
 }
 
 // --- Craft queue and resource calculation for new data structure ---
@@ -1035,6 +1063,222 @@ function showItemDetails(id) {
       </div>
     `;
     detailsDiv.classList.add("active");
+  }
+}
+
+// Efficient profession filtering using Zustand store and fast operations
+function applyProfessionFilters() {
+  // Get checked profession filters
+  const checkedProfessions = new Set();
+  document.querySelectorAll('.prof-filter:checked').forEach(cb => {
+    checkedProfessions.add(cb.value);
+  });
+  
+  // Get graph data from store
+  const graphData = store.getState().graphData;
+  if (!graphData || !graphData.nodes || !graphData.edges) {
+    console.warn('Graph data not available for filtering');
+    return;
+  }
+  
+  const { nodes, edges } = graphData;
+  const requirements = store.getState().requirements;
+  const professions = store.getState().professions;
+  const crafts = store.getState().crafts;
+  
+  // Fast lookup: node ID to profession name
+  const nodeToProfession = {};
+  
+  // Process items: get profession from first craft that outputs this item
+  Object.values(store.getState().items).forEach(item => {
+    const craftsForItem = Object.values(crafts).filter(craft => 
+      (craft.outputs || []).some(out => out.item === item.id)
+    );
+    
+    if (craftsForItem.length > 0) {
+      const craft = craftsForItem[0];
+      if (craft.requirement) {
+        const req = Object.values(requirements).find(r => r.id === craft.requirement);
+        if (req && req.profession && req.profession.name) {
+          const profObj = Object.values(professions).find(p => p.id === req.profession.name);
+          if (profObj) {
+            nodeToProfession[item.id] = profObj.name;
+          }
+        }
+      }
+    }
+  });
+  
+  // Process crafts: get profession directly
+  Object.values(crafts).forEach(craft => {
+    if (craft.requirement) {
+      const req = Object.values(requirements).find(r => r.id === craft.requirement);
+      if (req && req.profession && req.profession.name) {
+        const profObj = Object.values(professions).find(p => p.id === req.profession.name);
+        if (profObj) {
+          nodeToProfession[craft.id] = profObj.name;
+        }
+      }
+    }
+  });
+  
+  // Batch update nodes visibility
+  const nodeUpdates = [];
+  const hiddenNodes = new Set();
+  
+  nodes.forEach(node => {
+    const profession = nodeToProfession[node.id];
+    let shouldShow = !profession || checkedProfessions.has(profession);
+    
+    // If subtree filter is active, also check if node is in visible subtree
+    if (subtreeFilterActive) {
+      shouldShow = shouldShow && subtreeVisibleNodes.has(node.id);
+    }
+    
+    if (!shouldShow) {
+      hiddenNodes.add(node.id);
+    }
+    
+    nodeUpdates.push({
+      id: node.id,
+      hidden: !shouldShow
+    });
+  });
+  
+  // Batch update edges visibility (hide edges connected to hidden nodes)
+  const edgeUpdates = [];
+  edges.forEach(edge => {
+    const shouldHide = hiddenNodes.has(edge.from) || hiddenNodes.has(edge.to);
+    edgeUpdates.push({
+      id: edge.id,
+      hidden: shouldHide
+    });
+  });
+  
+  // Apply batch updates for performance
+  nodes.update(nodeUpdates);
+  edges.update(edgeUpdates);
+  
+  const filterType = subtreeFilterActive ? 'subtree + profession' : 'profession';
+  console.log(`${filterType} filtered: ${hiddenNodes.size} nodes hidden, ${nodeUpdates.length - hiddenNodes.size} nodes visible`);
+}
+
+// Subtree filtering functionality
+let subtreeFilterActive = false;
+let subtreeVisibleNodes = new Set();
+
+function applySubtreeFilter(rootNodeId) {
+  // Get graph data from store
+  const graphData = store.getState().graphData;
+  if (!graphData || !graphData.nodes || !graphData.edges) {
+    console.warn('Graph data not available for subtree filtering');
+    return;
+  }
+  
+  const { nodes, edges } = graphData;
+  
+  // Find all nodes that lead INTO the selected node (dependencies only)
+  const visibleNodes = new Set();
+  const toVisit = [rootNodeId];
+  
+  // Add the root node
+  visibleNodes.add(rootNodeId);
+  
+  // Traverse backwards through the dependency chain (only follow input edges)
+  while (toVisit.length > 0) {
+    const currentNode = toVisit.pop();
+    
+    // Find all edges where current node is the target (inputs to current node)
+    edges.forEach(edge => {
+      // Only follow edges that lead INTO the current node (dependencies)
+      if (edge.to === currentNode && !visibleNodes.has(edge.from)) {
+        visibleNodes.add(edge.from);
+        toVisit.push(edge.from);
+      }
+    });
+  }
+  
+  // Store the visible nodes for clearing later
+  subtreeVisibleNodes = visibleNodes;
+  subtreeFilterActive = true;
+  
+  // Update node visibility
+  const nodeUpdates = [];
+  nodes.forEach(node => {
+    const shouldShow = visibleNodes.has(node.id);
+    nodeUpdates.push({
+      id: node.id,
+      hidden: !shouldShow
+    });
+  });
+  
+  // Update edge visibility
+  const edgeUpdates = [];
+  edges.forEach(edge => {
+    const shouldShow = visibleNodes.has(edge.from) && visibleNodes.has(edge.to);
+    edgeUpdates.push({
+      id: edge.id,
+      hidden: !shouldShow
+    });
+  });
+  
+  // Apply batch updates
+  nodes.update(nodeUpdates);
+  edges.update(edgeUpdates);
+  
+  // Show the clear filter button
+  const clearButton = document.getElementById('clear-subtree-filter');
+  if (clearButton) {
+    clearButton.style.display = 'inline-block';
+  }
+  
+  // Get the root node name for user feedback
+  const rootNodeData = nodes.get(rootNodeId);
+  const rootNodeName = rootNodeData ? rootNodeData.label : 'Unknown';
+  
+  console.log(`Dependency subtree filter applied for "${rootNodeName}": ${visibleNodes.size} nodes visible (showing inputs only)`);
+  
+  // Focus on the filtered subtree
+  if (window.network) {
+    window.network.fit({
+      nodes: Array.from(visibleNodes),
+      animation: { duration: 800, easingFunction: 'easeInOutQuad' }
+    });
+  }
+}
+
+function clearSubtreeFilter() {
+  if (!subtreeFilterActive) return;
+  
+  // Get graph data from store
+  const graphData = store.getState().graphData;
+  if (!graphData || !graphData.nodes || !graphData.edges) {
+    console.warn('Graph data not available for clearing subtree filter');
+    return;
+  }
+  
+  const { nodes, edges } = graphData;
+  
+  // Reset subtree filter state
+  subtreeFilterActive = false;
+  subtreeVisibleNodes.clear();
+  
+  // Hide the clear filter button
+  const clearButton = document.getElementById('clear-subtree-filter');
+  if (clearButton) {
+    clearButton.style.display = 'none';
+  }
+  
+  // Reapply profession filters (which will show all nodes not filtered by profession)
+  applyProfessionFilters();
+  
+  console.log('Dependency subtree filter cleared - returning to profession filter view');
+  
+  // Fit the network to show all visible nodes
+  if (window.network) {
+    window.network.fit({
+      animation: { duration: 800, easingFunction: 'easeInOutQuad' }
+    });
   }
 }
 
