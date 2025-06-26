@@ -49,14 +49,14 @@ Each object in the data store (item, craft, tool, etc.) uses a globally unique s
 
 ### ✅ Examples
 
-| Entity Type   | Category      | Identifier         | Full ID                        |
-|---------------|---------------|--------------------|--------------------------------|
-| `item`        | `wood`        | `rough-log`        | `item:wood:rough-log`          |
-| `craft`       | `tailoring`   | `rough-spool`      | `craft:tailoring:rough-spool`  |
-| `requirement` | `tailoring`   | `basic-tools`      | `requirement:tailoring:basic-tools` |
-| `profession`  | `tailoring`   | —                  | `profession:tailoring`         |
-| `tool`        | `metal`       | `scissors`         | `tool:metal:scissors`          |
-| `building`    | `tailoring`   | `loom`             | `building:tailoring:loom`      |
+| Entity Type   | Category      | Identifier         | Full ID                            |
+|---------------|---------------|--------------------|------------------------------------|
+| `item`        | `wood`        | `rough-log`        | `item:wood:rough-log`              |
+| `craft`       | `tailoring`   | `rough-spool`      | `craft:tailoring:rough-spool`      |
+| `requirement` | `tailoring`   | `basic-tools`      | `requirement:tailoring:basic-tools`|
+| `profession`  | `tailoring`   | —                  | `profession:tailoring`             |
+| `tool`        | `scissors`    | —                  | `tool:scissors`                    |
+| `building`    | `tailoring`   | `loom`             | `building:tailoring:loom`          |
 
 ---
 
@@ -89,37 +89,11 @@ Each object in the data store (item, craft, tool, etc.) uses a globally unique s
 
 ### Reserved Prefixes
 
-| Prefix       | Description            |
-|--------------|------------------------|
-| `item:`      | Items in the game world |
-| `craft:`     | Crafting recipes        |
-| `requirement:`| Crafting requirements  |
-| `tool:`      | Required tools          |
-| `building:`  | Required buildings      |
-| `profession:`| Skill professions       |
-
----
-
-##  Validation Rules
-
-- IDs must match: `^[a-z]+:[a-z0-9-]+:[a-z0-9-]+$`
-- All `item` references in `crafts.materials[].item` and `crafts.outputs[].item` must exist.
-- All `requirement` references must resolve to a valid requirement entry.
-
----
-
-## 🔍 Example
-
-```jsonc
-{
-  "id": "craft:tailoring:rough-spool",
-  "name": "Craft Rough Spool of Thread",
-  "materials": [
-    { "item": "item:plant:rough-fiber", "qty": 40 }
-  ],
-  "outputs": [
-    { "item": "item:thread:rough-spool", "qty": 1 }
-  ],
-  "requirement": "requirement:tailoring:basic-tools"
-}
-```
+| Prefix        | Description             |
+|---------------|-------------------------|
+| `item:`       | Items in the game world |
+| `craft:`      | Crafting recipes        |
+| `requirement:`| Crafting requirements   |
+| `tool:`       | Required tools          |
+| `building:`   | Required buildings      |
+| `profession:` | Skill professions       |

@@ -18,16 +18,21 @@ This document outlines the general coding standards and best practices for the B
 - **No Global Pollution:** Minimize global variables. Use closures, modules, or IIFEs where appropriate.
 - **DOM Manipulation:** Use vanilla JS for DOM manipulation. Avoid jQuery or other libraries unless necessary.
 - **Event Listeners:** Attach event listeners after DOM elements are created. Remove listeners if elements are removed.
-- **Data Loading:** Always load and parse data asynchronously. Handle errors gracefully.
-- **UI Updates:** Update the UI only after data is loaded and validated.
+- **Data Loading:** Always load and parse data asynchronously from multiple JSON files. Handle errors gracefully.
+- **UI Updates:** Update the UI only after all data files are loaded and validated.
 - **Separation of Concerns:** Keep data logic, UI rendering, and event handling as separate as possible.
-- **Zustand Store:** All stateful logic (including queue, selection, filtering, and graph data) must use the Zustand store. Do not use module-level variables for state that should persist or be shared.
+- **Zustand Store:** All stateful logic (including queue, selection, filtering, and graph data) must use the Zustand store. Use `loadAllData()` method for loading normalized data files.
 
 ## 3. Data Model
-- **Flat Structure:** Use a flat `items` and `crafts` array structure (see `bitcraft_flat.json`).
-- **Unique IDs:** Assign unique numeric IDs to items and unique string IDs (e.g., `craft-1`) to crafts.
-- **Validation:** Ensure all items referenced in crafts exist in the items list.
-- **Base Items:** Use the `BASE_CRAFT_ITEMS` set for items that should be treated as base resources.
+- **Normalized Structure:** Use separate JSON files for different entity types in the `data/` directory.
+- **Entity ID Format:** All entities use standardized IDs: `entity-type:category:identifier` (e.g., `item:grain:embergrain`, `craft:cooking:berry-pie`).
+- **Data Files:**
+  - `data/items.json` - All items with unique string IDs
+  - `data/crafts.json` - All crafting recipes with material/output references
+  - `data/requirements.json` - Profession, tool, and building requirements
+  - `data/metadata/` - Additional metadata (professions, tools, buildings)
+- **Validation:** Ensure all item and requirement references in crafts exist in their respective files.
+- **Base Items:** Use the `BASE_CRAFT_ITEMS` set with proper item IDs for items that should be treated as base resources.
 
 ## 4. UI/UX
 - **Monokai Theme:** All UI elements should use the Monokai-inspired color palette defined in the project.
