@@ -1,24 +1,19 @@
-// Load data from bitcraft_flat.json
-let items = [];
-let crafts = [];
-// Make nodeList, nodes, and edges accessible globally
-let nodeList = [];
-let nodes, edges;
+import useBitCraftyStore from './state.js';
 
+// Helper to access store outside React (for vanilla JS)
+const store = useBitCraftyStore;
+
+// Load data from bitcraft_flat.json
 fetch('bitcraft_flat.json')
   .then(response => response.json())
   .then(data => {
-    items = data.items.map((item, idx) => ({
-      ...item,
-      id: idx + 1 // assign numeric id for vis.js
-    }));
-    crafts = data.crafts.map((craft, idx) => ({
-      ...craft,
-      id: 'craft-' + (idx + 1) // unique string id for craft nodes
-    }));
+    const items = data.items.map((item, idx) => ({ ...item, id: idx + 1 }));
+    const crafts = data.crafts.map((craft, idx) => ({ ...craft, id: 'craft-' + (idx + 1) }));
+    store.getState().setItems(items);
+    store.getState().setCrafts(crafts);
     buildGraph();
 
-    // --- Move sidebar/legend creation here so crafts is populated ---
+    // --- Sidebar, legend, and main content setup ---
     // Create sidebar and main content containers
     const sidebar = document.createElement('div');
     sidebar.id = 'sidebar';
@@ -36,9 +31,10 @@ fetch('bitcraft_flat.json')
     sidebar.style.overflowY = 'auto';
     sidebar.style.zIndex = '10';
 
-    // Build dynamic profession list from crafts
+    // Build dynamic profession list from crafts (now from store)
+    const craftsArr = store.getState().crafts;
     const professionSet = new Set();
-    crafts.forEach(craft => {
+    craftsArr.forEach(craft => {
       if (craft.Requirements && craft.Requirements.Profession) {
         const match = /([A-Za-z ]+)-\d+/.exec(craft.Requirements.Profession);
         if (match) professionSet.add(match[1]);
@@ -46,23 +42,8 @@ fetch('bitcraft_flat.json')
       }
     });
     const professions = Array.from(professionSet).sort();
-    // Monokai-inspired palette, 15 distinct non-red colors for up to 10 professions
     const profColors = [
-      "#a6e22e", // green
-      "#66d9ef", // cyan
-      "#fd971f", // orange
-      "#e6db74", // yellow
-      "#ae81ff", // purple
-      "#75715e", // brown/gray
-      "#f8f8f2", // white
-      "#39dca0", // teal
-      "#ffd866", // light yellow
-      "#fc9867", // peach
-      "#ab9df2", // lavender
-      "#78dce8", // light blue
-      "#ffcc66", // gold
-      "#c678dd", // violet
-      "#d19a66"  // tan
+      "#a6e22e", "#66d9ef", "#fd971f", "#e6db74", "#ae81ff", "#75715e", "#f8f8f2", "#39dca0", "#ffd866", "#fc9867", "#ab9df2", "#78dce8", "#ffcc66", "#c678dd", "#d19a66"
     ];
     const profColorMap = {};
     professions.forEach((prof, i) => { profColorMap[prof] = profColors[i % profColors.length]; });
@@ -125,15 +106,16 @@ fetch('bitcraft_flat.json')
 
     // Filtering logic with fading
     function applyFilters() {
+      const { nodes, edges } = store.getState().graphData;
       if (!nodes || !edges) return;
       const checkedProfs = Array.from(document.querySelectorAll('.prof-filter:checked')).map(cb => cb.value);
       const search = document.getElementById('item-search').value.trim().toLowerCase();
       // Determine which nodes are filtered in
-      const filteredIds = new Set(nodeList.filter(n => {
+      const filteredIds = new Set(nodes.get().filter(n => {
         // For item nodes, show if any craft uses a checked profession to make it
         if (typeof n.id === 'number') {
           // Find crafts that output this item
-          const craftsForItem = crafts.filter(craft => (craft.Outputs || []).some(out => getItemIdByName(out.item) === n.id));
+          const craftsForItem = craftsArr.filter(craft => (craft.Outputs || []).some(out => store.getState().items.find(i => i.Name === out.item)?.id === n.id));
           // If no crafts produce this item, it is a base material: always show
           if (craftsForItem.length === 0) {
             return !search || n.label.toLowerCase().includes(search);
@@ -148,7 +130,7 @@ fetch('bitcraft_flat.json')
           }) && (!search || n.label.toLowerCase().includes(search));
         } else if (typeof n.id === 'string' && n.id.startsWith('craft-')) {
           // For craft nodes, show if its profession is checked
-          const craft = crafts.find(c => c.id === n.id);
+          const craft = craftsArr.find(c => c.id === n.id);
           if (!craft || !craft.Requirements || !craft.Requirements.Profession) return false;
           const match = /([A-Za-z ]+)-\d+/.exec(craft.Requirements.Profession);
           const prof = match ? match[1] : craft.Requirements.Profession;
@@ -190,13 +172,13 @@ fetch('bitcraft_flat.json')
         applyFilters();
         return;
       }
-      const matches = items.filter(i => i.name && i.name.toLowerCase().includes(val));
+      const matches = store.getState().items.filter(i => i.Name && i.Name.toLowerCase().includes(val));
       if (matches.length === 0) {
         searchDropdown.style.display = 'none';
         applyFilters();
         return;
       }
-      searchDropdown.innerHTML = matches.map(i => `<div class=\"search-result\" data-id=\"${i.id}\" style=\"padding:4px 10px;cursor:pointer;\">${i.name}</div>`).join('');
+      searchDropdown.innerHTML = matches.map(i => `<div class=\"search-result\" data-id=\"${i.id}\" style=\"padding:4px 10px;cursor:pointer;\">${i.Name}</div>`).join('');
       const rect = searchInput.getBoundingClientRect();
       searchDropdown.style.left = rect.left + 'px';
       searchDropdown.style.top = (rect.bottom + window.scrollY) + 'px';
@@ -212,11 +194,11 @@ fetch('bitcraft_flat.json')
     searchDropdown.addEventListener('mousedown', function(e) {
       if (e.target.classList.contains('search-result')) {
         const id = Number(e.target.getAttribute('data-id'));
-        searchInput.value = items.find(i => i.id === id).name;
+        searchInput.value = store.getState().items.find(i => i.id === id).Name;
         searchDropdown.style.display = 'none';
         // Focus/select the node in the network
-        network.selectNodes([id]);
-        network.focus(id, { scale: 1.2, animation: true });
+        window.network.selectNodes([id]);
+        window.network.focus(id, { scale: 1.2, animation: true });
         showItemDetails(id);
         applyFilters();
       }
@@ -229,6 +211,8 @@ fetch('bitcraft_flat.json')
   });
 
 function buildGraph() {
+  const items = store.getState().items;
+  const crafts = store.getState().crafts;
   // Helper: name to item id
   const itemByName = Object.fromEntries(items.map(i => [i.Name, i.id]));
 
@@ -242,29 +226,14 @@ function buildGraph() {
     }
   });
   const professions = Array.from(professionSet).sort();
-  // Monokai-inspired palette, 15 distinct non-red colors for up to 10 professions
   const profColors = [
-    "#a6e22e", // green
-    "#66d9ef", // cyan
-    "#fd971f", // orange
-    "#e6db74", // yellow
-    "#ae81ff", // purple
-    "#75715e", // brown/gray
-    "#f8f8f2", // white
-    "#39dca0", // teal
-    "#ffd866", // light yellow
-    "#fc9867", // peach
-    "#ab9df2", // lavender
-    "#78dce8", // light blue
-    "#ffcc66", // gold
-    "#c678dd", // violet
-    "#d19a66"  // tan
+    "#a6e22e", "#66d9ef", "#fd971f", "#e6db74", "#ae81ff", "#75715e", "#f8f8f2", "#39dca0", "#ffd866", "#fc9867", "#ab9df2", "#78dce8", "#ffcc66", "#c678dd", "#d19a66"
   ];
   const profColorMap = {};
   professions.forEach((prof, i) => { profColorMap[prof] = profColors[i % profColors.length]; });
 
   // Item nodes: fill with profession color, dark text for readability
-  nodeList = items.map(item => {
+  const nodeList = items.map(item => {
     const craftsForItem = crafts.filter(craft => (craft.Outputs || []).some(out => out.item === item.Name));
     let prof = null;
     if (craftsForItem.length > 0) {
@@ -282,14 +251,8 @@ function buildGraph() {
       color: {
         background: color,
         border: color,
-        highlight: {
-          background: color,
-          border: color
-        },
-        hover: {
-          background: color,
-          border: color
-        }
+        highlight: { background: color, border: color },
+        hover: { background: color, border: color }
       },
       font: {
         color: '#23241f',
@@ -318,14 +281,8 @@ function buildGraph() {
       color: {
         background: color,
         border: color,
-        highlight: {
-          background: color,
-          border: color
-        },
-        hover: {
-          background: color,
-          border: color
-        }
+        highlight: { background: color, border: color },
+        hover: { background: color, border: color }
       },
       font: {
         color: '#23241f',
@@ -342,7 +299,6 @@ function buildGraph() {
   // Edges: item -> craft (inputs), craft -> item (outputs)
   const edgeList = [];
   crafts.forEach(craft => {
-    // Input edges
     (craft.Materials || []).forEach(mat => {
       if (itemByName[mat.item]) {
         edgeList.push({
@@ -350,11 +306,10 @@ function buildGraph() {
           to: craft.id,
           label: `${mat.qty}`,
           arrows: "to",
-          color: { color: "#66d9ef" } // cyan for input
+          color: { color: "#66d9ef" }
         });
       }
     });
-    // Output edges
     (craft.Outputs || []).forEach(out => {
       if (itemByName[out.item]) {
         edgeList.push({
@@ -362,13 +317,15 @@ function buildGraph() {
           to: itemByName[out.item],
           label: `${out.qty}`,
           arrows: "to",
-          color: { color: "#f92672" } // pink for output
+          color: { color: "#f92672" }
         });
       }
     });
   });
-  nodes = new vis.DataSet(nodeList);
-  edges = new vis.DataSet(edgeList);
+  const nodes = new vis.DataSet(nodeList);
+  const edges = new vis.DataSet(edgeList);
+  // Store nodes/edges in Zustand for access elsewhere
+  store.getState().setGraphData({ nodes, edges });
   const container = document.getElementById("network");
   const data = { nodes, edges };
   const options = {
@@ -376,41 +333,26 @@ function buildGraph() {
       hierarchical: {
         direction: "UD",
         sortMethod: "directed",
-        levelSeparation: 220, // default 150, increase for more vertical space
-        nodeSpacing: 180,     // default 100, increase for more horizontal space
-        treeSpacing: 320      // default 200, increase for more space between trees
+        levelSeparation: 220,
+        nodeSpacing: 180,
+        treeSpacing: 320
       }
     },
     edges: {
       smooth: true,
-      font: {
-        color: '#e6db74',
-        strokeWidth: 0,
-        size: 15
-      }
+      font: { color: '#e6db74', strokeWidth: 0, size: 15 }
     },
     nodes: {
-      font: {
-        size: 18,
-        face: 'monospace',
-        bold: 'bold',
-        color: '#23241f',
-        strokeWidth: 0
-      },
+      font: { size: 18, face: 'monospace', bold: 'bold', color: '#23241f', strokeWidth: 0 },
       borderWidthSelected: 3
     },
-    interaction: {
-      multiselect: true,
-      selectConnectedEdges: false
-    },
+    interaction: { multiselect: true, selectConnectedEdges: false },
     physics: false,
     manipulation: false
   };
-  // Make network globally accessible
   window.network = new vis.Network(container, data, options);
   const network = window.network;
 
-  // Custom selection styling: only bold/enlarge, don't fill
   network.on("selectNode", function(params) {
     nodes.forEach(function(node) {
       if (params.nodes.includes(node.id)) {
@@ -435,17 +377,20 @@ let selectedCrafts = {};
 
 // Helper: name to item id
 function getItemIdByName(name) {
+  const items = store.getState().items;
   const item = items.find(i => i.Name === name);
   return item ? item.id : null;
 }
 
 // Helper: item id to item
 function getItemById(id) {
+  const items = store.getState().items;
   return items.find(i => i.id === id);
 }
 
 // Helper: get all crafts that output a given item id
 function getCraftsByOutputId(itemId) {
+  const crafts = store.getState().crafts;
   const itemName = getItemById(itemId)?.Name;
   if (!itemName) return [];
   return crafts.filter(craft => (craft.Outputs || []).some(out => out.item === itemName));
@@ -475,14 +420,24 @@ function getOutputQty(craft, itemName) {
 }
 
 // Recursively trace the path to obtain an item (choose first craft by default, or selected)
-function tracePath(itemId, qty = 1, depth = 0, surplus = {}) {
+function tracePath(itemId, qty = 1, depth = 0, surplus = {}, visited = new Set()) {
   const item = getItemById(itemId);
+  if (!item) return [];
+  // Prevent infinite recursion by tracking visited itemIds
+  const visitKey = `${itemId}`;
+  if (visited.has(visitKey)) {
+    // Circular dependency detected, stop recursion
+    return [{ depth, id: itemId, name: item.Name, qty, circular: true }];
+  }
+  visited.add(visitKey);
   // If this is a flagged base crafting item, treat as base
   if (BASE_CRAFT_ITEMS.has(item.Name)) {
+    visited.delete(visitKey);
     return [{ depth, id: itemId, name: item.Name, qty }];
   }
   const craftsForItem = getCraftsByOutputId(itemId);
   if (craftsForItem.length === 0) {
+    visited.delete(visitKey);
     // Base resource
     return [{ depth, id: itemId, name: item.Name, qty }];
   }
@@ -495,6 +450,7 @@ function tracePath(itemId, qty = 1, depth = 0, surplus = {}) {
   let available = surplus[itemId] || 0;
   if (available >= needed) {
     surplus[itemId] -= needed;
+    visited.delete(visitKey);
     return [];
   } else if (available > 0) {
     needed -= available;
@@ -504,6 +460,7 @@ function tracePath(itemId, qty = 1, depth = 0, surplus = {}) {
   const outputQty = getOutputQty(craft, item.Name);
   // If outputQty is 0, treat as base resource
   if (outputQty === 0) {
+    visited.delete(visitKey);
     return [{ depth, id: itemId, name: item.Name, qty: needed }];
   }
   const craftsNeeded = Math.ceil(needed / outputQty);
@@ -515,9 +472,10 @@ function tracePath(itemId, qty = 1, depth = 0, surplus = {}) {
     const inputId = getItemIdByName(input.item);
     if (inputId) {
       const inputQty = craftsNeeded * input.qty;
-      paths = paths.concat(tracePath(inputId, inputQty, depth + 1, newSurplus));
+      paths = paths.concat(tracePath(inputId, inputQty, depth + 1, newSurplus, visited));
     }
   });
+  visited.delete(visitKey);
   return paths;
 }
 
@@ -750,15 +708,24 @@ function calculateResources(queue) {
   });
 
   // Helper for recursion
-  function processInput(itemId, qty) {
+  function processInput(itemId, qty, visited = new Set()) {
+    // Prevent infinite recursion by tracking visited itemIds
+    const visitKey = `${itemId}`;
+    if (visited.has(visitKey)) {
+      // Circular dependency detected, stop recursion
+      return;
+    }
+    visited.add(visitKey);
     const item = getItemById(itemId);
     if (BASE_CRAFT_ITEMS.has(item.Name)) {
       resourceCount[itemId] = (resourceCount[itemId] || 0) + qty;
+      visited.delete(visitKey);
       return;
     }
     const craftsForItem = getCraftsByOutputId(itemId);
     if (craftsForItem.length === 0) {
       resourceCount[itemId] = (resourceCount[itemId] || 0) + qty;
+      visited.delete(visitKey);
       return;
     }
     let craftIdx = selectedCrafts[itemId] || 0;
@@ -769,6 +736,7 @@ function calculateResources(queue) {
     let needed = qty;
     if (avail >= needed) {
       surplus[itemId] -= needed;
+      visited.delete(visitKey);
       return;
     } else if (avail > 0) {
       needed -= avail;
@@ -777,6 +745,7 @@ function calculateResources(queue) {
     const outQty = getOutputQty(craft, getItemById(itemId).Name);
     if (outQty === 0) {
       resourceCount[itemId] = (resourceCount[itemId] || 0) + needed;
+      visited.delete(visitKey);
       return;
     }
     const craftsNeeded = Math.ceil(needed / outQty);
@@ -789,9 +758,10 @@ function calculateResources(queue) {
       const inputId = getItemIdByName(input.item);
       if (inputId) {
         const inputQty = craftsNeeded * input.qty;
-        processInput(inputId, inputQty);
+        processInput(inputId, inputQty, visited);
       }
     });
+    visited.delete(visitKey);
   }
 
   return resourceCount;
@@ -803,6 +773,7 @@ function showItemDetails(id) {
   const detailsDiv = document.getElementById("item-details");
   if (typeof id === 'number') {
     const item = getItemById(id);
+    const crafts = store.getState().crafts;
     if (item) {
       // Count how many recipes (crafts) this item is used in as an input
       const usedInCount = crafts.filter(craft => (craft.Materials || []).some(mat => mat.item === item.Name)).length;
@@ -854,6 +825,7 @@ function showItemDetails(id) {
     }
   } else if (typeof id === 'string' && id.startsWith('craft-')) {
     // Craft node
+    const crafts = store.getState().crafts;
     const craft = crafts.find(c => c.id === id);
     if (craft) {
       // Parse requirements and extract level
