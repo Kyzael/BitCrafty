@@ -315,24 +315,42 @@ function buildGraph() {
     (craft.materials || []).forEach(mat => {
       // mat.item is now an item ID directly
       if (items.find(item => item.id === mat.item)) {
+        // Calculate line width based on quantity (min 1, max 8)
+        const lineWidth = Math.min(Math.max(Math.log2(mat.qty + 1) + 1, 1), 8);
         edgeList.push({
           from: mat.item,
           to: craft.id,
           label: `${mat.qty}`,
           arrows: "to",
-          color: { color: "#66d9ef" }
+          color: { color: "#66d9ef", highlight: "#87ceeb", hover: "#87ceeb" },
+          width: lineWidth,
+          font: { color: '#66d9ef', size: 16, strokeWidth: 2, strokeColor: '#272822' }
         });
       }
     });
     (craft.outputs || []).forEach(out => {
       // out.item is now an item ID directly
       if (items.find(item => item.id === out.item)) {
+        // Parse quantity for output (handle ranges like "1-3" or "5-10")
+        let qty = 1;
+        if (typeof out.qty === 'number') {
+          qty = out.qty;
+        } else if (typeof out.qty === 'string') {
+          const match = out.qty.match(/^(\d+)(-(\d+))?$/);
+          if (match) {
+            qty = parseInt(match[1], 10); // Use the minimum value for line thickness
+          }
+        }
+        // Calculate line width based on quantity (min 1, max 8)
+        const lineWidth = Math.min(Math.max(Math.log2(qty + 1) + 1, 1), 8);
         edgeList.push({
           from: craft.id,
           to: out.item,
           label: `${out.qty}`,
           arrows: "to",
-          color: { color: "#f92672" }
+          color: { color: "#f92672", highlight: "#ff69b4", hover: "#ff69b4" },
+          width: lineWidth,
+          font: { color: '#f92672', size: 16, strokeWidth: 2, strokeColor: '#272822' }
         });
       }
     });
@@ -366,11 +384,28 @@ function buildGraph() {
         type: 'curvedCW',
         roundness: 0.2
       },
-      font: { color: '#e6db74', strokeWidth: 0, size: 12 },
+      font: { 
+        color: '#e6db74', 
+        strokeWidth: 2, 
+        strokeColor: '#272822',
+        size: 16,
+        align: 'middle'
+      },
       width: 2,
-      selectionWidth: 3,
+      selectionWidth: function(width) { return width * 1.5; },
       arrows: {
-        to: { enabled: true, scaleFactor: 1.2 }
+        to: { 
+          enabled: true, 
+          scaleFactor: 1.2,
+          type: 'arrow'
+        }
+      },
+      shadow: {
+        enabled: true,
+        color: 'rgba(0,0,0,0.3)',
+        size: 5,
+        x: 2,
+        y: 2
       }
     },
     nodes: {
