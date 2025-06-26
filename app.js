@@ -800,20 +800,89 @@ function calculateResources(queue) {
 
 // Add a "Queue Craft" button to item details
 function showItemDetails(id) {
-  // Check if this is an item node (number id) or a craft node (string id like 'craft-1')
+  // Check if this is an item node (string id) or a craft node (string id like 'craft-...')
   const detailsDiv = document.getElementById("item-details");
-  if (typeof id === 'number') {
+  
+  // Check if it's a craft node
+  if (typeof id === 'string' && id.startsWith('craft-')) {
+    // Craft node
+    const craftsObj = store.getState().crafts;
+    const craft = Object.values(craftsObj).find(c => c.id === id);
+    if (craft) {
+      // Get requirement details
+      const requirements = store.getState().requirements;
+      const professions = store.getState().professions;
+      const tools = store.getState().tools;
+      const buildings = store.getState().buildings;
+      
+      let professionInfo = 'Unknown';
+      let toolInfo = 'Unknown';
+      let buildingInfo = 'Unknown';
+      
+      if (craft.requirement) {
+        const req = Object.values(requirements).find(r => r.id === craft.requirement);
+        if (req) {
+          // Get profession info
+          if (req.profession && req.profession.name) {
+            const prof = Object.values(professions).find(p => p.id === req.profession.name);
+            if (prof) {
+              professionInfo = `${prof.name} (Level ${req.profession.level})`;
+            }
+          }
+          // Get tool info
+          if (req.tool && req.tool.name) {
+            const tool = Object.values(tools).find(t => t.id === req.tool.name);
+            if (tool) {
+              toolInfo = `${tool.name} (Level ${req.tool.level})`;
+            }
+          }
+          // Get building info
+          if (req.building && req.building.name) {
+            const building = Object.values(buildings).find(b => b.id === req.building.name);
+            if (building) {
+              buildingInfo = `${building.name} (Level ${req.building.level})`;
+            }
+          }
+        }
+      }
+      
+      detailsDiv.innerHTML = `
+        <div style="max-width:600px;margin:20px auto 0 auto;background:#272822;color:#f8f8f2;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.25);padding:20px 28px;min-height:120px;">
+          <h2 style="color:#f92672;margin-top:0;">${craft.name}</h2>
+          <p><strong style="color:#66d9ef;">Profession:</strong> <span style="color:#f8f8f2;">${professionInfo}</span></p>
+          <p><strong style="color:#a6e22e;">Tool:</strong> <span style="color:#f8f8f2;">${toolInfo}</span></p>
+          <p><strong style="color:#fd971f;">Building:</strong> <span style="color:#f8f8f2;">${buildingInfo}</span></p>
+          <div style="margin-top:32px;text-align:right;">
+            <button id="goto-node" style="background:#272822;color:#f92672;border:1.5px solid #f92672;border-radius:3px;padding:6px 16px;cursor:pointer;">Go to Node</button>
+          </div>
+        </div>
+      `;
+      detailsDiv.classList.add("active");
+      document.getElementById("goto-node").onclick = () => {
+        if (typeof window.network !== 'undefined' && window.network && typeof window.network.selectNodes === 'function') {
+          window.network.selectNodes([id]);
+          window.network.focus(id, {
+            scale: 1.2,
+            animation: { duration: 600, easingFunction: 'easeInOutQuad' },
+            locked: true
+          });
+        }
+      };
+    }
+  } else {
+    // Item node
     const item = getItemById(id);
     const craftsObj = store.getState().crafts;
     const crafts = Object.values(craftsObj);
     if (item) {
       // Count how many recipes (crafts) this item is used in as an input
-      const usedInCount = crafts.filter(craft => (craft.Materials || []).some(mat => mat.item === item.Name)).length;
+      const usedInCount = crafts.filter(craft => (craft.materials || []).some(mat => mat.item === item.id)).length;
+      
       detailsDiv.innerHTML = `
         <div style="max-width:600px;margin:20px auto 0 auto;background:#272822;color:#f8f8f2;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.25);padding:20px 28px;min-height:120px;">
-          <h2 style="color:#a6e22e;margin-top:0;">${item.Name}</h2>
-          <p><strong style=\"color:#fd971f;\">Tier:</strong> <span style=\"color:#f8f8f2;\">${item.Tier}</span> <span style=\"margin-left:1em;\"><strong style=\"color:#f92672;\">Rank:</strong> <span style=\"color:#f8f8f2;\">${item.Rank}</span></span></p>
-          <p><strong style=\"color:#e6db74;\">Used in Recipes:</strong> <span style=\"color:#f8f8f2;\">${usedInCount}</span></p>
+          <h2 style="color:#a6e22e;margin-top:0;">${item.name}</h2>
+          <p><strong style="color:#fd971f;">Tier:</strong> <span style="color:#f8f8f2;">${item.tier}</span> <span style="margin-left:1em;"><strong style="color:#f92672;">Rank:</strong> <span style="color:#f8f8f2;">${item.rank}</span></span></p>
+          <p><strong style="color:#e6db74;">Used in Recipes:</strong> <span style="color:#f8f8f2;">${usedInCount}</span></p>
           <div style="margin-top:18px;">
             <button id="queue-craft" style="background:#a6e22e;color:#272822;border:none;border-radius:3px;padding:6px 16px;cursor:pointer;margin-right:8px;">Queue 1</button>
             <button id="queue-craft-5" style="background:#66d9ef;color:#272822;border:none;border-radius:3px;padding:6px 16px;cursor:pointer;margin-right:8px;">Queue 5</button>
@@ -838,59 +907,9 @@ function showItemDetails(id) {
         updateCraftQueueUI();
       };
       document.getElementById("goto-node").onclick = () => {
-        let nodeId = id;
-        // Ensure correct type: number for items, string for crafts
-        if (typeof id === 'string' && id.startsWith('craft-')) {
-          nodeId = id;
-        } else {
-          nodeId = Number(id);
-        }
         if (typeof window.network !== 'undefined' && window.network && typeof window.network.selectNodes === 'function') {
-          window.network.selectNodes([nodeId]);
-          window.network.focus(nodeId, {
-            scale: 1.2,
-            animation: { duration: 600, easingFunction: 'easeInOutQuad' },
-            locked: true
-          });
-        }
-      };
-    }
-  } else if (typeof id === 'string' && id.startsWith('craft-')) {
-    // Craft node
-    const craftsObj = store.getState().crafts;
-    const craft = Object.values(craftsObj).find(c => c.id === id);
-    if (craft) {
-      // Parse requirements and extract level
-      const req = craft.Requirements || {};
-      function parseLevel(val) {
-        if (!val) return '';
-        const match = /(.+)-(\d+)/.exec(val);
-        if (match) return `${match[1]} (Level ${match[2]})`;
-        return val;
-      }
-      detailsDiv.innerHTML = `
-        <div style="max-width:600px;margin:20px auto 0 auto;background:#272822;color:#f8f8f2;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.25);padding:20px 28px;min-height:120px;">
-          <h2 style="color:#f92672;margin-top:0;">${craft.Name}</h2>
-          <p><strong style=\"color:#66d9ef;\">Profession:</strong> <span style=\"color:#f8f8f2;\">${parseLevel(req.Profession)}</span></p>
-          <p><strong style=\"color:#a6e22e;\">Tool:</strong> <span style="color:#f8f8f2;">${parseLevel(req.Tool)}</span></p>
-          <p><strong style=\"color:#fd971f;\">Building:</strong> <span style="color:#f8f8f2;">${parseLevel(req.Building)}</span></p>
-          <div style="margin-top:32px;text-align:right;">
-            <button id="goto-node" style="background:#272822;color:#f92672;border:1.5px solid #f92672;border-radius:3px;padding:6px 16px;cursor:pointer;">Go to Node</button>
-          </div>
-        </div>
-      `;
-      detailsDiv.classList.add("active");
-      document.getElementById("goto-node").onclick = () => {
-        let nodeId = id;
-        // Ensure correct type: number for items, string for crafts
-        if (typeof id === 'string' && id.startsWith('craft-')) {
-          nodeId = id;
-        } else {
-          nodeId = Number(id);
-        }
-        if (typeof window.network !== 'undefined' && window.network && typeof window.network.selectNodes === 'function') {
-          window.network.selectNodes([nodeId]);
-          window.network.focus(nodeId, {
+          window.network.selectNodes([id]);
+          window.network.focus(id, {
             scale: 1.2,
             animation: { duration: 600, easingFunction: 'easeInOutQuad' },
             locked: true
