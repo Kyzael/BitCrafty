@@ -46,12 +46,29 @@ fetch('bitcraft_flat.json')
       }
     });
     const professions = Array.from(professionSet).sort();
-    const profColors = ["#a6e22e", "#f92672", "#66d9ef", "#fd971f", "#e6db74", "#ae81ff", "#75715e", "#f8f8f2"];
+    // Monokai-inspired palette, 15 distinct non-red colors for up to 10 professions
+    const profColors = [
+      "#a6e22e", // green
+      "#66d9ef", // cyan
+      "#fd971f", // orange
+      "#e6db74", // yellow
+      "#ae81ff", // purple
+      "#75715e", // brown/gray
+      "#f8f8f2", // white
+      "#39dca0", // teal
+      "#ffd866", // light yellow
+      "#fc9867", // peach
+      "#ab9df2", // lavender
+      "#78dce8", // light blue
+      "#ffcc66", // gold
+      "#c678dd", // violet
+      "#d19a66"  // tan
+    ];
     const profColorMap = {};
     professions.forEach((prof, i) => { profColorMap[prof] = profColors[i % profColors.length]; });
     let legendHtml = `<h3 style="margin-top:0;color:#f8f8f2;">Legend & Filters</h3><div style="margin-top:10px;display:flex;flex-wrap:wrap;align-items:center;gap:1.5em;">`;
     professions.forEach(prof => {
-      legendHtml += `<label style="display:flex;align-items:center;gap:6px;">
+      legendHtml += `<label style="display:flex;align-items:center;gap=6px;">
         <input type="checkbox" class="prof-filter" value="${prof}" checked>
         <span style="display:inline-block;width:18px;height:18px;background:${profColorMap[prof]};border-radius:3px;"></span>
         ${prof}
@@ -225,7 +242,24 @@ function buildGraph() {
     }
   });
   const professions = Array.from(professionSet).sort();
-  const profColors = ["#a6e22e", "#f92672", "#66d9ef", "#fd971f", "#e6db74", "#ae81ff", "#75715e", "#f8f8f2"];
+  // Monokai-inspired palette, 15 distinct non-red colors for up to 10 professions
+  const profColors = [
+    "#a6e22e", // green
+    "#66d9ef", // cyan
+    "#fd971f", // orange
+    "#e6db74", // yellow
+    "#ae81ff", // purple
+    "#75715e", // brown/gray
+    "#f8f8f2", // white
+    "#39dca0", // teal
+    "#ffd866", // light yellow
+    "#fc9867", // peach
+    "#ab9df2", // lavender
+    "#78dce8", // light blue
+    "#ffcc66", // gold
+    "#c678dd", // violet
+    "#d19a66"  // tan
+  ];
   const profColorMap = {};
   professions.forEach((prof, i) => { profColorMap[prof] = profColors[i % profColors.length]; });
 
@@ -419,7 +453,9 @@ function getCraftsByOutputId(itemId) {
 
 // Set of items that are always treated as base crafting items (do not progress past these)
 const BASE_CRAFT_ITEMS = new Set([
-  'Basic Embergrain'
+  'Basic Embergrain',
+  'Basic Starbulb',
+  'Rough Wispweave Filament'
 ]);
 
 // Helper: get output quantity for a craft and item name (returns lowest value if range, as integer)
@@ -832,8 +868,8 @@ function showItemDetails(id) {
         <div style="max-width:600px;margin:20px auto 0 auto;background:#272822;color:#f8f8f2;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.25);padding:20px 28px;min-height:120px;">
           <h2 style="color:#f92672;margin-top:0;">${craft.Name}</h2>
           <p><strong style=\"color:#66d9ef;\">Profession:</strong> <span style=\"color:#f8f8f2;\">${parseLevel(req.Profession)}</span></p>
-          <p><strong style=\"color:#a6e22e;\">Tool:</strong> <span style=\"color:#f8f8f2;\">${parseLevel(req.Tool)}</span></p>
-          <p><strong style=\"color:#fd971f;\">Building:</strong> <span style=\"color:#f8f8f2;\">${parseLevel(req.Building)}</span></p>
+          <p><strong style=\"color:#a6e22e;\">Tool:</strong> <span style="color:#f8f8f2;">${parseLevel(req.Tool)}</span></p>
+          <p><strong style=\"color:#fd971f;\">Building:</strong> <span style="color:#f8f8f2;">${parseLevel(req.Building)}</span></p>
           <div style="margin-top:32px;text-align:right;">
             <button id="goto-node" style="background:#272822;color:#f92672;border:1.5px solid #f92672;border-radius:3px;padding:6px 16px;cursor:pointer;">Go to Node</button>
           </div>
