@@ -265,7 +265,7 @@ function buildGraph() {
       },
       font: {
         color: '#23241f',
-        size: 18,
+        size: 14,
         face: 'monospace',
         bold: 'bold',
         strokeWidth: 0
@@ -299,7 +299,7 @@ function buildGraph() {
       },
       font: {
         color: '#23241f',
-        size: 18,
+        size: 14,
         face: 'monospace',
         bold: 'bold',
         strokeWidth: 0
@@ -345,24 +345,75 @@ function buildGraph() {
   const data = { nodes, edges };
   const options = {
     layout: {
+      randomSeed: 2,
+      improvedLayout: true,
       hierarchical: {
+        enabled: true,
         direction: "UD",
         sortMethod: "directed",
-        levelSeparation: 220,
-        nodeSpacing: 180,
-        treeSpacing: 320
+        shakeTowards: "roots",
+        levelSeparation: 300,
+        nodeSpacing: 250,
+        treeSpacing: 400,
+        blockShifting: false,
+        edgeMinimization: false,
+        parentCentralization: false
       }
     },
     edges: {
-      smooth: true,
-      font: { color: '#e6db74', strokeWidth: 0, size: 15 }
+      smooth: {
+        enabled: true,
+        type: 'curvedCW',
+        roundness: 0.2
+      },
+      font: { color: '#e6db74', strokeWidth: 0, size: 12 },
+      width: 2,
+      selectionWidth: 3,
+      arrows: {
+        to: { enabled: true, scaleFactor: 1.2 }
+      }
     },
     nodes: {
-      font: { size: 18, face: 'monospace', bold: 'bold', color: '#23241f', strokeWidth: 0 },
-      borderWidthSelected: 3
+      font: { size: 16, face: 'monospace', bold: 'bold', color: '#23241f', strokeWidth: 0 },
+      borderWidthSelected: 3,
+      margin: 15,
+      widthConstraint: { minimum: 120, maximum: 250 },
+      heightConstraint: { minimum: 40 },
+      chosen: {
+        node: function(values, id, selected, hovering) {
+          values.borderWidth = 3;
+        }
+      }
     },
-    interaction: { multiselect: true, selectConnectedEdges: false },
-    physics: false,
+    interaction: { 
+      multiselect: true, 
+      selectConnectedEdges: false,
+      tooltipDelay: 300,
+      hideEdgesOnDrag: true,
+      hideEdgesOnZoom: false,
+      dragNodes: true,
+      dragView: true,
+      zoomView: true
+    },
+    physics: {
+      enabled: true,
+      solver: 'hierarchicalRepulsion',
+      hierarchicalRepulsion: {
+        centralGravity: 0.0,
+        springLength: 200,
+        springConstant: 0.01,
+        nodeDistance: 180,
+        damping: 0.09,
+        avoidOverlap: 1
+      },
+      stabilization: {
+        enabled: true,
+        iterations: 200,
+        updateInterval: 25,
+        onlyDynamicEdges: false,
+        fit: true
+      }
+    },
     manipulation: false
   };
   window.network = new vis.Network(container, data, options);
@@ -374,11 +425,11 @@ function buildGraph() {
   network.on("selectNode", function(params) {
     // Reset previously selected nodes to normal font size
     previouslySelected.forEach(nodeId => {
-      nodes.update({ id: nodeId, font: { size: 18, bold: 'bold' } });
+      nodes.update({ id: nodeId, font: { size: 14, bold: 'bold' } });
     });
     // Enlarge font for currently selected nodes
     params.nodes.forEach(nodeId => {
-      nodes.update({ id: nodeId, font: { size: 24, bold: 'bold' } });
+      nodes.update({ id: nodeId, font: { size: 20, bold: 'bold' } });
     });
     // Update tracking
     previouslySelected = [...params.nodes];
@@ -387,7 +438,7 @@ function buildGraph() {
   network.on("deselectNode", function(params) {
     // Reset only the previously selected nodes to normal font size
     previouslySelected.forEach(nodeId => {
-      nodes.update({ id: nodeId, font: { size: 18, bold: 'bold' } });
+      nodes.update({ id: nodeId, font: { size: 14, bold: 'bold' } });
     });
     // Clear tracking
     previouslySelected = [];
