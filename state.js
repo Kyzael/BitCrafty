@@ -8,7 +8,10 @@ const useBitCraftyStore = create((set, get) => ({
   // Data
   items: [],
   crafts: [],
+  requirements: [],
+  buildings: [],
   professions: [],
+  tools: [],
   graphData: { nodes: [], edges: [] },
   // UI State
   selectedNodeId: null,
@@ -18,7 +21,10 @@ const useBitCraftyStore = create((set, get) => ({
   // Actions
   setItems: (items) => set({ items }),
   setCrafts: (crafts) => set({ crafts }),
+  setRequirements: (requirements) => set({ requirements }),
+  setBuildings: (buildings) => set({ buildings }),
   setProfessions: (professions) => set({ professions }),
+  setTools: (tools) => set({ tools }),
   setGraphData: (graphData) => set({ graphData }),
   setSelectedNodeId: (id) => set({ selectedNodeId: id }),
   setFilterText: (text) => set({ filterText: text }),
@@ -45,5 +51,25 @@ const useBitCraftyStore = create((set, get) => ({
     });
   },
 }));
+
+// Data loader for new schema (including requirements and metadata)
+export async function loadBitCraftyData(setState) {
+  const [items, crafts, requirements, buildings, professions, tools] = await Promise.all([
+    fetch('data/items.json').then(r => r.json()),
+    fetch('data/crafts.json').then(r => r.json()),
+    fetch('data/requirements.json').then(r => r.json()),
+    fetch('data/metadata/buildings.json').then(r => r.json()),
+    fetch('data/metadata/professions.json').then(r => r.json()),
+    fetch('data/metadata/tools.json').then(r => r.json())
+  ]);
+  setState({
+    items,
+    crafts,
+    requirements,
+    buildings,
+    professions,
+    tools
+  });
+}
 
 export default useBitCraftyStore;
