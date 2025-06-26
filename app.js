@@ -61,29 +61,25 @@ function setupUI() {
     sidebar.appendChild(titleDiv);
 
 
-    // Build dynamic profession list from crafts (now from store)
-    const craftsObj = store.getState().crafts;
-    const craftsArr = Object.values(craftsObj);
-    const professionSet = new Set();
-    craftsArr.forEach(craft => {
-      if (craft.Requirements && craft.Requirements.Profession) {
-        const match = /([A-Za-z ]+)-\d+/.exec(craft.Requirements.Profession);
-        if (match) professionSet.add(match[1]);
-        else professionSet.add(craft.Requirements.Profession);
-      }
-    });
-    const professions = Array.from(professionSet).sort();
-    const profColors = [
-      "#a6e22e", "#66d9ef", "#fd971f", "#e6db74", "#ae81ff", "#75715e", "#f8f8f2", "#39dca0", "#ffd866", "#fc9867", "#ab9df2", "#78dce8", "#ffcc66", "#c678dd", "#d19a66"
-    ];
+    // Grab profession list from store professions
+    const professionsObj = store.getState().professions;
+    const professions = Object.values(professionsObj);
+    
+    // Create profession color map from the imported profession data
     const profColorMap = {};
-    professions.forEach((prof, i) => { profColorMap[prof] = profColors[i % profColors.length]; });
-    let legendHtml = `<h3 style="margin-top:0;color:#f8f8f2;">Legend & Filters</h3><div style="margin-top:10px;display:flex;flex-wrap:wrap;align-items:center;gap:1.5em;">`;
     professions.forEach(prof => {
+      profColorMap[prof.name] = prof.color;
+    });
+    
+    // Sort profession names for consistent display
+    const professionNames = professions.map(p => p.name).sort();
+    
+    let legendHtml = `<h3 style="margin-top:0;color:#f8f8f2;">Legend & Filters</h3><div style="margin-top:10px;display:flex;flex-wrap:wrap;align-items:center;gap:1.5em;">`;
+    professionNames.forEach(profName => {
       legendHtml += `<label style="display:flex;align-items:center;gap=6px;">
-        <input type="checkbox" class="prof-filter" value="${prof}" checked>
-        <span style="display:inline-block;width:18px;height:18px;background:${profColorMap[prof]};border-radius:3px;"></span>
-        ${prof}
+        <input type="checkbox" class="prof-filter" value="${profName}" checked>
+        <span style="display:inline-block;width:18px;height:18px;background:${profColorMap[profName]};border-radius:3px;"></span>
+        ${profName}
       </label>`;
     });
     legendHtml += `<input type="text" id="item-search" placeholder="Search item name..." style="margin-left:1em;padding:10px 16px;min-width:180px;width:calc(100% - 32px);max-width:360px;background:#1e1f1c;color:#f8f8f2;border:1.5px solid #444;font-size:1.1em;border-radius:5px;box-sizing:border-box;">`;
