@@ -368,20 +368,29 @@ function buildGraph() {
   window.network = new vis.Network(container, data, options);
   const network = window.network;
 
+  // Track previously selected nodes for efficient updates
+  let previouslySelected = [];
+
   network.on("selectNode", function(params) {
-    nodes.forEach(function(node) {
-      if (params.nodes.includes(node.id)) {
-        nodes.update({ id: node.id, font: { size: 24, bold: 'bold' } });
-      } else {
-        nodes.update({ id: node.id, font: { size: 18, bold: 'bold' } });
-      }
+    // Reset previously selected nodes to normal font size
+    previouslySelected.forEach(nodeId => {
+      nodes.update({ id: nodeId, font: { size: 18, bold: 'bold' } });
     });
+    // Enlarge font for currently selected nodes
+    params.nodes.forEach(nodeId => {
+      nodes.update({ id: nodeId, font: { size: 24, bold: 'bold' } });
+    });
+    // Update tracking
+    previouslySelected = [...params.nodes];
     showItemDetails(params.nodes[0]);
   });
-  network.on("deselectNode", function() {
-    nodes.forEach(function(node) {
-      nodes.update({ id: node.id, font: { size: 18, bold: 'bold' } });
+  network.on("deselectNode", function(params) {
+    // Reset only the previously selected nodes to normal font size
+    previouslySelected.forEach(nodeId => {
+      nodes.update({ id: nodeId, font: { size: 18, bold: 'bold' } });
     });
+    // Clear tracking
+    previouslySelected = [];
     document.getElementById("item-details").classList.remove("active");
   });
 }
