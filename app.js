@@ -23,13 +23,32 @@ fetch('bitcraft_flat.json')
     sidebar.style.display = 'flex';
     sidebar.style.flexDirection = 'column';
     sidebar.style.gap = '18px';
-    sidebar.style.padding = '18px 0 18px 0';
+    sidebar.style.padding = '0 0 18px 0';
     sidebar.style.position = 'fixed';
     sidebar.style.left = '0';
     sidebar.style.top = '0';
     sidebar.style.bottom = '0';
     sidebar.style.overflowY = 'auto';
     sidebar.style.zIndex = '10';
+
+    // Title above legend
+    const titleDiv = document.createElement('div');
+    titleDiv.id = 'bitcrafty-title';
+    titleDiv.textContent = 'BitCraft Crafting Tree';
+    titleDiv.style.background = '#1e1f1c';
+    titleDiv.style.color = '#f8f8f2';
+    titleDiv.style.fontFamily = 'monospace, monospace';
+    titleDiv.style.fontSize = '2.1em';
+    titleDiv.style.fontWeight = 'bold';
+    titleDiv.style.display = 'flex';
+    titleDiv.style.alignItems = 'center';
+    titleDiv.style.justifyContent = 'flex-start';
+    titleDiv.style.padding = '24px 0 12px 32px';
+    titleDiv.style.borderTopLeftRadius = '0';
+    titleDiv.style.borderTopRightRadius = '12px';
+    titleDiv.style.boxShadow = 'none';
+    sidebar.appendChild(titleDiv);
+
 
     // Build dynamic profession list from crafts (now from store)
     const craftsArr = store.getState().crafts;
@@ -103,6 +122,8 @@ fetch('bitcraft_flat.json')
       if (networkDiv) mainContent.appendChild(networkDiv);
       document.body.appendChild(mainContent);
     }
+    // Always use full height for graph
+    mainContent.style.height = '100vh';
 
     // Filtering logic with fading
     function applyFilters() {
