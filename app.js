@@ -1314,9 +1314,9 @@ function applyProfessionFilters() {
     }
   });
   
-  // Batch update nodes visibility
+  // Batch update nodes visibility (fade instead of hide)
   const nodeUpdates = [];
-  const hiddenNodes = new Set();
+  const fadedNodes = new Set();
   
   nodes.forEach(node => {
     const profession = nodeToProfession[node.id];
@@ -1328,22 +1328,24 @@ function applyProfessionFilters() {
     }
     
     if (!shouldShow) {
-      hiddenNodes.add(node.id);
+      fadedNodes.add(node.id);
     }
     
     nodeUpdates.push({
       id: node.id,
-      hidden: !shouldShow
+      opacity: shouldShow ? 1.0 : 0.3,
+      font: shouldShow ? undefined : { color: '#666666' }
     });
   });
   
-  // Batch update edges visibility (hide edges connected to hidden nodes)
+  // Batch update edges visibility (fade edges connected to faded nodes)
   const edgeUpdates = [];
   edges.forEach(edge => {
-    const shouldHide = hiddenNodes.has(edge.from) || hiddenNodes.has(edge.to);
+    const shouldFade = fadedNodes.has(edge.from) || fadedNodes.has(edge.to);
     edgeUpdates.push({
       id: edge.id,
-      hidden: shouldHide
+      opacity: shouldFade ? 0.2 : 1.0,
+      color: shouldFade ? { color: '#444444' } : undefined
     });
   });
   
@@ -1352,7 +1354,7 @@ function applyProfessionFilters() {
   edges.update(edgeUpdates);
   
   const filterType = subtreeFilterActive ? 'subtree + profession' : 'profession';
-  console.log(`${filterType} filtered: ${hiddenNodes.size} nodes hidden, ${nodeUpdates.length - hiddenNodes.size} nodes visible`);
+  console.log(`${filterType} filtered: ${fadedNodes.size} nodes faded, ${nodeUpdates.length - fadedNodes.size} nodes visible`);
 }
 
 // Subtree filtering functionality
@@ -1394,23 +1396,25 @@ function applySubtreeFilter(rootNodeId) {
   subtreeVisibleNodes = visibleNodes;
   subtreeFilterActive = true;
   
-  // Update node visibility
+  // Update node visibility (fade instead of hide)
   const nodeUpdates = [];
   nodes.forEach(node => {
     const shouldShow = visibleNodes.has(node.id);
     nodeUpdates.push({
       id: node.id,
-      hidden: !shouldShow
+      opacity: shouldShow ? 1.0 : 0.3,
+      font: shouldShow ? undefined : { color: '#666666' }
     });
   });
   
-  // Update edge visibility
+  // Update edge visibility (fade edges not connected to visible nodes)
   const edgeUpdates = [];
   edges.forEach(edge => {
     const shouldShow = visibleNodes.has(edge.from) && visibleNodes.has(edge.to);
     edgeUpdates.push({
       id: edge.id,
-      hidden: !shouldShow
+      opacity: shouldShow ? 1.0 : 0.2,
+      color: shouldShow ? undefined : { color: '#444444' }
     });
   });
   
