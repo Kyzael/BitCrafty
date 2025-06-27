@@ -31,3 +31,7 @@ BitCrafty is a web-based tool for visualizing and simplifying the large, complex
    ```
    Then open [http://localhost:8000](http://localhost:8000) in your browser.
 3. All data is loaded from normalized JSON files in the `data/` directory and processed in-browser.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
