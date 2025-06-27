@@ -14,31 +14,9 @@ The data directory is now modularized for maintainability and clarity. Each file
     buildings.json        ← Enum-like list of buildings
 ```
 
-## Entity ID Format
-All entity references use the format:
-
-```
-[entity-type]:[category/namespace]:[identifier]
-```
-
-- **entity-type**: The type of entity (e.g., `item`, `craft`, `requirement`, `profession`, `tool`, `building`)
-- **category/namespace**: The logical grouping or category (e.g., `tailoring`, `foraging`, `metal`)
-- **identifier**: The unique name or key for the entity within its namespace
-
-### Examples
-- `item:wood:rough-trunk`
-- `craft:tailoring:rough-spool`
-- `requirement:tailoring:basic-tools`
-- `tool:metal:machete`
-- `building:tailoring:loom`
-
-## Notes
-- All references between entities (e.g., crafts, requirements, professions, tools, buildings) must use these namespaced IDs.
-- This structure supports deduplication, efficient lookups, and maintainability.
-
 # BitCrafty Data Format
 
-This repository uses a **namespaced ID standard** for all entities (items, crafts, professions, etc.) to support consistent structure, easier debugging, and scalable referencing in tools like Zustand and DagreJS.
+This repository uses a **namespaced ID standard** for all entities (items, crafts, professions, etc.) to support consistent structure, easier debugging, and scalable referencing in tools like Zustand and Graph Visualisation.
 
 ---
 
@@ -74,7 +52,7 @@ Each object in the data store (item, craft, tool, etc.) uses a globally unique s
 - Works seamlessly with `Record<string, Entity>` maps in Zustand.
 - Enables filtering by prefix, e.g. `"item:"`, `"craft:tailoring:"`.
 
-### ✅ **Ready for Graph Use (DagreJS)**
+### ✅ **Ready for Graph Use**
 - IDs are compatible as graph node identifiers.
 - Relationships (e.g., `material → craft`) are readable and traceable.
 
