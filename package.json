@@ -8,11 +8,10 @@
     "start": "python -m http.server 8000",
     "serve": "python -m http.server 8000",
     "test": "node tests/run-tests.js",
-    "test:data": "node tests/data-validation.test.js",
     "validate": "node tests/run-tests.js"
   },
   "keywords": ["crafting", "visualization", "bitcraft", "gaming"],
-  "author": "BitCrafty Team",
+  "author": "@Kyzael",
   "license": "MIT",
   "repository": {
     "type": "git",

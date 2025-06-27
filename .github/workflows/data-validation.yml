@@ -28,7 +28,7 @@ jobs:
         
     - name: Run data validation tests
       run: |
-        echo "🧪 Running BitCrafty Data Validation Tests"
+        echo "Running BitCrafty Data Validation Tests"
         node tests/run-tests.js
         
     - name: Check test results
