@@ -98,6 +98,7 @@ function buildGraph() {
     (craft.materials || []).forEach(mat => {
       if (ItemHelpers.getById(mat.item)) {
         const lineWidth = Math.min(Math.max(Math.log2(mat.qty + 1) + 1, 1), 8);
+        
         edgeList.push({
           from: mat.item,
           to: craft.id,
@@ -110,10 +111,8 @@ function buildGraph() {
           },
           width: lineWidth,
           font: { 
-            color: EDGE_COLORS.INPUT, 
-            size: 16, 
-            strokeWidth: 2, 
-            strokeColor: COLORS.BACKGROUND 
+            color: '#f0f0f0', 
+            size: 18
           }
         });
       }
@@ -133,6 +132,7 @@ function buildGraph() {
         }
         
         const lineWidth = Math.min(Math.max(Math.log2(qty + 1) + 1, 1), 8);
+        
         edgeList.push({
           from: craft.id,
           to: out.item,
@@ -145,10 +145,8 @@ function buildGraph() {
           },
           width: lineWidth,
           font: { 
-            color: EDGE_COLORS.OUTPUT, 
-            size: 16, 
-            strokeWidth: 2, 
-            strokeColor: COLORS.BACKGROUND 
+            color: '#f0f0f0', 
+            size: 18
           }
         });
       }
@@ -222,10 +220,8 @@ function getNetworkOptions() {
         roundness: 0.2
       },
       font: { 
-        color: COLORS.ACCENT_YELLOW, 
-        strokeWidth: 2, 
-        strokeColor: COLORS.BACKGROUND,
-        size: 16,
+        color: '#f0f0f0', 
+        size: 18,
         align: 'middle'
       },
       width: 2,
