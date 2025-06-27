@@ -131,7 +131,14 @@ function setupUI() {
       mainContent.style.position = 'relative';
       // Move #network into main-content
       const networkDiv = document.getElementById('network');
-      if (networkDiv) mainContent.appendChild(networkDiv);
+      if (networkDiv) {
+        // Ensure network takes full available space
+        networkDiv.style.width = '100%';
+        networkDiv.style.height = '100%';
+        networkDiv.style.border = '1px solid #444';
+        networkDiv.style.background = '#1e1f1c';
+        mainContent.appendChild(networkDiv);
+      }
       document.body.appendChild(mainContent);
     }
     // Always use full height for graph
@@ -302,6 +309,7 @@ function buildGraph() {
         strokeWidth: 0
       },
       borderWidth: 2,
+      shadow: false, // Ensure shadow is initially disabled
       shapeProperties: { borderRadius: 16 }
     };
   });
@@ -336,6 +344,7 @@ function buildGraph() {
         strokeWidth: 0
       },
       borderWidth: 3,
+      shadow: false, // Ensure shadow is initially disabled
       shapeProperties: { borderRadius: 32 }
     });
   });
@@ -488,10 +497,18 @@ function buildGraph() {
   // Initialize filters after network is created
   network.on('stabilizationIterationsDone', function() {
     initializeFilters();
+    // Fit the network to center it properly in the view
+    network.fit({
+      animation: {
+        duration: 1000,
+        easingFunction: 'easeInOutQuad'
+      }
+    });
   });
 
-  // Track previously selected nodes for efficient updates
+  // Track previously selected nodes and highlighted edges for efficient updates
   let previouslySelected = [];
+  let previouslyHighlightedEdges = [];
 
   // Add double-click handler for subtree filtering
   network.on("doubleClick", function(params) {
@@ -506,30 +523,156 @@ function buildGraph() {
   });
 
   network.on("selectNode", function(params) {
-    // Reset previously selected nodes to normal font size
+    // Reset previously selected nodes to normal appearance
     previouslySelected.forEach(nodeId => {
-      nodes.update({ id: nodeId, font: { size: 14, bold: 'bold' } });
+      const currentNode = nodes.get(nodeId);
+      if (currentNode) {
+        nodes.update({ 
+          id: nodeId, 
+          font: { size: 14, bold: 'bold' },
+          borderWidth: currentNode.shape === 'box' ? 2 : 3, // Reset to original border width
+          shadow: false // Remove selection outline
+        });
+      }
     });
-    // Enlarge font for currently selected nodes
+
+    // Reset previously highlighted edges to normal appearance
+    previouslyHighlightedEdges.forEach(edgeId => {
+      const currentEdge = edges.get(edgeId);
+      if (currentEdge) {
+        // Determine original color based on edge direction
+        const isInputEdge = currentEdge.color && currentEdge.color.color === "#66d9ef";
+        const originalColor = isInputEdge ? "#66d9ef" : "#f92672";
+        edges.update({
+          id: edgeId,
+          color: { 
+            color: originalColor, 
+            highlight: isInputEdge ? "#87ceeb" : "#ff69b4", 
+            hover: isInputEdge ? "#87ceeb" : "#ff69b4" 
+          },
+          width: currentEdge.width || 2
+        });
+      }
+    });
+
+    // Apply selection styling to currently selected nodes
     params.nodes.forEach(nodeId => {
-      nodes.update({ id: nodeId, font: { size: 20, bold: 'bold' } });
+      const currentNode = nodes.get(nodeId);
+      if (currentNode) {
+        nodes.update({ 
+          id: nodeId, 
+          font: { size: 20, bold: 'bold' },
+          borderWidth: 5, // Thicker border for selection outline
+          shadow: {
+            enabled: true,
+            color: '#fd971f', // Orange outline for selection
+            size: 8,
+            x: 0,
+            y: 0
+          }
+        });
+      }
     });
+
+    // Find and highlight incoming edges (edges that point TO the selected nodes)
+    const incomingEdges = [];
+    params.nodes.forEach(selectedNodeId => {
+      edges.get().forEach(edge => {
+        if (edge.to === selectedNodeId) {
+          incomingEdges.push(edge.id);
+        }
+      });
+    });
+
+    // Highlight the incoming edges
+    incomingEdges.forEach(edgeId => {
+      const currentEdge = edges.get(edgeId);
+      if (currentEdge) {
+        edges.update({
+          id: edgeId,
+          color: { 
+            color: '#fd971f', // Orange highlight for incoming edges
+            highlight: '#ffb347', 
+            hover: '#ffb347' 
+          },
+          width: Math.max(currentEdge.width || 2, 3) // Make highlighted edges slightly thicker
+        });
+      }
+    });
+
     // Update tracking
     previouslySelected = [...params.nodes];
+    previouslyHighlightedEdges = [...incomingEdges];
     showItemDetails(params.nodes[0]);
   });
+
   network.on("deselectNode", function(params) {
-    // Reset only the previously selected nodes to normal font size
+    // Reset only the previously selected nodes to normal appearance
     previouslySelected.forEach(nodeId => {
-      nodes.update({ id: nodeId, font: { size: 14, bold: 'bold' } });
+      const currentNode = nodes.get(nodeId);
+      if (currentNode) {
+        nodes.update({ 
+          id: nodeId, 
+          font: { size: 14, bold: 'bold' },
+          borderWidth: currentNode.shape === 'box' ? 2 : 3, // Reset to original border width
+          shadow: false // Remove selection outline
+        });
+      }
     });
+
+    // Reset previously highlighted edges to normal appearance
+    previouslyHighlightedEdges.forEach(edgeId => {
+      const currentEdge = edges.get(edgeId);
+      if (currentEdge) {
+        // Determine original color based on edge direction
+        const isInputEdge = currentEdge.color && currentEdge.color.color === "#66d9ef";
+        const originalColor = isInputEdge ? "#66d9ef" : "#f92672";
+        edges.update({
+          id: edgeId,
+          color: { 
+            color: originalColor, 
+            highlight: isInputEdge ? "#87ceeb" : "#ff69b4", 
+            hover: isInputEdge ? "#87ceeb" : "#ff69b4" 
+          },
+          width: currentEdge.width || 2
+        });
+      }
+    });
+
     // Clear tracking
     previouslySelected = [];
+    previouslyHighlightedEdges = [];
     document.getElementById("item-details").classList.remove("active");
   });
 
   // Initialize filters after graph is built
   initializeFilters();
+  
+  // Ensure the network is properly centered after initial load
+  // This provides a fallback if stabilization events don't fire
+  setTimeout(() => {
+    if (network && typeof network.fit === 'function') {
+      network.fit({
+        animation: {
+          duration: 800,
+          easingFunction: 'easeInOutQuad'
+        }
+      });
+    }
+  }, 500);
+  
+  // Add window resize handler to keep network properly sized and centered
+  window.addEventListener('resize', () => {
+    if (network && typeof network.redraw === 'function') {
+      network.redraw();
+      // Small delay to ensure redraw is complete before fitting
+      setTimeout(() => {
+        if (network && typeof network.fit === 'function') {
+          network.fit();
+        }
+      }, 100);
+    }
+  });
 }
 
 // Initialize filters after graph is built
