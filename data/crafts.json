@@ -82,7 +82,7 @@
     ],
     "outputs": [
       {
-        "item": "item:tailoring:rope",
+        "item": "item:tailoring:cloth",
         "qty": 1
       }
     ],
@@ -114,7 +114,7 @@
         "qty": 1
       },
       {
-        "item": "item:farming:starbulb",
+        "item": "item:farming:fertilizer",
         "qty": 1
       }
     ],
@@ -156,13 +156,13 @@
         "qty": 1
       },
       {
-        "item": "item:farming:starbulb",
+        "item": "item:farming:fertilizer",
         "qty": 1
       }
     ],
     "outputs": [
       {
-        "item": "item:farming:wispweave-plant",
+        "item": "item:farming:starbulb-plant",
         "qty": 1
       }
     ],
@@ -173,13 +173,13 @@
     "name": "Husk into Basic Starbulb Products",
     "materials": [
       {
-        "item": "item:farming:wispweave-plant",
+        "item": "item:farming:starbulb-plant",
         "qty": 1
       }
     ],
     "outputs": [
       {
-        "item": "item:farming:wispweave-seeds",
+        "item": "item:farming:starbulb-seeds",
         "qty": "1-3"
       },
       {
@@ -219,7 +219,7 @@
         "qty": 1
       },
       {
-        "item": "item:farming:starbulb",
+        "item": "item:farming:embergrain",
         "qty": 1
       }
     ],
@@ -503,7 +503,7 @@
     ],
     "outputs": [
       {
-        "item": "item:cooking:roasted-fish",
+        "item": "item:cooking:roasted-meat",
         "qty": 1
       }
     ],
@@ -646,7 +646,7 @@
     ],
     "outputs": [
       {
-        "item": "item:farming:starbulb",
+        "item": "item:farming:fertilizer",
         "qty": 1
       }
     ],
@@ -657,13 +657,13 @@
     "name": "Make Basic Fertilizer (Berry)",
     "materials": [
       {
-        "item": "item:foraging:flower",
+        "item": "item:foraging:berry",
         "qty": 2
       }
     ],
     "outputs": [
       {
-        "item": "item:farming:starbulb",
+        "item": "item:farming:fertilizer",
         "qty": 1
       }
     ],
@@ -680,7 +680,7 @@
     ],
     "outputs": [
       {
-        "item": "item:farming:starbulb",
+        "item": "item:farming:fertilizer",
         "qty": 1
       }
     ],
@@ -697,7 +697,7 @@
     ],
     "outputs": [
       {
-        "item": "item:farming:starbulb",
+        "item": "item:farming:fertilizer",
         "qty": 1
       }
     ],
@@ -725,7 +725,7 @@
     "name": "Cook Plain Mushroom Skewer",
     "materials": [
       {
-        "item": "item:foraging:flower",
+        "item": "item:foraging:mushroom",
         "qty": 5
       }
     ],
