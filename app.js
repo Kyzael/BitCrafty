@@ -1340,13 +1340,30 @@ function applyProfessionFilters() {
   
   // Batch update edges visibility (fade edges connected to faded nodes)
   const edgeUpdates = [];
-  edges.forEach(edge => {
+  edges.get().forEach(edge => {
     const shouldFade = fadedNodes.has(edge.from) || fadedNodes.has(edge.to);
-    edgeUpdates.push({
-      id: edge.id,
-      opacity: shouldFade ? 0.2 : 1.0,
-      color: shouldFade ? { color: '#444444' } : undefined
-    });
+    if (!shouldFade) {
+      // Restore original edge colors and make fully visible
+      const isInputEdge = edge.color && edge.color.color === "#66d9ef";
+      const originalColor = isInputEdge ? "#66d9ef" : "#f92672";
+      const originalHighlight = isInputEdge ? "#87ceeb" : "#ff69b4";
+      edgeUpdates.push({
+        id: edge.id,
+        opacity: 1.0,
+        color: { 
+          color: originalColor, 
+          highlight: originalHighlight, 
+          hover: originalHighlight 
+        }
+      });
+    } else {
+      // Fade edges connected to faded nodes
+      edgeUpdates.push({
+        id: edge.id,
+        opacity: 0.2,
+        color: { color: '#444444' }
+      });
+    }
   });
   
   // Apply batch updates for performance
@@ -1371,20 +1388,20 @@ function applySubtreeFilter(rootNodeId) {
   
   const { nodes, edges } = graphData;
   
-  // Find all nodes that lead INTO the selected node (dependencies only)
+  // Find all nodes that lead INTO the selected node (complete dependency tree)
   const visibleNodes = new Set();
   const toVisit = [rootNodeId];
   
   // Add the root node
   visibleNodes.add(rootNodeId);
   
-  // Traverse backwards through the dependency chain (only follow input edges)
+  // Traverse backwards through the complete dependency chain
+  // This includes both direct material inputs and intermediate crafting steps
   while (toVisit.length > 0) {
     const currentNode = toVisit.pop();
     
     // Find all edges where current node is the target (inputs to current node)
-    edges.forEach(edge => {
-      // Only follow edges that lead INTO the current node (dependencies)
+    edges.get().forEach(edge => {
       if (edge.to === currentNode && !visibleNodes.has(edge.from)) {
         visibleNodes.add(edge.from);
         toVisit.push(edge.from);
@@ -1407,15 +1424,33 @@ function applySubtreeFilter(rootNodeId) {
     });
   });
   
-  // Update edge visibility (fade edges not connected to visible nodes)
+  // Update edge visibility - show ALL edges between visible nodes (complete paths)
   const edgeUpdates = [];
-  edges.forEach(edge => {
+  edges.get().forEach(edge => {
+    // Show edge if both endpoints are in the visible set
     const shouldShow = visibleNodes.has(edge.from) && visibleNodes.has(edge.to);
-    edgeUpdates.push({
-      id: edge.id,
-      opacity: shouldShow ? 1.0 : 0.2,
-      color: shouldShow ? undefined : { color: '#444444' }
-    });
+    if (shouldShow) {
+      // Restore original edge colors and make fully visible
+      const isInputEdge = edge.color && edge.color.color === "#66d9ef";
+      const originalColor = isInputEdge ? "#66d9ef" : "#f92672";
+      const originalHighlight = isInputEdge ? "#87ceeb" : "#ff69b4";
+      edgeUpdates.push({
+        id: edge.id,
+        opacity: 1.0,
+        color: { 
+          color: originalColor, 
+          highlight: originalHighlight, 
+          hover: originalHighlight 
+        }
+      });
+    } else {
+      // Fade non-visible edges
+      edgeUpdates.push({
+        id: edge.id,
+        opacity: 0.2,
+        color: { color: '#444444' }
+      });
+    }
   });
   
   // Apply batch updates
@@ -1426,12 +1461,11 @@ function applySubtreeFilter(rootNodeId) {
   const rootNodeData = nodes.get(rootNodeId);
   const rootNodeName = rootNodeData ? rootNodeData.label : 'Unknown';
   
-  console.log(`Dependency subtree filter applied for "${rootNodeName}": ${visibleNodes.size} nodes visible (showing inputs only)`);
+  console.log(`Dependency subtree filter applied for "${rootNodeName}": ${visibleNodes.size} nodes visible (showing complete crafting paths)`);
   
-  // Focus on the root node that was double-clicked
+  // Focus on the root node that was double-clicked (pan without changing zoom)
   if (window.network) {
     window.network.focus(rootNodeId, {
-      scale: 1.2,
       animation: { duration: 800, easingFunction: 'easeInOutQuad' }
     });
   }
