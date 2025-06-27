@@ -8,6 +8,6 @@
     "validate": "node data-validation.test.js"
   },
   "keywords": ["validation", "data", "testing"],
-  "author": "BitCrafty",
+  "author": "Kyzael",
   "license": "MIT"
 }
