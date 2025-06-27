@@ -46,20 +46,10 @@ class DataValidator {
 
   error(message) {
     this.errors.push(message);
-    console.error(`❌ ERROR: ${message}`);
   }
 
   warning(message) {
     this.warnings.push(message);
-    console.warn(`⚠️  WARNING: ${message}`);
-  }
-
-  info(message) {
-    console.log(`ℹ️  ${message}`);
-  }
-
-  success(message) {
-    console.log(`✅ ${message}`);
   }
 
   // Create lookup sets for quick validation
@@ -75,43 +65,25 @@ class DataValidator {
 
   // Test 1: Validate all item IDs in crafts are valid
   validateCraftItemReferences() {
-    this.info("Test 1: Validating craft item references...");
-    let validRefs = 0;
-    let totalRefs = 0;
-
     crafts.forEach(craft => {
       // Check materials
       craft.materials?.forEach(material => {
-        totalRefs++;
         if (!this.itemIds.has(material.item)) {
           this.error(`Craft "${craft.id}" references non-existent item "${material.item}" in materials`);
-        } else {
-          validRefs++;
         }
       });
 
       // Check outputs
       craft.outputs?.forEach(output => {
-        totalRefs++;
         if (!this.itemIds.has(output.item)) {
           this.error(`Craft "${craft.id}" references non-existent item "${output.item}" in outputs`);
-        } else {
-          validRefs++;
         }
       });
     });
-
-    if (this.errors.length === 0) {
-      this.success(`All ${totalRefs} item references in crafts are valid`);
-    }
   }
 
   // Test 2: Validate entity ID profession categories
   validateEntityProfessionCategories() {
-    this.info("Test 2: Validating entity profession categories...");
-    let validItems = 0;
-    let validCrafts = 0;
-
     // Validate items
     items.forEach(item => {
       if (!isValidEntityIdFormat(item.id, 'item')) {
@@ -124,8 +96,6 @@ class DataValidator {
         this.error(`Item "${item.id}" has no profession in ID`);
       } else if (!this.professionNames.has(profession)) {
         this.error(`Item "${item.id}" has invalid profession "${profession}" (not found in professions.json)`);
-      } else {
-        validItems++;
       }
     });
 
@@ -141,107 +111,65 @@ class DataValidator {
         this.error(`Craft "${craft.id}" has no profession in ID`);
       } else if (!this.professionNames.has(profession)) {
         this.error(`Craft "${craft.id}" has invalid profession "${profession}" (not found in professions.json)`);
-      } else {
-        validCrafts++;
       }
     });
-
-    if (validItems === items.length && validCrafts === crafts.length) {
-      this.success(`All ${items.length} items and ${crafts.length} crafts have valid profession categories`);
-    }
   }
 
   // Test 3: Validate all crafts have requirements
   validateCraftRequirements() {
-    this.info("Test 3: Validating craft requirements...");
-    let craftsWithRequirements = 0;
-
     crafts.forEach(craft => {
       if (!craft.requirement) {
         this.error(`Craft "${craft.id}" is missing requirement field`);
       } else if (!this.requirementIds.has(craft.requirement)) {
         this.error(`Craft "${craft.id}" references non-existent requirement "${craft.requirement}"`);
-      } else {
-        craftsWithRequirements++;
       }
     });
-
-    if (craftsWithRequirements === crafts.length) {
-      this.success(`All ${crafts.length} crafts have valid requirements`);
-    }
   }
 
   // Test 4: Validate requirement entity IDs with metadata
   validateRequirementMetadataReferences() {
-    this.info("Test 4: Validating requirement metadata references...");
-    let validRequirements = 0;
-
     requirements.forEach(req => {
-      let isValid = true;
-
       // Validate requirement ID format
       if (!isValidEntityIdFormat(req.id, 'requirement')) {
         this.error(`Requirement "${req.id}" has invalid ID format (expected: requirement:profession:identifier)`);
-        isValid = false;
       }
 
       // Validate profession reference
       if (req.profession?.name) {
         if (!this.professionIds.has(req.profession.name)) {
           this.error(`Requirement "${req.id}" references non-existent profession "${req.profession.name}"`);
-          isValid = false;
         }
       } else {
         this.error(`Requirement "${req.id}" is missing profession.name`);
-        isValid = false;
       }
 
       // Validate tool reference (if present)
-      if (req.tool?.name) {
-        if (!this.toolIds.has(req.tool.name)) {
-          this.error(`Requirement "${req.id}" references non-existent tool "${req.tool.name}"`);
-          isValid = false;
-        }
+      if (req.tool?.name && !this.toolIds.has(req.tool.name)) {
+        this.error(`Requirement "${req.id}" references non-existent tool "${req.tool.name}"`);
       }
 
       // Validate building reference (if present)
-      if (req.building?.name) {
-        if (!this.buildingIds.has(req.building.name)) {
-          this.error(`Requirement "${req.id}" references non-existent building "${req.building.name}"`);
-          isValid = false;
-        }
+      if (req.building?.name && !this.buildingIds.has(req.building.name)) {
+        this.error(`Requirement "${req.id}" references non-existent building "${req.building.name}"`);
       }
 
       // Validate level values
       if (req.profession?.level && (typeof req.profession.level !== 'number' || req.profession.level < 1)) {
         this.error(`Requirement "${req.id}" has invalid profession level: ${req.profession.level}`);
-        isValid = false;
       }
 
       if (req.tool?.level && (typeof req.tool.level !== 'number' || req.tool.level < 1)) {
         this.error(`Requirement "${req.id}" has invalid tool level: ${req.tool.level}`);
-        isValid = false;
       }
 
       if (req.building?.level && (typeof req.building.level !== 'number' || req.building.level < 1)) {
         this.error(`Requirement "${req.id}" has invalid building level: ${req.building.level}`);
-        isValid = false;
-      }
-
-      if (isValid) {
-        validRequirements++;
       }
     });
-
-    if (validRequirements === requirements.length) {
-      this.success(`All ${requirements.length} requirements have valid metadata references`);
-    }
   }
 
   // Test 5: Additional data integrity checks
   validateDataIntegrity() {
-    this.info("Test 5: Additional data integrity checks...");
-
     // Check for duplicate IDs
     const allIds = [...items.map(i => i.id), ...crafts.map(c => c.id), ...requirements.map(r => r.id)];
     const duplicateIds = allIds.filter((id, index) => allIds.indexOf(id) !== index);
@@ -250,11 +178,9 @@ class DataValidator {
     }
 
     // Check for missing names
-    let missingNames = 0;
     [...items, ...crafts, ...requirements].forEach(entity => {
       if (!entity.name || entity.name.trim() === '') {
         this.error(`Entity "${entity.id}" is missing name`);
-        missingNames++;
       }
     });
 
@@ -266,94 +192,162 @@ class DataValidator {
         this.warning(`Requirement "${req.id}" is not used by any craft`)
       );
     }
-
-    // Check for items that are only outputs (never used as materials)
-    const usedAsMaterials = new Set();
-    crafts.forEach(craft => {
-      craft.materials?.forEach(material => usedAsMaterials.add(material.item));
-    });
-    const outputOnlyItems = items.filter(item => !usedAsMaterials.has(item.id));
-    if (outputOnlyItems.length > 0) {
-      this.info(`Found ${outputOnlyItems.length} items that are only craft outputs (end products)`);
-    }
-
-    if (duplicateIds.length === 0 && missingNames === 0) {
-      this.success("Data integrity checks passed");
-    }
   }
 
-  // Test 6: Profession distribution analysis
-  analyzeProfessionDistribution() {
-    this.info("Test 6: Analyzing profession distribution...");
+  // Generate detailed data overview table
+  generateDataOverviewTable() {
 
-    const itemsByProfession = {};
-    const craftsByProfession = {};
+    // Collect missing references
+    const missingItemRefs = new Set();
+    const missingRequirementRefs = new Set();
+    const missingProfessionRefs = new Set();
+    const missingToolRefs = new Set();
+    const missingBuildingRefs = new Set();
 
-    items.forEach(item => {
-      const profession = extractProfessionFromId(item.id);
-      if (profession) {
-        itemsByProfession[profession] = (itemsByProfession[profession] || 0) + 1;
-      }
-    });
-
+    // Check craft references
     crafts.forEach(craft => {
-      const profession = extractProfessionFromId(craft.id);
-      if (profession) {
-        craftsByProfession[profession] = (craftsByProfession[profession] || 0) + 1;
+      craft.materials?.forEach(material => {
+        if (!this.itemIds.has(material.item)) {
+          missingItemRefs.add(material.item);
+        }
+      });
+      craft.outputs?.forEach(output => {
+        if (!this.itemIds.has(output.item)) {
+          missingItemRefs.add(output.item);
+        }
+      });
+      if (craft.requirement && !this.requirementIds.has(craft.requirement)) {
+        missingRequirementRefs.add(craft.requirement);
       }
     });
 
-    console.log("\n📊 Profession Distribution:");
-    console.log("Items by profession:");
-    Object.entries(itemsByProfession)
-      .sort(([,a], [,b]) => b - a)
-      .forEach(([prof, count]) => console.log(`  ${prof}: ${count} items`));
-
-    console.log("Crafts by profession:");
-    Object.entries(craftsByProfession)
-      .sort(([,a], [,b]) => b - a)
-      .forEach(([prof, count]) => console.log(`  ${prof}: ${count} crafts`));
-
-    // Check for professions with no items or crafts
-    this.professionNames.forEach(profession => {
-      if (!itemsByProfession[profession] && !craftsByProfession[profession]) {
-        this.warning(`Profession "${profession}" has no items or crafts`);
+    // Check requirement references
+    requirements.forEach(req => {
+      if (req.profession?.name && !this.professionIds.has(req.profession.name)) {
+        missingProfessionRefs.add(req.profession.name);
+      }
+      if (req.tool?.name && !this.toolIds.has(req.tool.name)) {
+        missingToolRefs.add(req.tool.name);
+      }
+      if (req.building?.name && !this.buildingIds.has(req.building.name)) {
+        missingBuildingRefs.add(req.building.name);
       }
     });
+
+    // Create overview table data
+    const tableData = [
+      {
+        'Data Type': 'Items',
+        'Count': items.length,
+        'Missing References': missingItemRefs.size > 0 ? `${missingItemRefs.size} missing` : '✅ All valid',
+        'Status': missingItemRefs.size > 0 ? '❌ ISSUES' : '✅ OK'
+      },
+      {
+        'Data Type': 'Crafts',
+        'Count': crafts.length,
+        'Missing References': missingRequirementRefs.size > 0 ? `${missingRequirementRefs.size} missing` : '✅ All valid',
+        'Status': missingRequirementRefs.size > 0 ? '❌ ISSUES' : '✅ OK'
+      },
+      {
+        'Data Type': 'Requirements',
+        'Count': requirements.length,
+        'Missing References': (missingProfessionRefs.size + missingToolRefs.size + missingBuildingRefs.size) > 0 
+          ? `${missingProfessionRefs.size + missingToolRefs.size + missingBuildingRefs.size} missing` 
+          : '✅ All valid',
+        'Status': (missingProfessionRefs.size + missingToolRefs.size + missingBuildingRefs.size) > 0 ? '❌ ISSUES' : '✅ OK'
+      },
+      {
+        'Data Type': 'Professions',
+        'Count': professions.length,
+        'Missing References': '✅ N/A (base data)',
+        'Status': '✅ OK'
+      },
+      {
+        'Data Type': 'Tools',
+        'Count': tools.length,
+        'Missing References': '✅ N/A (base data)',
+        'Status': '✅ OK'
+      },
+      {
+        'Data Type': 'Buildings',
+        'Count': buildings.length,
+        'Missing References': '✅ N/A (base data)',
+        'Status': '✅ OK'
+      }
+    ];
+
+    console.table(tableData);
+
+    // Show detailed missing reference information if any exist
+    if (missingItemRefs.size > 0) {
+      console.log("\n❌ Missing Item References:");
+      console.table(Array.from(missingItemRefs).map(id => ({ 'Missing Item ID': id })));
+    }
+
+    if (missingRequirementRefs.size > 0) {
+      console.log("\n❌ Missing Requirement References:");
+      console.table(Array.from(missingRequirementRefs).map(id => ({ 'Missing Requirement ID': id })));
+    }
+
+    if (missingProfessionRefs.size > 0) {
+      console.log("\n❌ Missing Profession References:");
+      console.table(Array.from(missingProfessionRefs).map(id => ({ 'Missing Profession ID': id })));
+    }
+
+    if (missingToolRefs.size > 0) {
+      console.log("\n❌ Missing Tool References:");
+      console.table(Array.from(missingToolRefs).map(id => ({ 'Missing Tool ID': id })));
+    }
+
+    if (missingBuildingRefs.size > 0) {
+      console.log("\n❌ Missing Building References:");
+      console.table(Array.from(missingBuildingRefs).map(id => ({ 'Missing Building ID': id })));
+    }
+
+    // Summary statistics
+    const totalMissing = missingItemRefs.size + missingRequirementRefs.size + 
+                        missingProfessionRefs.size + missingToolRefs.size + missingBuildingRefs.size;
+    
+    if (totalMissing === 0) {
+      console.log("✅ All data references are valid - no missing entities found!");
+    } else {
+      this.error(`Found ${totalMissing} total missing references across all data files`);
+    }
   }
 
   // Run all tests
   runAllTests() {
-    console.log("🧪 BitCrafty Data Validation Tests");
-    console.log("=====================================\n");
+    console.log("🧪 BitCrafty Data Validation");
 
     this.createLookupSets();
     
+    // Run validation tests silently
     this.validateCraftItemReferences();
     this.validateEntityProfessionCategories();
     this.validateCraftRequirements();
     this.validateRequirementMetadataReferences();
     this.validateDataIntegrity();
-    this.analyzeProfessionDistribution();
+    
+    // Generate overview table with missing references
+    this.generateDataOverviewTable();
 
     // Summary
-    console.log("\n📋 Test Summary:");
-    console.log(`✅ ${this.errors.length === 0 ? 'PASSED' : 'FAILED'}`);
-    console.log(`Errors: ${this.errors.length}`);
-    console.log(`Warnings: ${this.warnings.length}`);
+    console.log(`\n📋 Validation Result: ${this.errors.length === 0 ? '✅ PASSED' : '❌ FAILED'}`);
+    if (this.errors.length > 0) {
+      console.log(`Errors: ${this.errors.length}`);
+    }
+    if (this.warnings.length > 0) {
+      console.log(`Warnings: ${this.warnings.length}`);
+    }
 
     if (this.errors.length > 0) {
-      console.log("\n❌ Errors found - fix these before merging:");
+      console.log("\n❌ Errors found:");
       this.errors.forEach(error => console.log(`  - ${error}`));
     }
 
     if (this.warnings.length > 0) {
-      console.log("\n⚠️  Warnings (consider reviewing):");
+      console.log("\n⚠️  Warnings:");
       this.warnings.forEach(warning => console.log(`  - ${warning}`));
-    }
-
-    if (this.errors.length === 0) {
-      console.log("\n🎉 All data validation tests passed!");
     }
 
     return this.errors.length === 0;
@@ -364,7 +358,9 @@ class DataValidator {
 export { DataValidator };
 
 // Run tests if this file is executed directly
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (import.meta.url === `file://${fileURLToPath(import.meta.url)}` || 
+    import.meta.url.endsWith(process.argv[1]) ||
+    process.argv[1]?.endsWith('data-validation.test.js')) {
   const validator = new DataValidator();
   const success = validator.runAllTests();
   process.exit(success ? 0 : 1);
