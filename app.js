@@ -177,14 +177,79 @@ function setupUI() {
       });
     });
     
+    // Enhanced search functionality with auto-focus and keyboard navigation
+    let selectedDropdownIndex = -1;
+    
     document.getElementById('item-search').addEventListener('input', function() {
         const val = this.value.trim().toLowerCase();
+        selectedDropdownIndex = -1; // Reset selection when typing
         if (!val) {
             searchDropdown.style.display = 'none';
             return;
         }
         // Handle search dropdown display only
         updateSearchDropdown(val);
+    });
+
+    // Auto-focus search when typing (except when already focused)
+    document.addEventListener('keydown', function(e) {
+        const searchInput = document.getElementById('item-search');
+        const isSearchFocused = document.activeElement === searchInput;
+        const isDropdownVisible = searchDropdown.style.display === 'block';
+        
+        // Handle arrow key navigation in dropdown
+        if (isDropdownVisible && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+            e.preventDefault();
+            const results = searchDropdown.querySelectorAll('.search-result');
+            
+            // Remove previous highlight
+            if (selectedDropdownIndex >= 0 && results[selectedDropdownIndex]) {
+                results[selectedDropdownIndex].style.background = '#272822';
+            }
+            
+            // Update selection
+            if (e.key === 'ArrowDown') {
+                selectedDropdownIndex = Math.min(selectedDropdownIndex + 1, results.length - 1);
+            } else {
+                selectedDropdownIndex = Math.max(selectedDropdownIndex - 1, -1);
+            }
+            
+            // Highlight new selection
+            if (selectedDropdownIndex >= 0 && results[selectedDropdownIndex]) {
+                results[selectedDropdownIndex].style.background = '#49483e';
+                // Scroll into view if needed
+                results[selectedDropdownIndex].scrollIntoView({ block: 'nearest' });
+            }
+            return;
+        }
+        
+        // Handle Enter key to select highlighted item
+        if (isDropdownVisible && e.key === 'Enter' && selectedDropdownIndex >= 0) {
+            e.preventDefault();
+            const results = searchDropdown.querySelectorAll('.search-result');
+            if (results[selectedDropdownIndex]) {
+                const id = results[selectedDropdownIndex].getAttribute('data-id');
+                selectSearchResult(id);
+            }
+            return;
+        }
+        
+        // Handle Escape to close dropdown
+        if (isDropdownVisible && e.key === 'Escape') {
+            searchDropdown.style.display = 'none';
+            selectedDropdownIndex = -1;
+            searchInput.blur();
+            return;
+        }
+        
+        // Auto-focus search input when typing (alphanumeric keys)
+        if (!isSearchFocused && 
+            !e.ctrlKey && !e.altKey && !e.metaKey && 
+            e.key.length === 1 && 
+            /[a-zA-Z0-9\s]/.test(e.key)) {
+            searchInput.focus();
+            // Don't prevent default so the character gets typed
+        }
     });
 
     // Free-text search dropdown for item navigation
@@ -207,30 +272,52 @@ function setupUI() {
         searchDropdown.style.display = 'none';
         return;
       }
-      searchDropdown.innerHTML = matches.map(i => `<div class="search-result" data-id="${i.id}" style="padding:4px 10px;cursor:pointer;">${i.name}</div>`).join('');
+      searchDropdown.innerHTML = matches.map((i, index) => 
+        `<div class="search-result" data-id="${i.id}" data-index="${index}" style="padding:4px 10px;cursor:pointer;">${i.name}</div>`
+      ).join('');
       const rect = searchInput.getBoundingClientRect();
       searchDropdown.style.left = rect.left + 'px';
       searchDropdown.style.top = (rect.bottom + window.scrollY) + 'px';
       searchDropdown.style.width = rect.width + 'px';
       searchDropdown.style.display = 'block';
+      selectedDropdownIndex = -1; // Reset selection when dropdown updates
+    }
+
+    function selectSearchResult(id) {
+      const searchInput = document.getElementById('item-search');
+      searchInput.value = ''; // Clear the search box
+      searchDropdown.style.display = 'none';
+      selectedDropdownIndex = -1;
+      // Focus/select the node in the network
+      window.network.selectNodes([id]);
+      window.network.focus(id, { scale: 1.2, animation: true });
+      showItemDetails(id);
     }
 
     document.addEventListener('click', function(e) {
       if (!searchDropdown.contains(e.target) && e.target !== searchInput) {
         searchDropdown.style.display = 'none';
+        selectedDropdownIndex = -1;
+      }
+    });
+    
+    // Enhanced dropdown interaction with hover support
+    searchDropdown.addEventListener('mouseover', function(e) {
+      if (e.target.classList.contains('search-result')) {
+        // Remove previous highlight
+        const results = searchDropdown.querySelectorAll('.search-result');
+        results.forEach(result => result.style.background = '#272822');
+        
+        // Highlight hovered item and update index
+        e.target.style.background = '#49483e';
+        selectedDropdownIndex = parseInt(e.target.getAttribute('data-index'));
       }
     });
     
     searchDropdown.addEventListener('mousedown', function(e) {
       if (e.target.classList.contains('search-result')) {
         const id = e.target.getAttribute('data-id');
-        const itemsObj = store.getState().items;
-        searchInput.value = ''; // Clear the search box
-        searchDropdown.style.display = 'none';
-        // Focus/select the node in the network
-        window.network.selectNodes([id]);
-        window.network.focus(id, { scale: 1.2, animation: true });
-        showItemDetails(id);
+        selectSearchResult(id);
       }
     });
 
