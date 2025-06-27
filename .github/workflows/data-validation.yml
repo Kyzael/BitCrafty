@@ -26,18 +26,29 @@ jobs:
       with:
         node-version: '18'
         
+    - name: Verify project structure
+      run: |
+        echo "📁 Checking project structure..."
+        ls -la
+        echo "📁 Checking tests directory..."
+        ls -la tests/
+        echo "📁 Checking data directory..."
+        ls -la data/
+        
     - name: Run data validation tests
       run: |
-        echo "Running BitCrafty Data Validation Tests"
-        node tests/run-tests.js
+        cd tests
+        node data-validation.test.js
         
     - name: Check test results
       if: failure()
       run: |
         echo "❌ Data validation failed! Please fix the errors above before merging."
+        echo "💡 Check the Output of the Test for missing references or invalid structures."
         exit 1
         
     - name: Success message
       if: success()
       run: |
-        echo "✅ All data validation tests passed! Ready to merge."
+        echo "✅ All data validation tests passed!"
+        echo "🎉 Data integrity verified - ready to merge."
