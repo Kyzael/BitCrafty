@@ -38,7 +38,16 @@ jobs:
     - name: Run data validation tests
       run: |
         cd tests
-        node data-validation.test.js
+        echo "Running data validation..."
+        node data-validation.test.js --github > validation_output.txt 2>&1
+        cat validation_output.txt
+        
+    - name: Generate validation summary
+      if: always()
+      run: |
+        cd tests
+        # The output is already in GitHub markdown format, so just copy it
+        cat validation_output.txt >> $GITHUB_STEP_SUMMARY
         
     - name: Check test results
       if: failure()

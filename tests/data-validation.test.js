@@ -195,7 +195,7 @@ class DataValidator {
   }
 
   // Generate detailed data overview table
-  generateDataOverviewTable() {
+  generateDataOverviewTable(isGitHubMode = false) {
 
     // Collect missing references
     const missingItemRefs = new Set();
@@ -276,7 +276,13 @@ class DataValidator {
       }
     ];
 
+    if (isGitHubMode) {
+      console.log("```");
+    }
     console.table(tableData);
+    if (isGitHubMode) {
+      console.log("```");
+    }
 
     // Show detailed missing reference information if any exist
     if (missingItemRefs.size > 0) {
@@ -313,6 +319,15 @@ class DataValidator {
     } else {
       this.error(`Found ${totalMissing} total missing references across all data files`);
     }
+  }
+
+  // Run validation tests silently (for GitHub mode)
+  runValidationSilently() {
+    this.validateCraftItemReferences();
+    this.validateEntityProfessionCategories();
+    this.validateCraftRequirements();
+    this.validateRequirementMetadataReferences();
+    this.validateDataIntegrity();
   }
 
   // Run all tests
@@ -361,7 +376,38 @@ export { DataValidator };
 if (import.meta.url === `file://${fileURLToPath(import.meta.url)}` || 
     import.meta.url.endsWith(process.argv[1]) ||
     process.argv[1]?.endsWith('data-validation.test.js')) {
+  
+  const isGitHubMode = process.argv.includes('--github');
   const validator = new DataValidator();
-  const success = validator.runAllTests();
-  process.exit(success ? 0 : 1);
+  
+  if (isGitHubMode) {
+    // GitHub-friendly output mode markdown
+    console.log("## 🧪 BitCrafty Data Validation Results");
+    console.log("");
+    console.log("### 📊 Data Overview");
+    console.log("");
+    validator.createLookupSets();
+    validator.runValidationSilently();
+    validator.generateDataOverviewTable(true);
+    console.log("");
+    
+    if (validator.errors.length === 0) {
+      console.log("### ✅ Result: PASSED");
+      console.log("All data validation tests completed successfully!");
+      process.exit(0);
+    } else {
+      console.log("### ❌ Result: FAILED");
+      console.log(`Found ${validator.errors.length} validation errors that need to be fixed.`);
+      console.log("");
+      console.log("#### Error Details:");
+      validator.errors.forEach((error, i) => {
+        console.log(`${i + 1}. ${error}`);
+      });
+      process.exit(1);
+    }
+  } else {
+    // Normal mode
+    const success = validator.runAllTests();
+    process.exit(success ? 0 : 1);
+  }
 }
