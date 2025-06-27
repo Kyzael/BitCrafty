@@ -23,9 +23,9 @@ async function loadData() {
     items: arrayToRecord(items),
     crafts: arrayToRecord(crafts),
     requirements: arrayToRecord(requirements),
-    professions, // already an object keyed by id
-    tools,       // already an object keyed by id
-    buildings    // already an object keyed by id
+    professions: arrayToRecord(professions),
+    tools: arrayToRecord(tools),
+    buildings: arrayToRecord(buildings)
   };
 }
 
