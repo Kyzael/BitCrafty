@@ -1,0 +1,43 @@
+name: Data Validation
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'data/**'
+      - 'tests/**'
+  push:
+    branches: [ main ]
+    paths:
+      - 'data/**'
+      - 'tests/**'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  validate-data:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Run data validation tests
+      run: |
+        echo "🧪 Running BitCrafty Data Validation Tests"
+        node tests/run-tests.js
+        
+    - name: Check test results
+      if: failure()
+      run: |
+        echo "❌ Data validation failed! Please fix the errors above before merging."
+        exit 1
+        
+    - name: Success message
+      if: success()
+      run: |
+        echo "✅ All data validation tests passed! Ready to merge."

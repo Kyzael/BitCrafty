@@ -4,73 +4,84 @@ applyTo: '**'
 
 # BitCrafty Coding Standards
 
-This document outlines the general coding standards and best practices for the BitCrafty project. All contributors should follow these guidelines to ensure code quality, maintainability, and a consistent user experience.
+This document outlines the coding standards and best practices for the BitCrafty project. All contributors should follow these guidelines to ensure code quality, maintainability, and consistency.
 
-## 1. General Principles
-- **Readability First:** Code should be easy to read and understand. Use clear variable and function names, and add comments where logic is non-obvious.
-- **Consistency:** Follow the established patterns in the codebase. When in doubt, match the style and structure of existing code.
-- **Single Source of Truth:** Avoid duplicating logic or data. Use helper functions and centralized data structures.
-- **Accessibility:** All UI features must be accessible, including colorblind-friendly palettes and keyboard navigation where possible.
-- **State Management:** Use Zustand as the single state management layer for all app state (items, crafts, professions, graph data, selection, filtering, and queue logic). Access state only through the Zustand store.
+## 1. Architecture Principles
+- **Modular Design:** Use the established component-based architecture with clear separation of concerns
+- **Event-Driven Communication:** Components communicate via custom events, avoiding tight coupling
+- **Single Responsibility:** Each module/component should have one clear purpose
+- **Readability First:** Code should be self-documenting with clear naming and minimal comments
+- **State Management:** Use Zustand store as the single source of truth for all application state
 
-## 2. JavaScript/HTML/CSS
-- **ES6+ Syntax:** Use modern JavaScript features (let/const, arrow functions, destructuring, etc.).
-- **No Global Pollution:** Minimize global variables. Use closures, modules, or IIFEs where appropriate.
-- **DOM Manipulation:** Use vanilla JS for DOM manipulation. Avoid jQuery or other libraries unless necessary.
-- **Event Listeners:** Attach event listeners after DOM elements are created. Remove listeners if elements are removed.
-- **Data Loading:** Always load and parse data asynchronously from multiple JSON files. Handle errors gracefully.
-- **UI Updates:** Update the UI only after all data files are loaded and validated.
-- **Separation of Concerns:** Keep data logic, UI rendering, and event handling as separate as possible.
-- **Zustand Store:** All stateful logic (including queue, selection, filtering, and graph data) must use the Zustand store. Use `loadAllData()` method for loading normalized data files.
+## 2. File Structure & Organization
+```
+├── main.js                    # Application entry point
+├── lib/
+│   ├── common.js             # Constants, utilities, DOM helpers
+│   └── store-helpers.js      # Data access patterns
+└── components/
+    ├── ui.js                 # Sidebar, search, item details
+    ├── graph.js              # Network visualization
+    ├── crafting.js           # Queue management, resource calculation
+    └── filters.js            # Profession and dependency filtering
+```
 
-## 3. Data Model
-- **Normalized Structure:** Use separate JSON files for different entity types in the `data/` directory.
-- **Entity ID Format:** All entities use standardized IDs: `entity-type:category:identifier` (e.g., `item:grain:embergrain`, `craft:cooking:berry-pie`).
+- **Entry Point:** `main.js` initializes all components in correct order
+- **Common Libraries:** Shared constants, utilities, and data access patterns in `lib/`
+- **Components:** Feature-focused modules in `components/` directory
+- **Clean Imports:** Use ES6 imports/exports, import only what's needed
+
+## 3. JavaScript Standards
+- **Modern ES6+:** Use const/let, arrow functions, destructuring, template literals
+- **Module Pattern:** Each component exports only what's needed, imports specifically
+- **Event-Driven:** Use `window.addEventListener()` and `window.dispatchEvent()` for component communication
+- **DOM Utilities:** Use the `DOM` helpers from `lib/common.js` for consistent UI creation
+- **Store Access:** Access all data through store helpers in `lib/store-helpers.js`
+- **Error Handling:** Use try/catch blocks and provide user feedback for errors
+
+## 4. Component Guidelines
+- **Initialization:** Each component exports an `initialize()` function called from `main.js`
+- **Event Listeners:** Set up in component initialization, clean up if needed
+- **State Updates:** Use Zustand store for all stateful operations
+- **UI Updates:** Trigger via events, update DOM directly in response
+- **Data Access:** Use helper objects (ItemHelpers, CraftHelpers, etc.) not direct store access
+
+## 5. Data Model
+- **Entity ID Format:** `TYPE:PROFESSION:IDENTIFIER` (e.g., `item:farming:embergrain`, `craft:cooking:berry-pie`)
+- **Profession-Based Organization:** Items and crafts use profession names in their IDs for automatic color mapping
 - **Data Files:**
-  - `data/items.json` - All items with unique string IDs
-  - `data/crafts.json` - All crafting recipes with material/output references
-  - `data/requirements.json` - Profession, tool, and building requirements
-  - `data/metadata/` - Additional metadata (professions, tools, buildings)
-- **Validation:** Ensure all item and requirement references in crafts exist in their respective files.
-- **Base Items:** Use the `BASE_CRAFT_ITEMS` set with proper item IDs for items that should be treated as base resources.
+  - `data/items.json` - All items with profession-based IDs
+  - `data/crafts.json` - All crafting recipes with profession-based IDs
+  - `data/requirements.json` - Profession, tool, building requirements
+  - `data/metadata/professions.json` - Professions with color definitions
+  - `data/metadata/` - Tools, buildings metadata
+- **Base Items:** Use `BASE_CRAFT_ITEMS` constant for items treated as base resources
+- **Color Mapping:** Use `getProfessionColorFromId()` to extract colors from entity IDs
+- **Validation:** Ensure all references between files are valid
 
-## 4. UI/UX
-- **Monokai Theme:** All UI elements should use the Monokai-inspired color palette defined in the project.
-- **Colorblind Accessibility:** Use only the approved, colorblind-friendly palette for professions.
-- **Consistent Spacing:** Use consistent margins, padding, and font sizes for all UI elements.
-- **Responsive Layout:** Sidebar and main content must remain usable at various window sizes.
-- **Search/Dropdowns:** Style all search bars and dropdowns to match the Monokai theme.
+## 6. UI/UX Standards
+- **Monokai Theme:** Use the `COLORS` constant from `lib/common.js`
+- **Colorblind-Safe:** Use approved profession colors only
+- **Consistent Spacing:** Use standardized padding/margins throughout
+- **Responsive:** Sidebar and main content work at various screen sizes
 
-## 5. Graph Visualization
-- **Node Types:**
-  - Item nodes: filled boxes with curved corners.
-  - Craft nodes: filled roundRect with circular ends.
-- **Node Colors:** Color nodes by profession using the palette. Never use red for professions.
-- **Node Selection:** Only bold/enlarge node text on selection; never fill the node with a different color.
-- **Edge Colors:**
-  - Input edges: cyan.
-  - Output edges: pink.
-  - Highlight edges leading to selected nodes.
-- **Graph Spacing:** Use increased spacing for readability.
+## 7. Graph Visualization
+- **Node Types:** Items (rounded boxes), Crafts (pill-shaped)
+- **Colors:** Automatic profession-based coloring using `getProfessionColorFromId()`
+- **Color Source:** Colors come from `data/metadata/professions.json`
+- **Selection:** Bold text only, no color fills on selection
+- **Edges:** Cyan for inputs, pink for outputs
+- **Highlighting:** Show incoming edges to selected nodes
 
-## 6. Resource Calculation & Crafting Logic
-- **Surplus Handling:** Share a single surplus object across the entire queue.
-- **Batching:** Batch queue items that are outputs of the same craft to avoid double-counting.
-- **Base Resource Calculation:** Only list true base resources in the summary.
-- **Circular Logic:** Always handle circular crafting logic robustly. Use a `visited` set or similar mechanism in all recursive functions (e.g., `tracePath`, `processInput`) to prevent infinite recursion. Always check and respect `BASE_CRAFT_ITEMS` before recursing further.
-- **Zustand State:** All resource and queue calculations must use data from the Zustand store, not from global or module-level variables.
+## 8. Resource & Crafting Logic
+- **Circular Dependencies:** Always use `visited` sets in recursive functions
+- **Surplus Sharing:** Single surplus object across entire queue
+- **Base Resources:** Filter to show only true base materials
+- **Store Integration:** All calculations use Zustand store data
 
-## 7. Accessibility
-- **Colorblind-Friendly:** All profession colors must be distinguishable for colorblind users.
-- **Keyboard Navigation:** Ensure all interactive elements (search, dropdowns, buttons) are keyboard accessible.
-- **Contrast:** Maintain high contrast for text and UI elements.
-
-## 8. Comments & Documentation
-- **Function Comments:** Add JSDoc-style comments for complex functions.
-- **Inline Comments:** Use inline comments for non-obvious logic.
-- **README:** Keep the `README.md` up to date with setup, usage, and contribution instructions.
-
-## 9. Error Handling
-- **Graceful Degradation:** Handle missing or malformed data gracefully.
-- **User Feedback:** Provide clear feedback for errors in the UI.
+## 9. Development Guidelines
+- **Accessibility:** Keyboard navigation and colorblind-friendly design
+- **Error Handling:** Graceful degradation with user feedback
+- **Comments:** JSDoc for complex functions, inline for non-obvious logic
+- **Testing:** Test components individually and as integrated system
 

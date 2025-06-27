@@ -1,0 +1,14 @@
+{
+  "name": "bitcrafty-tests",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Data validation tests for BitCrafty",
+  "scripts": {
+    "test": "node data-validation.test.js",
+    "test:verbose": "node data-validation.test.js --verbose",
+    "validate": "node data-validation.test.js"
+  },
+  "keywords": ["validation", "data", "testing"],
+  "author": "BitCrafty",
+  "license": "MIT"
+}

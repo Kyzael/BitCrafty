@@ -33,5 +33,4 @@ BitCrafty is a web-based tool for visualizing and simplifying the large, complex
 3. All data is loaded from normalized JSON files in the `data/` directory and processed in-browser.
 
 ## License
-
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

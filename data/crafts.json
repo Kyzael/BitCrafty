@@ -1,40 +1,740 @@
 [
-  { "id": "craft:foraging:rough-fiber", "name": "Extract Rough Plant Fibre", "materials": [ { "item": "item:plant:rough-roots", "qty": 1 } ], "outputs": [ { "item": "item:plant:rough-fiber", "qty": 100 } ], "requirement": "requirement:foraging:basic-tools" },
-  { "id": "craft:tailoring:rough-spool", "name": "Craft Rough Spool of Thread", "materials": [ { "item": "item:plant:rough-fiber", "qty": 40 } ], "outputs": [ { "item": "item:thread:rough-spool", "qty": 1 } ], "requirement": "requirement:tailoring:basic-tools" },
-  { "id": "craft:tailoring:cloth-strip", "name": "Weave Rough Cloth Strip", "materials": [ { "item": "item:thread:rough-spool", "qty": 1 } ], "outputs": [ { "item": "item:cloth:strip", "qty": 1 } ], "requirement": "requirement:tailoring:basic-loom" },
-  { "id": "craft:tailoring:rough-rope", "name": "Braid Rough Rope from Rough Cloth Strip", "materials": [ { "item": "item:cloth:strip", "qty": 1 } ], "outputs": [ { "item": "item:rope:rough", "qty": 1 } ], "requirement": "requirement:tailoring:basic-tools" },
-  { "id": "craft:tailoring:cloth", "name": "Weave Rough Cloth", "materials": [ { "item": "item:cloth:strip", "qty": 1 }, { "item": "item:wispweave:filament-rough", "qty": 5 } ], "outputs": [ { "item": "item:cloth:rough", "qty": 1 } ], "requirement": "requirement:tailoring:basic-tools" },
-  { "id": "craft:tailoring:cloth-tarp", "name": "Weave Rough Cloth Tarp", "materials": [ { "item": "item:cloth:rough", "qty": 10 } ], "outputs": [ { "item": "item:cloth:tarp-rough", "qty": 1 } ], "requirement": "requirement:tailoring:basic-tools" },
-  { "id": "craft:farming:wispweave-plant", "name": "Grow Basic Wispweave Plant", "materials": [ { "item": "item:wispweave:seeds-basic", "qty": 1 }, { "item": "item:fertilizer:basic", "qty": 1 } ], "outputs": [ { "item": "item:wispweave:plant-basic", "qty": 1 } ], "requirement": "requirement:farming:basic-tools" },
-  { "id": "craft:farming:wispweave-products", "name": "Husk into Basic Wispweave Products", "materials": [ { "item": "item:wispweave:plant-basic", "qty": 1 } ], "outputs": [ { "item": "item:wispweave:seeds-basic", "qty": "1-3" }, { "item": "item:wispweave:filament-rough", "qty": "2-5" } ], "requirement": "requirement:farming:basic-tools" },
-  { "id": "craft:farming:starbulb-plant", "name": "Grow Basic Starbulb Plant", "materials": [ { "item": "item:starbulb:seeds-basic", "qty": 1 }, { "item": "item:fertilizer:basic", "qty": 1 } ], "outputs": [ { "item": "item:starbulb:plant-basic", "qty": 1 } ], "requirement": "requirement:farming:basic-tools" },
-  { "id": "craft:farming:starbulb-products", "name": "Husk into Basic Starbulb Products", "materials": [ { "item": "item:starbulb:plant-basic", "qty": 1 } ], "outputs": [ { "item": "item:starbulb:seeds-basic", "qty": "1-3" }, { "item": "item:starbulb:basic", "qty": "5-10" }, { "item": "item:oil:crop-basic", "qty": "0-1" } ], "requirement": "requirement:farming:basic-tools" },
-  { "id": "craft:cooking:mashed-bulbs", "name": "Cook Plain Mashed Bulbs", "materials": [ { "item": "item:starbulb:basic", "qty": 5 } ], "outputs": [ { "item": "item:bulb:mashed-plain", "qty": 1 } ], "requirement": "requirement:cooking:basic-tools" },
-  { "id": "craft:farming:embergrain-plant", "name": "Grow Basic Embergrain Plant", "materials": [ { "item": "item:grain:embergrain-seeds", "qty": 1 }, { "item": "item:fertilizer:basic", "qty": 1 } ], "outputs": [ { "item": "item:grain:embergrain-plant", "qty": 1 } ], "requirement": "requirement:farming:basic-tools" },
-  { "id": "craft:farming:embergrain-products", "name": "Husk Basic Embergrain Products", "materials": [ { "item": "item:grain:embergrain-plant", "qty": 1 } ], "outputs": [ { "item": "item:grain:embergrain", "qty": "30-50" }, { "item": "item:grain:embergrain-seeds", "qty": "1-3" }, { "item": "item:straw:rough", "qty": "0-1" } ], "requirement": "requirement:farming:basic-tools" },
-  { "id": "craft:cooking:embergrain-dough", "name": "Mix Embergrain Dough", "materials": [ { "item": "item:grain:embergrain", "qty": 20 } ], "outputs": [ { "item": "item:grain:embergrain-dough", "qty": 1 } ], "requirement": "requirement:cooking:basic-tools" },
-  { "id": "craft:cooking:fill-water-bucket", "name": "Fill Water Bucket", "materials": [ { "item": "item:bucket:empty", "qty": 1 } ], "outputs": [ { "item": "item:bucket:water", "qty": 1 } ], "requirement": "requirement:cooking:well" },
-  { "id": "craft:carpentry:empty-bucket", "name": "Assemble Empty Bucket", "materials": [ { "item": "item:wood:rough-plank", "qty": 1 } ], "outputs": [ { "item": "item:bucket:empty", "qty": 10 } ], "requirement": "requirement:carpentry:basic-tools" },
-  { "id": "craft:scholar:metal-solvent", "name": "Mix Basic Metal Solvent", "materials": [ { "item": "item:berry:citric-basic", "qty": 1 }, { "item": "item:glass:vial-rough", "qty": 1 }, { "item": "item:bucket:water", "qty": 1 }, { "item": "item:stone:rough-pebbles", "qty": 5 } ], "outputs": [ { "item": "item:solvent:metal-basic", "qty": 1 } ], "requirement": "requirement:scholar:basic-tools" },
-  { "id": "craft:fishing:moonlit-crawdad", "name": "Process Moonlit Crawdad", "materials": [ { "item": "item:fish:moonlit-crawdad", "qty": 1 } ], "outputs": [ { "item": "item:fish:bait-basic", "qty": 2 }, { "item": "item:shell:crushed-rough", "qty": "0-1" } ], "requirement": "requirement:fishing:basic-tools" },
-  { "id": "craft:cooking:skewered-baitfish", "name": "Cook Plain Skewered Baitfish", "materials": [ { "item": "item:fish:moonlit-crawdad", "qty": 3 } ], "outputs": [ { "item": "item:fish:skewered-baitfish-plain", "qty": 2 } ], "requirement": "requirement:cooking:basic-fire" },
-  { "id": "craft:forestry:wood-log", "name": "Split into Rough Wood Log", "materials": [ { "item": "item:wood:rough-trunk", "qty": 1 } ], "outputs": [ { "item": "item:wood:rough-log", "qty": 6 }, { "item": "item:resin:amber", "qty": "0-1" } ], "requirement": "requirement:forestry:basic-tools" },
-  { "id": "craft:carpentry:wood-stripped", "name": "Saw Rough Stripped Wood", "materials": [ { "item": "item:wood:rough-log", "qty": 3 } ], "outputs": [ { "item": "item:wood:rough-stripped", "qty": 1 } ], "requirement": "requirement:carpentry:basic-tools" },
-  { "id": "craft:carpentry:wood-plank", "name": "Craft Rough Plank", "materials": [ { "item": "item:wood:rough-stripped", "qty": 1 } ], "outputs": [ { "item": "item:wood:rough-plank", "qty": 1 } ], "requirement": "requirement:carpentry:basic-tools" },
-  { "id": "craft:carpentry:fire-kit", "name": "Craft Campfire Kit", "materials": [ { "item": "item:wood:rough-plank", "qty": 4 }, { "item": "item:stone:rough-pebbles", "qty": 4 } ], "outputs": [ { "item": "item:camp:fire-kit", "qty": 1 } ], "requirement": "requirement:carpentry:basic-tools" },
-  { "id": "craft:mining:stone-chunk", "name": "Smash Rough Stone Chunk", "materials": [ { "item": "item:stone:chunk", "qty": 1 } ], "outputs": [ { "item": "item:stone:rough-pebbles", "qty": "8-20" }, { "item": "item:stone:braxite", "qty": "0-4" } ], "requirement": "requirement:mining:basic-tools" },
-  { "id": "craft:cooking:ground-meat-bulbs", "name": "Cook Plain Ground Meat and Mashed Bulbs", "materials": [ { "item": "item:meat:roasted", "qty": 2 }, { "item": "item:bulb:mashed-plain", "qty": 1 } ], "outputs": [ { "item": "item:meat:ground-mashed-bulbs", "qty": 1 } ], "requirement": "requirement:cooking:basic-tools" },
-  { "id": "craft:cooking:roasted-meat", "name": "Cook Plain Roasted Meat", "materials": [ { "item": "item:meat:raw-basic", "qty": 1 } ], "outputs": [ { "item": "item:meat:roasted", "qty": 1 } ], "requirement": "requirement:cooking:basic-tools" },
-  { "id": "craft:cooking:cooked-berries", "name": "Cook Plain Berries", "materials": [ { "item": "item:berry:basic", "qty": 15 } ], "outputs": [ { "item": "item:berry:cooked-plain", "qty": 1 } ], "requirement": "requirement:cooking:basic-tools" },
-  { "id": "craft:cooking:raw-berry-pie", "name": "Prepare Plain Raw Berry Pie", "materials": [ { "item": "item:berry:cooked-plain", "qty": 2 }, { "item": "item:grain:embergrain-dough", "qty": 1 } ], "outputs": [ { "item": "item:berry:raw-pie-plain", "qty": 1 } ], "requirement": "requirement:cooking:basic-tools" },
-  { "id": "craft:cooking:berry-pie", "name": "Bake Plain Berry Pie", "materials": [ { "item": "item:berry:raw-pie-plain", "qty": 1 }, { "item": "item:grain:embergrain-dough", "qty": 1 } ], "outputs": [ { "item": "item:berry:pie-plain", "qty": 1 } ], "requirement": "requirement:cooking:basic-oven" },
-  { "id": "craft:hunting:harvest-animal", "name": "Harvest Rough Animal", "materials": [ { "item": "item:animal:sagi-bird", "qty": 1 } ], "outputs": [ { "item": "item:meat:raw-basic", "qty": 4 }, { "item": "item:animal:raw-pelt", "qty": 2 }, { "item": "item:animal:hair", "qty": "0-1" } ], "requirement": "requirement:hunting:basic-tools" },
-  { "id": "craft:fishing:chum-basic", "name": "Craft Basic Chum", "materials": [ { "item": "item:fish:breezy-fin-darter", "qty": 10 }, { "item": "item:meat:raw-basic", "qty": 5 } ], "outputs": [ { "item": "item:fish:chum-basic", "qty": 1 } ], "requirement": "requirement:fishing:basic-tools" },
-  { "id": "craft:fishing:darter-products", "name": "Craft Breezy Fin Darter Products", "materials": [ { "item": "item:fish:breezy-fin-darter", "qty": 1 } ], "outputs": [ { "item": "item:fish:fillet-breezy-fin-darter", "qty": "1-2" }, { "item": "item:fish:oil-basic", "qty": 1 } ], "requirement": "requirement:fishing:basic-tools" },
-  { "id": "craft:farming:fertilizer-fish", "name": "Make Basic Fertilizer (Fish)", "materials": [ { "item": "item:fish:breezy-fin-darter", "qty": 2 } ], "outputs": [ { "item": "item:fertilizer:basic", "qty": 1 } ], "requirement": "requirement:farming:basic-tools" },
-  { "id": "craft:farming:fertilizer-berry", "name": "Make Basic Fertilizer (Berry)", "materials": [ { "item": "item:berry:basic", "qty": 2 } ], "outputs": [ { "item": "item:fertilizer:basic", "qty": 1 } ], "requirement": "requirement:farming:basic-tools" },
-  { "id": "craft:farming:fertilizer-flower", "name": "Make Basic Fertilizer (Flower)", "materials": [ { "item": "item:flower:basic", "qty": 5 } ], "outputs": [ { "item": "item:fertilizer:basic", "qty": 1 } ], "requirement": "requirement:farming:basic-tools" },
-  { "id": "craft:farming:fertilizer-food", "name": "Make Basic Fertilizer (Food Waste)", "materials": [ { "item": "item:waste:food-basic", "qty": 2 } ], "outputs": [ { "item": "item:fertilizer:basic", "qty": 1 } ], "requirement": "requirement:farming:basic-tools" },
-  { "id": "craft:cooking:roasted-fish", "name": "Cook Plain Roasted Fish", "materials": [ { "item": "item:fish:breezy-fin-darter", "qty": 1 } ], "outputs": [ { "item": "item:fish:roasted", "qty": 1 } ], "requirement": "requirement:cooking:basic-tools" },
-  { "id": "craft:cooking:mushroom-skewer", "name": "Cook Plain Mushroom Skewer", "materials": [ { "item": "item:mushroom:basic", "qty": 5 } ], "outputs": [ { "item": "item:mushroom:skewer-plain", "qty": 1 } ], "requirement": "requirement:cooking:basic-tools" }
+  {
+    "id": "craft:foraging:rough-fiber",
+    "name": "Extract Rough Plant Fibre",
+    "materials": [
+      {
+        "item": "item:foraging:plant-roots",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:foraging:plant-fiber",
+        "qty": 100
+      }
+    ],
+    "requirement": "requirement:foraging:basic-tools"
+  },
+  {
+    "id": "craft:tailoring:rough-spool",
+    "name": "Craft Rough Spool of Thread",
+    "materials": [
+      {
+        "item": "item:foraging:plant-fiber",
+        "qty": 40
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:tailoring:spool-of-thread",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:tailoring:basic-tools"
+  },
+  {
+    "id": "craft:tailoring:cloth-strip",
+    "name": "Weave Rough Cloth Strip",
+    "materials": [
+      {
+        "item": "item:tailoring:spool-of-thread",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:tailoring:cloth-strip",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:tailoring:basic-loom"
+  },
+  {
+    "id": "craft:tailoring:rough-rope",
+    "name": "Braid Rough Rope from Rough Cloth Strip",
+    "materials": [
+      {
+        "item": "item:tailoring:cloth-strip",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:tailoring:rope",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:tailoring:basic-tools"
+  },
+  {
+    "id": "craft:tailoring:cloth",
+    "name": "Weave Rough Cloth",
+    "materials": [
+      {
+        "item": "item:tailoring:cloth-strip",
+        "qty": 1
+      },
+      {
+        "item": "item:farming:wispweave-filament",
+        "qty": 5
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:tailoring:cloth",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:tailoring:basic-tools"
+  },
+  {
+    "id": "craft:tailoring:cloth-tarp",
+    "name": "Weave Rough Cloth Tarp",
+    "materials": [
+      {
+        "item": "item:tailoring:rope",
+        "qty": 10
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:tailoring:cloth-tarp",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:tailoring:basic-tools"
+  },
+  {
+    "id": "craft:farming:wispweave-plant",
+    "name": "Grow Basic Wispweave Plant",
+    "materials": [
+      {
+        "item": "item:farming:wispweave-seeds",
+        "qty": 1
+      },
+      {
+        "item": "item:farming:fertilizer",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:farming:wispweave-plant",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:farming:basic-tools"
+  },
+  {
+    "id": "craft:farming:wispweave-products",
+    "name": "Husk into Basic Wispweave Products",
+    "materials": [
+      {
+        "item": "item:farming:wispweave-plant",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:farming:wispweave-seeds",
+        "qty": "1-3"
+      },
+      {
+        "item": "item:farming:wispweave-filament",
+        "qty": "2-5"
+      }
+    ],
+    "requirement": "requirement:farming:basic-tools"
+  },
+  {
+    "id": "craft:farming:starbulb-plant",
+    "name": "Grow Basic Starbulb Plant",
+    "materials": [
+      {
+        "item": "item:farming:wispweave-seeds",
+        "qty": 1
+      },
+      {
+        "item": "item:farming:fertilizer",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:farming:starbulb-plant",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:farming:basic-tools"
+  },
+  {
+    "id": "craft:farming:starbulb-products",
+    "name": "Husk into Basic Starbulb Products",
+    "materials": [
+      {
+        "item": "item:farming:starbulb-plant",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:farming:starbulb-seeds",
+        "qty": "1-3"
+      },
+      {
+        "item": "item:farming:starbulb",
+        "qty": "5-10"
+      },
+      {
+        "item": "item:farming:crop-oil",
+        "qty": "0-1"
+      }
+    ],
+    "requirement": "requirement:farming:basic-tools"
+  },
+  {
+    "id": "craft:cooking:mashed-bulbs",
+    "name": "Cook Plain Mashed Bulbs",
+    "materials": [
+      {
+        "item": "item:farming:starbulb",
+        "qty": 5
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:cooking:mashed-bulbs",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:cooking:basic-tools"
+  },
+  {
+    "id": "craft:farming:embergrain-plant",
+    "name": "Grow Basic Embergrain Plant",
+    "materials": [
+      {
+        "item": "item:farming:embergrain-seeds",
+        "qty": 1
+      },
+      {
+        "item": "item:farming:embergrain",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:farming:embergrain-plant",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:farming:basic-tools"
+  },
+  {
+    "id": "craft:farming:embergrain-products",
+    "name": "Husk Basic Embergrain Products",
+    "materials": [
+      {
+        "item": "item:farming:embergrain-plant",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:farming:embergrain",
+        "qty": "30-50"
+      },
+      {
+        "item": "item:farming:embergrain-seeds",
+        "qty": "1-3"
+      },
+      {
+        "item": "item:farming:straw",
+        "qty": "0-1"
+      }
+    ],
+    "requirement": "requirement:farming:basic-tools"
+  },
+  {
+    "id": "craft:cooking:embergrain-dough",
+    "name": "Mix Embergrain Dough",
+    "materials": [
+      {
+        "item": "item:farming:embergrain",
+        "qty": 20
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:cooking:embergrain-dough",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:cooking:basic-tools"
+  },
+  {
+    "id": "craft:cooking:fill-water-bucket",
+    "name": "Fill Water Bucket",
+    "materials": [
+      {
+        "item": "item:carpentry:empty-bucket",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:cooking:water-bucket",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:cooking:well"
+  },
+  {
+    "id": "craft:carpentry:empty-bucket",
+    "name": "Assemble Empty Bucket",
+    "materials": [
+      {
+        "item": "item:carpentry:plank",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:carpentry:empty-bucket",
+        "qty": 10
+      }
+    ],
+    "requirement": "requirement:carpentry:basic-tools"
+  },
+  {
+    "id": "craft:scholar:metal-solvent",
+    "name": "Mix Basic Metal Solvent",
+    "materials": [
+      {
+        "item": "item:foraging:citric-berry",
+        "qty": 1
+      },
+      {
+        "item": "item:scholar:glass-vial",
+        "qty": 1
+      },
+      {
+        "item": "item:cooking:water-bucket",
+        "qty": 1
+      },
+      {
+        "item": "item:mining:pebbles",
+        "qty": 5
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:scholar:metal-solvent",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:scholar:basic-tools"
+  },
+  {
+    "id": "craft:fishing:moonlit-crawdad",
+    "name": "Process Moonlit Crawdad",
+    "materials": [
+      {
+        "item": "item:fishing:moonlit-crawdad",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:fishing:bait",
+        "qty": 2
+      },
+      {
+        "item": "item:fishing:crushed-rough-shells",
+        "qty": "0-1"
+      }
+    ],
+    "requirement": "requirement:fishing:basic-tools"
+  },
+  {
+    "id": "craft:cooking:skewered-baitfish",
+    "name": "Cook Plain Skewered Baitfish",
+    "materials": [
+      {
+        "item": "item:fishing:moonlit-crawdad",
+        "qty": 3
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:cooking:skewered-baitfish",
+        "qty": 2
+      }
+    ],
+    "requirement": "requirement:cooking:basic-fire"
+  },
+  {
+    "id": "craft:forestry:wood-log",
+    "name": "Split into Rough Wood Log",
+    "materials": [
+      {
+        "item": "item:forestry:wood-trunk",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:forestry:wood-log",
+        "qty": 6
+      },
+      {
+        "item": "item:forestry:amber-resin",
+        "qty": "0-1"
+      }
+    ],
+    "requirement": "requirement:forestry:basic-tools"
+  },
+  {
+    "id": "craft:carpentry:wood-stripped",
+    "name": "Saw Rough Stripped Wood",
+    "materials": [
+      {
+        "item": "item:forestry:wood-log",
+        "qty": 3
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:carpentry:stripped-wood",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:carpentry:basic-tools"
+  },
+  {
+    "id": "craft:carpentry:wood-plank",
+    "name": "Craft Rough Plank",
+    "materials": [
+      {
+        "item": "item:carpentry:stripped-wood",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:carpentry:plank",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:carpentry:basic-tools"
+  },
+  {
+    "id": "craft:carpentry:fire-kit",
+    "name": "Craft Campfire Kit",
+    "materials": [
+      {
+        "item": "item:carpentry:plank",
+        "qty": 4
+      },
+      {
+        "item": "item:mining:pebbles",
+        "qty": 4
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:carpentry:campfire-kit",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:carpentry:basic-tools"
+  },
+  {
+    "id": "craft:mining:stone-chunk",
+    "name": "Smash Rough Stone Chunk",
+    "materials": [
+      {
+        "item": "item:mining:stone-chunk",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:mining:pebbles",
+        "qty": "8-20"
+      },
+      {
+        "item": "item:mining:braxite",
+        "qty": "0-4"
+      }
+    ],
+    "requirement": "requirement:mining:basic-tools"
+  },
+  {
+    "id": "craft:cooking:ground-meat-bulbs",
+    "name": "Cook Plain Ground Meat and Mashed Bulbs",
+    "materials": [
+      {
+        "item": "item:cooking:roasted-fish",
+        "qty": 2
+      },
+      {
+        "item": "item:cooking:mashed-bulbs",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:cooking:ground-meat-and-mashed-bulbs",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:cooking:basic-tools"
+  },
+  {
+    "id": "craft:cooking:roasted-meat",
+    "name": "Cook Plain Roasted Meat",
+    "materials": [
+      {
+        "item": "item:hunting:raw-meat",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:cooking:roasted-meat",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:cooking:basic-tools"
+  },
+  {
+    "id": "craft:cooking:cooked-berries",
+    "name": "Cook Plain Berries",
+    "materials": [
+      {
+        "item": "item:foraging:flower",
+        "qty": 15
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:cooking:cooked-berries",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:cooking:basic-tools"
+  },
+  {
+    "id": "craft:cooking:raw-berry-pie",
+    "name": "Prepare Plain Raw Berry Pie",
+    "materials": [
+      {
+        "item": "item:cooking:cooked-berries",
+        "qty": 2
+      },
+      {
+        "item": "item:cooking:embergrain-dough",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:cooking:raw-berry-pie",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:cooking:basic-tools"
+  },
+  {
+    "id": "craft:cooking:berry-pie",
+    "name": "Bake Plain Berry Pie",
+    "materials": [
+      {
+        "item": "item:cooking:raw-berry-pie",
+        "qty": 1
+      },
+      {
+        "item": "item:cooking:embergrain-dough",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:cooking:berry-pie",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:cooking:basic-oven"
+  },
+  {
+    "id": "craft:hunting:harvest-animal",
+    "name": "Harvest Rough Animal",
+    "materials": [
+      {
+        "item": "item:hunting:sagi-bird",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:hunting:raw-meat",
+        "qty": 4
+      },
+      {
+        "item": "item:hunting:raw-pelt",
+        "qty": 2
+      },
+      {
+        "item": "item:hunting:animal-hair",
+        "qty": "0-1"
+      }
+    ],
+    "requirement": "requirement:hunting:basic-tools"
+  },
+  {
+    "id": "craft:fishing:chum-basic",
+    "name": "Craft Basic Chum",
+    "materials": [
+      {
+        "item": "item:fishing:breezy-fin-darter",
+        "qty": 10
+      },
+      {
+        "item": "item:hunting:raw-meat",
+        "qty": 5
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:fishing:chum",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:fishing:basic-tools"
+  },
+  {
+    "id": "craft:fishing:darter-products",
+    "name": "Craft Breezy Fin Darter Products",
+    "materials": [
+      {
+        "item": "item:fishing:breezy-fin-darter",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:fishing:breezy-fin-darter-fillet",
+        "qty": "1-2"
+      },
+      {
+        "item": "item:fishing:fish-oil",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:fishing:basic-tools"
+  },
+  {
+    "id": "craft:farming:fertilizer-fish",
+    "name": "Make Basic Fertilizer (Fish)",
+    "materials": [
+      {
+        "item": "item:fishing:breezy-fin-darter",
+        "qty": 2
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:farming:fertilizer",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:farming:basic-tools"
+  },
+  {
+    "id": "craft:farming:fertilizer-berry",
+    "name": "Make Basic Fertilizer (Berry)",
+    "materials": [
+      {
+        "item": "item:foraging:berry",
+        "qty": 2
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:farming:fertilizer",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:farming:basic-tools"
+  },
+  {
+    "id": "craft:farming:fertilizer-flower",
+    "name": "Make Basic Fertilizer (Flower)",
+    "materials": [
+      {
+        "item": "item:foraging:flower",
+        "qty": 5
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:farming:fertilizer",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:farming:basic-tools"
+  },
+  {
+    "id": "craft:farming:fertilizer-food",
+    "name": "Make Basic Fertilizer (Food Waste)",
+    "materials": [
+      {
+        "item": "item:cooking:food-waste",
+        "qty": 2
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:farming:fertilizer",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:farming:basic-tools"
+  },
+  {
+    "id": "craft:cooking:roasted-fish",
+    "name": "Cook Plain Roasted Fish",
+    "materials": [
+      {
+        "item": "item:fishing:breezy-fin-darter",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:cooking:roasted-fish",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:cooking:basic-tools"
+  },
+  {
+    "id": "craft:cooking:mushroom-skewer",
+    "name": "Cook Plain Mushroom Skewer",
+    "materials": [
+      {
+        "item": "item:foraging:mushroom",
+        "qty": 5
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:cooking:mushroom-skewer",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:cooking:basic-tools"
+  }
 ]
