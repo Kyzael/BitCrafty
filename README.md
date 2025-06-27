@@ -15,11 +15,10 @@ BitCrafty is a web-based tool for visualizing and simplifying the large, complex
 - Sidebar with searchable item list, profession filters, and crafting queue
 - Resource calculation and crafting path tracing
 - Colorblind-friendly Monokai-inspired palette
-- Keyboard and accessibility support
 
 ## Technology Stack
 - **JavaScript (ES6+)**: Modern syntax and features
-- **[Zustand](https://github.com/pmndrs/zustand)**: State management (browser-compatible via CDN)
+- **[Zustand](https://github.com/pmndrs/zustand)**: State management (browser CDN)
 - **[vis-network](https://github.com/visjs/vis-network)**: Graph/network visualization (browser CDN)
 - **HTML5/CSS3**: Responsive, accessible UI with Monokai-inspired theming
 - **No server-side code**: All logic and data processing is client-side
@@ -32,11 +31,3 @@ BitCrafty is a web-based tool for visualizing and simplifying the large, complex
    ```
    Then open [http://localhost:8000](http://localhost:8000) in your browser.
 3. All data is loaded from normalized JSON files in the `data/` directory and processed in-browser.
-
-## Data Structure
-The application uses a modern, normalized data structure with separate JSON files:
-- **`data/items.json`** - All items with standardized entity IDs (`item:category:identifier`)
-- **`data/crafts.json`** - All crafting recipes with material/output references
-- **`data/requirements.json`** - Profession, tool, and building requirements for crafts
-- **`data/metadata/`** - Additional metadata files for professions, tools, and buildings
-
