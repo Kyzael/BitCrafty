@@ -8,9 +8,10 @@ import {
   ProfessionHelpers, 
   RequirementHelpers,
   GraphHelpers,
+  getProfessionColorFromId,
   store 
 } from '../lib/store-helpers.js';
-import { applySubtreeFilter, clearSubtreeFilter } from './filters.js';
+import { applySubtreeFilter, clearSubtreeFilter, initializeFilters } from './filters.js';
 
 // Graph state
 let previouslySelected = [];
@@ -35,21 +36,9 @@ function buildGraph() {
   // Create nodes for items and crafts
   const nodeList = [];
   
-  // Item nodes: fill with profession color, dark text for readability
+  // Item nodes: fill with profession color based on item ID
   items.forEach(item => {
-    const craftsForItem = CraftHelpers.getByOutputId(item.id);
-    let profession = null;
-    
-    if (craftsForItem.length > 0) {
-      const craft = craftsForItem[0];
-      if (craft.requirement) {
-        const profInfo = RequirementHelpers.getProfessionInfo(craft.requirement);
-        if (profInfo) profession = profInfo.name;
-      }
-    }
-    
-    const profColorMap = ProfessionHelpers.getColorMap();
-    const color = profession && profColorMap[profession] ? profColorMap[profession] : COLORS.ACCENT_GREEN;
+    const color = getProfessionColorFromId(item.id);
     
     nodeList.push({
       id: item.id,
@@ -74,16 +63,9 @@ function buildGraph() {
     });
   });
 
-  // Craft nodes: fill with profession color, dark text for readability
+  // Craft nodes: fill with profession color based on craft ID
   crafts.forEach(craft => {
-    let profession = null;
-    if (craft.requirement) {
-      const profInfo = RequirementHelpers.getProfessionInfo(craft.requirement);
-      if (profInfo) profession = profInfo.name;
-    }
-    
-    const profColorMap = ProfessionHelpers.getColorMap();
-    const color = profession && profColorMap[profession] ? profColorMap[profession] : COLORS.ACCENT_PINK;
+    const color = getProfessionColorFromId(craft.id);
     
     nodeList.push({
       id: craft.id,
@@ -552,7 +534,7 @@ export function focusNode(nodeId, options = {}) {
     const node = window.network.getPositions([nodeId])[nodeId];
     if (node) {
       // Trigger the same selection logic as clicking
-      onNodeSelect({ nodes: [nodeId], edges: [] });
+      handleNodeSelection({ nodes: [nodeId], edges: [] });
     }
   } catch (error) {
     console.warn('Failed to focus on node:', nodeId, error);

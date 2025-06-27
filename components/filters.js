@@ -8,6 +8,7 @@ import {
   ProfessionHelpers, 
   RequirementHelpers,
   GraphHelpers,
+  extractProfessionFromId,
   store 
 } from '../lib/store-helpers.js';
 
@@ -20,8 +21,11 @@ let subtreeVisibleNodes = new Set();
  */
 export function initializeFilters() {
   setupFilterEventListeners();
-  // Apply initial filter state (all professions active by default)
-  applyProfessionFilters();
+  
+  // Apply initial filter state after a short delay to ensure UI is ready
+  setTimeout(() => {
+    applyProfessionFilters();
+  }, 100);
 }
 
 /**
@@ -61,34 +65,34 @@ function getActiveProfessions() {
 }
 
 /**
- * Build mapping from node ID to profession name
+ * Build mapping from node ID to profession name using new profession-based IDs
  */
 function buildNodeToProfessionMap() {
   const nodeToProfession = {};
   const items = ItemHelpers.getAll();
   const crafts = CraftHelpers.getAll();
   
-  // Process items: get profession from first craft that outputs this item
+  // Get profession name mapping (lowercase ID → capitalized name)
+  const professions = ProfessionHelpers.getAll();
+  const professionNameMap = {};
+  professions.forEach(prof => {
+    const lowercaseName = prof.id.split(':')[1]; // Extract lowercase from "profession:foraging"
+    professionNameMap[lowercaseName] = prof.name; // Map "foraging" → "Foraging"
+  });
+  
+  // Process items: extract profession directly from ID and map to capitalized name
   items.forEach(item => {
-    const craftsForItem = CraftHelpers.getByOutputId(item.id);
-    if (craftsForItem.length > 0) {
-      const craft = craftsForItem[0];
-      if (craft.requirement) {
-        const profInfo = RequirementHelpers.getProfessionInfo(craft.requirement);
-        if (profInfo) {
-          nodeToProfession[item.id] = profInfo.name;
-        }
-      }
+    const profession = extractProfessionFromId(item.id); // Returns lowercase like "foraging"
+    if (profession && professionNameMap[profession]) {
+      nodeToProfession[item.id] = professionNameMap[profession]; // Store capitalized like "Foraging"
     }
   });
   
-  // Process crafts: get profession directly
+  // Process crafts: extract profession directly from ID and map to capitalized name
   crafts.forEach(craft => {
-    if (craft.requirement) {
-      const profInfo = RequirementHelpers.getProfessionInfo(craft.requirement);
-      if (profInfo) {
-        nodeToProfession[craft.id] = profInfo.name;
-      }
+    const profession = extractProfessionFromId(craft.id); // Returns lowercase like "foraging"
+    if (profession && professionNameMap[profession]) {
+      nodeToProfession[craft.id] = professionNameMap[profession]; // Store capitalized like "Foraging"
     }
   });
   

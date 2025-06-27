@@ -1,0 +1,21 @@
+{
+  "name": "bitcrafty",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "A crafting tree visualization tool for BitCraft",
+  "main": "main.js",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "python -m http.server 8000",
+    "test": "node tests/run-tests.js",
+    "test:data": "node tests/data-validation.test.js",
+    "validate": "node tests/run-tests.js"
+  },
+  "keywords": ["crafting", "visualization", "bitcraft", "gaming"],
+  "author": "BitCrafty Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kyzael/BitCrafty.git"
+  }
+}

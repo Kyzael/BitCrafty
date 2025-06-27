@@ -47,13 +47,16 @@ This document outlines the coding standards and best practices for the BitCrafty
 - **Data Access:** Use helper objects (ItemHelpers, CraftHelpers, etc.) not direct store access
 
 ## 5. Data Model
-- **Entity ID Format:** `entity-type:category:identifier` (e.g., `item:grain:embergrain`)
+- **Entity ID Format:** `TYPE:PROFESSION:IDENTIFIER` (e.g., `item:farming:embergrain`, `craft:cooking:berry-pie`)
+- **Profession-Based Organization:** Items and crafts use profession names in their IDs for automatic color mapping
 - **Data Files:**
-  - `data/items.json` - All items with unique string IDs
-  - `data/crafts.json` - All crafting recipes
+  - `data/items.json` - All items with profession-based IDs
+  - `data/crafts.json` - All crafting recipes with profession-based IDs
   - `data/requirements.json` - Profession, tool, building requirements
-  - `data/metadata/` - Professions, tools, buildings
+  - `data/metadata/professions.json` - Professions with color definitions
+  - `data/metadata/` - Tools, buildings metadata
 - **Base Items:** Use `BASE_CRAFT_ITEMS` constant for items treated as base resources
+- **Color Mapping:** Use `getProfessionColorFromId()` to extract colors from entity IDs
 - **Validation:** Ensure all references between files are valid
 
 ## 6. UI/UX Standards
@@ -64,7 +67,8 @@ This document outlines the coding standards and best practices for the BitCrafty
 
 ## 7. Graph Visualization
 - **Node Types:** Items (rounded boxes), Crafts (pill-shaped)
-- **Colors:** Profession-based using approved palette
+- **Colors:** Automatic profession-based coloring using `getProfessionColorFromId()`
+- **Color Source:** Colors come from `data/metadata/professions.json`
 - **Selection:** Bold text only, no color fills on selection
 - **Edges:** Cyan for inputs, pink for outputs
 - **Highlighting:** Show incoming edges to selected nodes
