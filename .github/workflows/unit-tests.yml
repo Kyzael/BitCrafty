@@ -42,7 +42,7 @@ jobs:
     - name: Run unit tests
       run: |
         echo "🧪 Running unit tests..."
-        npm run test:unit
+        node --test
         
     - name: Success message
       if: success()
