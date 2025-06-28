@@ -5,7 +5,7 @@ This directory contains all tests for the BitCrafty application, including unit 
 ## Test Structure
 
 ```
-tests/
+test/
 ├── components/           # Component unit tests
 │   ├── crafting.test.js
 │   ├── filters.test.js
@@ -15,7 +15,6 @@ tests/
 │   ├── common.test.js
 │   └── store-helpers.test.js
 ├── data-validation.test.js  # Data integrity validation
-├── package.json            # Test dependencies and scripts
 └── README.md              # This file
 ```
 
@@ -24,25 +23,25 @@ tests/
 ### All Tests (Unit + Data Validation)
 ```bash
 npm test
-# Uses: node --test (finds all .test.js files)
+# Uses: node --test (auto-discovers all .test.js files in test/ directory)
 ```
 
 ### Unit Tests Only (Excludes Data Validation)
 ```bash
 npm run test:unit
-# Uses: node --test components/**/*.test.js lib/**/*.test.js
+# Uses: node --test test/components/**/*.test.js test/lib/**/*.test.js
 ```
 
 ### Data Validation Only
 ```bash
 npm run validate
-# Uses: node data-validation.test.js
+# Uses: node test/data-validation.test.js
 ```
 
 ### GitHub-Friendly Data Validation (Markdown Output)
 ```bash
 npm run validate:github
-# Uses: node data-validation.test.js --github
+# Uses: node test/data-validation.test.js --github
 ```
 
 ## Test Types
@@ -68,9 +67,10 @@ Comprehensive validation of JSON data files:
 ## Testing Framework
 
 **Node.js Native Test Runner** (Node.js 18+)
-- ✅ Zero external dependencies
+- ✅ Zero external dependencies  
 - ✅ Native ES6 module support
 - ✅ Built-in assertions with `node --test`
+- ✅ Automatic test discovery in `test/` directory
 - ✅ Spec reporter for readable output
 - ✅ Works with your existing Node.js setup
 
@@ -120,12 +120,12 @@ global.document = {
 The project uses two GitHub Actions workflows:
 
 1. **Unit Tests** (`unit-tests.yml`)
-   - Triggers on changes to `components/**`, `lib/**`, or `tests/**`
+   - Triggers on changes to `components/**`, `lib/**`, or `test/**`
    - Runs unit tests with native GitHub test result display
    - GitHub automatically shows test results in PR checks
 
 2. **Data Validation** (`data-validation.yml`)
-   - Triggers on changes to `data/**` or `tests/**`
+   - Triggers on changes to `data/**` or `test/**`
    - Validates JSON data integrity with custom markdown output
    - Generates detailed validation tables in PR summaries
 

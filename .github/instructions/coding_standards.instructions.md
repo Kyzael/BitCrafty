@@ -24,7 +24,7 @@ This document outlines coding standards and best practices for the BitCrafty pro
 │   ├── graph.js              # Network visualization
 │   ├── crafting.js           # Queue management, resource calculation
 │   └── filters.js            # Profession and dependency filtering
-└── tests/
+└── test/
     ├── components/           # Component unit tests
     ├── lib/                  # Library unit tests
     └── data-validation.test.js
@@ -56,8 +56,9 @@ This document outlines coding standards and best practices for the BitCrafty pro
 
 ## 5. Testing Standards (CRITICAL)
 - **Framework:** MUST use Node.js Native Test Runner (`node --test`)
-- **Test Structure:** Tests MUST be in `tests/` directory with subdirectories matching source structure
+- **Test Structure:** Tests MUST be in `test/` directory with subdirectories matching source structure
 - **File Naming:** Test files MUST end with `.test.js`
+- **Auto-Discovery:** Node.js automatically finds tests in `test/` directory (follows `**/test/**/*.js` pattern)
 - **Test Types:**
   - **Unit Tests:** Test component architecture compliance, exports, and patterns
   - **Data Validation:** Test JSON data integrity and entity references

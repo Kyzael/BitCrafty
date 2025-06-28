@@ -6,13 +6,13 @@ on:
     paths:
       - 'components/**'
       - 'lib/**'
-      - 'tests/**'
+      - 'test/**'
   push:
     branches: [ main ]
     paths:
       - 'components/**'
       - 'lib/**'
-      - 'tests/**'
+      - 'test/**'
   workflow_dispatch: # Allow manual triggering
 
 jobs:
@@ -36,14 +36,13 @@ jobs:
         ls -la components/
         echo "📁 Checking lib directory..."
         ls -la lib/
-        echo "📁 Checking tests directory..."
-        ls -la tests/
+        echo "📁 Checking test directory..."
+        ls -la test/
         
     - name: Run unit tests
       run: |
-        cd tests
         echo "🧪 Running unit tests..."
-        node --test components/**/*.test.js lib/**/*.test.js
+        npm run test:unit
         
     - name: Success message
       if: success()

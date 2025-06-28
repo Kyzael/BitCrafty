@@ -5,12 +5,12 @@ on:
     branches: [ main ]
     paths:
       - 'data/**'
-      - 'tests/**'
+      - 'test/**'
   push:
     branches: [ main ]
     paths:
       - 'data/**'
-      - 'tests/**'
+      - 'test/**'
   workflow_dispatch: # Allow manual triggering
 
 jobs:
@@ -30,22 +30,20 @@ jobs:
       run: |
         echo "📁 Checking project structure..."
         ls -la
-        echo "📁 Checking tests directory..."
-        ls -la tests/
+        echo "📁 Checking test directory..."
+        ls -la test/
         echo "📁 Checking data directory..."
         ls -la data/
         
     - name: Run data validation tests
       run: |
-        cd tests
         echo "Running data validation..."
-        node data-validation.test.js --github > validation_output.txt 2>&1
+        node test/data-validation.test.js --github > validation_output.txt 2>&1
         cat validation_output.txt
         
     - name: Generate validation summary
       if: always()
       run: |
-        cd tests
         # The output is already in GitHub markdown format, so just copy it
         cat validation_output.txt >> $GITHUB_STEP_SUMMARY
         
