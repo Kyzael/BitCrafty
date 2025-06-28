@@ -1,152 +1,160 @@
-# BitCrafty Data Validation Tests
+# BitCrafty Testing Suite
 
-This directory contains comprehensive data validation tests to ensure data integrity across all BitCrafty data files.
+This directory contains all tests for the BitCrafty application, including unit tests for components and libraries, plus data validation tests.
 
-## 🎯 What We Test
+## Test Structure
 
-1. **Craft Item References** - All item IDs referenced in crafts.json exist in items.json
-2. **Entity Profession Categories** - All items and crafts have valid profession categories in their entity IDs
-3. **Craft Requirements** - All crafts have valid requirement references
-4. **Requirement Metadata** - All requirements reference valid tools, buildings, and professions
-5. **Data Integrity** - No duplicate IDs, missing names, or orphaned data
-
-The validation runs silently and focuses on providing a clear console table overview with detailed missing reference information when needed.
-
-## 🚀 Running Tests
-
-### Manual Testing
-```bash
-# Navigate to tests directory
-cd tests
-
-# Run all validation tests directly
-node data-validation.test.js
+```
+tests/
+├── components/           # Component unit tests
+│   ├── crafting.test.js
+│   ├── filters.test.js
+│   ├── graph.test.js
+│   └── ui.test.js
+├── lib/                  # Library unit tests
+│   ├── common.test.js
+│   └── store-helpers.test.js
+├── data-validation.test.js  # Data integrity validation
+├── package.json            # Test dependencies and scripts
+└── README.md              # This file
 ```
 
-### npm Scripts
+## Running Tests
+
+### All Tests (Unit + Data Validation)
 ```bash
-# From tests directory
-npm test                # Full validation with table output
-npm run validate        # Same as npm test
+npm test
+# Uses: node --test (finds all .test.js files)
 ```
 
-### GitHub Actions
-Tests automatically run on:
-- Pull requests that modify `data/**` or `tests/**`
-- Pushes to main branch
-- Manual workflow dispatch
+### Unit Tests Only (Excludes Data Validation)
+```bash
+npm run test:unit
+# Uses: node --test components/**/*.test.js lib/**/*.test.js
+```
 
-## 📋 Test Output
+### Data Validation Only
+```bash
+npm run validate
+# Uses: node data-validation.test.js
+```
 
-The validation script now focuses on a clean, table-based output showing a comprehensive data overview:
+### GitHub-Friendly Data Validation (Markdown Output)
+```bash
+npm run validate:github
+# Uses: node data-validation.test.js --github
+```
 
-### Success Example
+## Test Types
+
+### 1. Unit Tests
+Tests individual components and libraries to ensure they:
+- Load without syntax errors
+- Export required functions (especially `initialize()`)
+- Follow architectural patterns from coding standards
+- Use proper event-driven communication
+- Implement required functionality
+
+**Philosophy**: These tests validate structure and patterns rather than detailed implementation, making them robust against refactoring while ensuring architectural compliance.
+
+### 2. Data Validation Tests
+Comprehensive validation of JSON data files:
+- **Reference Integrity**: All item/craft/requirement references are valid
+- **ID Format Validation**: Entity IDs follow `type:profession:identifier` format
+- **Profession Mapping**: All professions exist in metadata
+- **Orphaned Data**: Detect unused requirements
+- **Data Completeness**: Ensure all entities have required fields
+
+## Testing Framework
+
+**Node.js Native Test Runner** (Node.js 18+)
+- ✅ Zero external dependencies
+- ✅ Native ES6 module support
+- ✅ Built-in assertions with `node --test`
+- ✅ Spec reporter for readable output
+- ✅ Works with your existing Node.js setup
+
+## Writing New Tests
+
+### Component Test Example
+```javascript
+import { test, describe } from 'node:test';
+import assert from 'node:assert';
+
+describe('My Component Tests', () => {
+  test('should export initialize function', async () => {
+    const content = fs.readFileSync(COMPONENT_PATH, 'utf8');
+    assert.ok(content.includes('initialize'), 'Should export initialize function');
+  });
+});
+```
+
+### Adding Mock DOM
+For components that use DOM:
+```javascript
+// Add to top of test file
+global.document = {
+  createElement: (tag) => ({ /* mock element */ }),
+  getElementById: () => null,
+  // ... other DOM methods
+};
+```
+
+## Test Guidelines
+
+1. **Keep Tests Simple**: Focus on structure and patterns, not implementation details
+2. **Mock Minimally**: Only mock what's necessary (DOM, external APIs)
+3. **Test Architecture**: Verify coding standards compliance
+4. **Fast Execution**: Tests should run quickly for rapid feedback
+5. **Zero Dependencies**: Use only Node.js built-ins
+
+## Integration with Development
+
+- Run tests before committing changes
+- Add tests when creating new components
+- Update data validation when changing data schema
+- Use in CI/CD pipelines for automated validation
+
+## GitHub Actions Integration
+
+The project uses two GitHub Actions workflows:
+
+1. **Unit Tests** (`unit-tests.yml`)
+   - Triggers on changes to `components/**`, `lib/**`, or `tests/**`
+   - Runs unit tests with native GitHub test result display
+   - GitHub automatically shows test results in PR checks
+
+2. **Data Validation** (`data-validation.yml`)
+   - Triggers on changes to `data/**` or `tests/**`
+   - Validates JSON data integrity with custom markdown output
+   - Generates detailed validation tables in PR summaries
+
+## Example Output
+
+### Unit Tests
+```
+▶ UI Component Tests
+  ✔ should load ui.js without errors
+  ✔ should export initialize function
+  ✔ should use event-driven communication
+  ✔ should use DOM helpers from common.js
+✔ UI Component Tests (2.0ms)
+
+ℹ tests 24
+ℹ suites 6
+ℹ pass 24
+ℹ fail 0
+```
+
+### Data Validation
 ```
 🧪 BitCrafty Data Validation
-============================
-
-📋 Data Overview Table:
 ┌─────────┬────────────────┬───────┬──────────────────────┬─────────┐
 │ (index) │ Data Type      │ Count │ Missing References   │ Status  │
 ├─────────┼────────────────┼───────┼──────────────────────┼─────────┤
 │ 0       │ 'Items'        │ 58    │ '✅ All valid'       │ '✅ OK' │
 │ 1       │ 'Crafts'       │ 38    │ '✅ All valid'       │ '✅ OK' │
-│ 2       │ 'Requirements' │ 14    │ '✅ All valid'       │ '✅ OK' │
-│ 3       │ 'Professions'  │ 10    │ '✅ N/A (base data)' │ '✅ OK' │
-│ 4       │ 'Tools'        │ 10    │ '✅ N/A (base data)' │ '✅ OK' │
-│ 5       │ 'Buildings'    │ 14    │ '✅ N/A (base data)' │ '✅ OK' │
 └─────────┴────────────────┴───────┴──────────────────────┴─────────┘
-✅ All data references are valid - no missing entities found!
-
+✅ All data references are valid!
 📋 Validation Result: ✅ PASSED
 ```
-
-### Error Example
-When validation errors are found, the table will show missing reference counts and additional detailed tables will display the specific missing entity IDs:
-
-```
-📋 Data Overview Table:
-┌─────────┬────────────────┬───────┬──────────────────────┬─────────┐
-│ (index) │ Data Type      │ Count │ Missing References   │ Status  │
-├─────────┼────────────────┼───────┼──────────────────────┼─────────┤
-│ 0       │ 'Items'        │ 58    │ '✅ All valid'       │ '✅ OK' │
-│ 1       │ 'Crafts'       │ 38    │ '2 missing'          │ '❌ ISSUES' │
-│ 2       │ 'Requirements' │ 14    │ '✅ All valid'       │ '✅ OK' │
-└─────────┴────────────────┴───────┴──────────────────────┴─────────┘
-
-❌ Missing Item References:
-┌─────────┬──────────────────────────────────────┐
-│ (index) │ Missing Item ID                      │
-├─────────┼──────────────────────────────────────┤
-│ 0       │ 'item:cooking:unknown-ingredient'    │
-│ 1       │ 'item:farming:missing-seed'          │
-└─────────┴──────────────────────────────────────┘
-
-📋 Validation Result: ❌ FAILED
-Errors: 2
-
-❌ Errors found:
-  - Craft "craft:cooking:mystery-dish" references non-existent item "item:cooking:unknown-ingredient" in materials
-  - Craft "craft:farming:advanced-crop" references non-existent item "item:farming:missing-seed" in materials
-```
-
-## 📊 Console Table Output
-
-The validation script provides a comprehensive data overview table showing:
-
-- **Data Type** - Items, Crafts, Requirements, Professions, Tools, Buildings
-- **Count** - Number of entities of each type
-- **Missing References** - Number of invalid references found, or "✅ All valid" if none
-- **Status** - Overall health status (✅ OK or ❌ ISSUES)
-
-### Key Features:
-- **Silent Validation** - All validation tests run quietly in the background
-- **Clean Table Output** - Primary focus on the data overview table
-- **Detailed Debugging** - Additional tables show specific missing entity IDs when issues are found
-- **Quick Assessment** - Immediate visual understanding of data health
-
-The table handles all detailed missing reference information automatically, eliminating the need for verbose step-by-step output.
-
-## 🔧 Adding New Tests
-
-To add new validation tests:
-
-1. Open `data-validation.test.js`
-2. Add your test method to the `DataValidator` class
-3. Call it from `runAllTests()`
-4. Use `this.error()` and `this.warning()` methods to report issues
-
-Example:
-```javascript
-validateNewDataRule() {
-  items.forEach(item => {
-    if (/* your validation logic fails */) {
-      this.error(`Item "${item.id}" violates new rule`);
-    }
-  });
-}
-```
-
-Note: The validation methods now run silently. All verbose output has been removed in favor of the clean table-based reporting system.
-
-## 📁 File Structure
-
-- `data-validation.test.js` - Standalone validation test suite with console table output
-- `package.json` - Test package configuration  
-- `README.md` - This documentation
-
-## 🎯 Best Practices
-
-1. **Run tests before commits** - Catch issues early
-2. **Fix all errors** - Warnings are optional, errors block merges
-3. **Test locally first** - Don't rely only on CI/CD
-4. **Update tests** - When adding new data types, add corresponding validations
-
-## 🔗 Integration
-
-These tests integrate with:
-- **GitHub Actions** - Automatic PR validation
-- **Local Development** - Manual testing during development
-- **Data Migration** - Validation after data structure changes
-
-The tests ensure that the BitCrafty application will not encounter runtime errors due to invalid data references or malformed entity IDs.
