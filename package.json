@@ -7,8 +7,10 @@
   "scripts": {
     "start": "python -m http.server 8000",
     "serve": "python -m http.server 8000",
-    "test": "node tests/data-validation.test.js",
-    "validate": "node tests/data-validation.test.js"
+    "test": "node --test",
+    "test:unit": "node --test test/components/**/*.test.js test/lib/**/*.test.js",
+    "validate": "node test/data-validation.test.js",
+    "validate:github": "node test/data-validation.test.js --github"
   },
   "keywords": ["crafting", "visualization", "bitcraft", "gaming"],
   "author": "Kyzael",

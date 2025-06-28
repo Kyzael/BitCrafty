@@ -1,0 +1,51 @@
+name: Unit Tests
+
+on:
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'components/**'
+      - 'lib/**'
+      - 'test/**'
+  push:
+    branches: [ main ]
+    paths:
+      - 'components/**'
+      - 'lib/**'
+      - 'test/**'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Verify project structure
+      run: |
+        echo "📁 Checking project structure..."
+        ls -la
+        echo "📁 Checking components directory..."
+        ls -la components/
+        echo "📁 Checking lib directory..."
+        ls -la lib/
+        echo "📁 Checking test directory..."
+        ls -la test/
+        
+    - name: Run unit tests
+      run: |
+        echo "🧪 Running unit tests..."
+        node --test
+        
+    - name: Success message
+      if: success()
+      run: |
+        echo "✅ All unit tests passed successfully!"
+        echo "🎯 Components and libraries are working correctly."
