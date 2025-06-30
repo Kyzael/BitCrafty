@@ -844,23 +844,6 @@
     "requirement": "requirement:carpentry:tier1-workbench"
   },
   {
-    "id": "craft:any:craft-depleted-automata's-heart",
-    "name": "Craft Depleted Automata's Heart",
-    "materials": [
-      {
-        "item": "item:carpentry:knapped-flint",
-        "qty": 10
-      }
-    ],
-    "outputs": [
-      {
-        "item": "item:any:depleted-automatas-heart",
-        "qty": 1
-      }
-    ],
-    "requirement": "requirement:any:tier1-heart-workshop"
-  },
-  {
     "id": "craft:carpentry:craft-flint-bow",
     "name": "Craft Flint Bow",
     "materials": [
