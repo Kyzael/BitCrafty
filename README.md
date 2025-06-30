@@ -5,6 +5,9 @@
 ## Overview
 BitCrafty is a web-based tool for visualizing and simplifying the large, complex crafting systems found in BitCraft Online. The app is designed to help players understand, plan, and optimize crafting paths and resource requirements with ease.
 
+[![Unit Tests](https://github.com/Kyzael/BitCrafty/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/Kyzael/BitCrafty/actions/workflows/unit-tests.yml)
+[![Data Validation](https://github.com/Kyzael/BitCrafty/actions/workflows/data-validation.yml/badge.svg)](https://github.com/Kyzael/BitCrafty/actions/workflows/data-validation.yml)
+
 ## Project Goals
 - **Visualize and simplify** the intricate crafting and resource dependencies in BitCraft Online.
 - **No serverside dependencies:** 100% client-side, runs entirely in the browser. No backend or database required.
