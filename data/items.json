@@ -1,24 +1,24 @@
 [
   {
-    "id": "item:forestry:wood-trunk",
+    "id": "item:forestry:rough-wood-trunk",
     "name": "Rough Wood Trunk",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:forestry:wood-log",
+    "id": "item:forestry:rough-wood-log",
     "name": "Rough Wood Log",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:carpentry:stripped-wood",
+    "id": "item:carpentry:rough-stripped-wood",
     "name": "Rough Stripped Wood",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:carpentry:plank",
+    "id": "item:carpentry:rough-plank",
     "name": "Rough Plank",
     "tier": 1,
     "rank": "Common"
@@ -114,7 +114,7 @@
     "rank": "Common"
   },
   {
-    "id": "item:farming:fertilizer",
+    "id": "item:farming:basic-fertilizer",
     "name": "Basic Fertilizer",
     "tier": 1,
     "rank": "Common"
@@ -126,25 +126,25 @@
     "rank": "Common"
   },
   {
-    "id": "item:foraging:mushroom",
+    "id": "item:foraging:basic-mushroom",
     "name": "Basic Mushroom",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:cooking:mushroom-skewer",
+    "id": "item:cooking:plain-mushroom-skewer",
     "name": "Plain Mushroom Skewer",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:foraging:berry",
+    "id": "item:foraging:basic-berry",
     "name": "Basic Berry",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:foraging:flower",
+    "id": "item:foraging:basic-flower",
     "name": "Basic Flower",
     "tier": 1,
     "rank": "Common"
@@ -192,13 +192,13 @@
     "rank": "Common"
   },
   {
-    "id": "item:cooking:raw-berry-pie",
+    "id": "item:foraging:plain-raw-berry-pie",
     "name": "Plain Raw Berry Pie",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:cooking:berry-pie",
+    "id": "item:cooking:plain-berry-pie",
     "name": "Plain Berry Pie",
     "tier": 1,
     "rank": "Common"
@@ -258,19 +258,19 @@
     "rank": "Epic"
   },
   {
-    "id": "item:farming:starbulb",
+    "id": "item:farming:basic-starbulb",
     "name": "Basic Starbulb",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:farming:starbulb-seeds",
+    "id": "item:farming:basic-starbulb-seeds",
     "name": "Basic Starbulb Seeds",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:farming:starbulb-plant",
+    "id": "item:foraging:basic-starbulb-plant",
     "name": "Basic Starbulb Plant",
     "tier": 1,
     "rank": "Common"
@@ -318,7 +318,7 @@
     "rank": "Common"
   },
   {
-    "id": "item:tailoring:spool-of-thread",
+    "id": "item:tailoring:rough-spool-of-thread",
     "name": "Rough Spool of Thread",
     "tier": 1,
     "rank": "Common"
@@ -344,6 +344,84 @@
   {
     "id": "item:tailoring:rope",
     "name": "Rough Rope",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:mining:basic-clay-lump",
+    "name": "Basic Clay Lump",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:forestry:tree-sap",
+    "name": "Tree Sap",
+    "tier": null,
+    "rank": "Common"
+  },
+  {
+    "id": "item:forestry:pitch",
+    "name": "Pitch",
+    "tier": null,
+    "rank": "Common"
+  },
+  {
+    "id": "item:carpentry:training-shortsword",
+    "name": "Training Shortsword",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:carpentry:flint-tool-bundle",
+    "name": "Flint Tool Bundle",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:any:depleted-automatas-heart",
+    "name": "Depleted Automata's Heart",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:carpentry:flint-bow",
+    "name": "Flint Bow",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:scholar:basic-pigment",
+    "name": "Basic Pigment",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:cooking:plain-fish-and-bulbs",
+    "name": "Plain Fish and Bulbs",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:carpentry:stick",
+    "name": "Stick",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:carpentry:knapped-flint",
+    "name": "Knapped Flint",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:cooking:fish",
+    "name": "Fish",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:cooking:bulbs",
+    "name": "Bulbs",
     "tier": 1,
     "rank": "Common"
   }

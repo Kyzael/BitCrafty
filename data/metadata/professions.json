@@ -1,12 +1,57 @@
 [
-  { "id": "profession:foraging",   "name": "Foraging",   "color": "#4CAF50" },
-  { "id": "profession:tailoring",  "name": "Tailoring",  "color": "#9C27B0" },
-  { "id": "profession:farming",    "name": "Farming",    "color": "#8BC34A" },
-  { "id": "profession:cooking",    "name": "Cooking",    "color": "#FF5722" },
-  { "id": "profession:carpentry",  "name": "Carpentry",  "color": "#795548" },
-  { "id": "profession:scholar",    "name": "Scholar",    "color": "#2196F3" },
-  { "id": "profession:fishing",    "name": "Fishing",    "color": "#00BCD4" },
-  { "id": "profession:forestry",   "name": "Forestry",   "color": "#388E3C" },
-  { "id": "profession:mining",     "name": "Mining",     "color": "#607D8B" },
-  { "id": "profession:hunting",    "name": "Hunting",    "color": "#D32F2F" }
+  {
+    "id": "profession:foraging",
+    "name": "Foraging",
+    "color": "#4CAF50"
+  },
+  {
+    "id": "profession:tailoring",
+    "name": "Tailoring",
+    "color": "#9C27B0"
+  },
+  {
+    "id": "profession:farming",
+    "name": "Farming",
+    "color": "#8BC34A"
+  },
+  {
+    "id": "profession:cooking",
+    "name": "Cooking",
+    "color": "#FF5722"
+  },
+  {
+    "id": "profession:carpentry",
+    "name": "Carpentry",
+    "color": "#795548"
+  },
+  {
+    "id": "profession:scholar",
+    "name": "Scholar",
+    "color": "#2196F3"
+  },
+  {
+    "id": "profession:fishing",
+    "name": "Fishing",
+    "color": "#00BCD4"
+  },
+  {
+    "id": "profession:forestry",
+    "name": "Forestry",
+    "color": "#388E3C"
+  },
+  {
+    "id": "profession:mining",
+    "name": "Mining",
+    "color": "#607D8B"
+  },
+  {
+    "id": "profession:hunting",
+    "name": "Hunting",
+    "color": "#D32F2F"
+  },
+  {
+    "id": "profession:any",
+    "name": "any",
+    "color": "#FFFFFF"
+  }
 ]

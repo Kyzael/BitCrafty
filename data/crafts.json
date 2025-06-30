@@ -27,7 +27,7 @@
     ],
     "outputs": [
       {
-        "item": "item:tailoring:spool-of-thread",
+        "item": "item:tailoring:rough-spool-of-thread",
         "qty": 1
       }
     ],
@@ -38,7 +38,7 @@
     "name": "Weave Rough Cloth Strip",
     "materials": [
       {
-        "item": "item:tailoring:spool-of-thread",
+        "item": "item:tailoring:rough-spool-of-thread",
         "qty": 1
       }
     ],
@@ -114,7 +114,7 @@
         "qty": 1
       },
       {
-        "item": "item:farming:fertilizer",
+        "item": "item:farming:basic-fertilizer",
         "qty": 1
       }
     ],
@@ -156,13 +156,13 @@
         "qty": 1
       },
       {
-        "item": "item:farming:fertilizer",
+        "item": "item:farming:basic-fertilizer",
         "qty": 1
       }
     ],
     "outputs": [
       {
-        "item": "item:farming:starbulb-plant",
+        "item": "item:foraging:basic-starbulb-plant",
         "qty": 1
       }
     ],
@@ -173,17 +173,17 @@
     "name": "Husk into Basic Starbulb Products",
     "materials": [
       {
-        "item": "item:farming:starbulb-plant",
+        "item": "item:foraging:basic-starbulb-plant",
         "qty": 1
       }
     ],
     "outputs": [
       {
-        "item": "item:farming:starbulb-seeds",
+        "item": "item:farming:basic-starbulb-seeds",
         "qty": "1-3"
       },
       {
-        "item": "item:farming:starbulb",
+        "item": "item:farming:basic-starbulb",
         "qty": "5-10"
       },
       {
@@ -198,7 +198,7 @@
     "name": "Cook Plain Mashed Bulbs",
     "materials": [
       {
-        "item": "item:farming:starbulb",
+        "item": "item:farming:basic-starbulb",
         "qty": 5
       }
     ],
@@ -295,7 +295,7 @@
     "name": "Assemble Empty Bucket",
     "materials": [
       {
-        "item": "item:carpentry:plank",
+        "item": "item:carpentry:rough-plank",
         "qty": 1
       }
     ],
@@ -375,17 +375,17 @@
     "requirement": "requirement:cooking:basic-fire"
   },
   {
-    "id": "craft:forestry:wood-log",
+    "id": "craft:forestry:rough-wood-log",
     "name": "Split into Rough Wood Log",
     "materials": [
       {
-        "item": "item:forestry:wood-trunk",
+        "item": "item:forestry:rough-wood-trunk",
         "qty": 1
       }
     ],
     "outputs": [
       {
-        "item": "item:forestry:wood-log",
+        "item": "item:forestry:rough-wood-log",
         "qty": 6
       },
       {
@@ -400,13 +400,13 @@
     "name": "Saw Rough Stripped Wood",
     "materials": [
       {
-        "item": "item:forestry:wood-log",
+        "item": "item:forestry:rough-wood-log",
         "qty": 3
       }
     ],
     "outputs": [
       {
-        "item": "item:carpentry:stripped-wood",
+        "item": "item:carpentry:rough-stripped-wood",
         "qty": 1
       }
     ],
@@ -417,13 +417,13 @@
     "name": "Craft Rough Plank",
     "materials": [
       {
-        "item": "item:carpentry:stripped-wood",
+        "item": "item:carpentry:rough-stripped-wood",
         "qty": 1
       }
     ],
     "outputs": [
       {
-        "item": "item:carpentry:plank",
+        "item": "item:carpentry:rough-plank",
         "qty": 1
       }
     ],
@@ -434,7 +434,7 @@
     "name": "Craft Campfire Kit",
     "materials": [
       {
-        "item": "item:carpentry:plank",
+        "item": "item:carpentry:rough-plank",
         "qty": 4
       },
       {
@@ -514,7 +514,7 @@
     "name": "Cook Plain Berries",
     "materials": [
       {
-        "item": "item:foraging:flower",
+        "item": "item:foraging:basic-flower",
         "qty": 15
       }
     ],
@@ -541,7 +541,7 @@
     ],
     "outputs": [
       {
-        "item": "item:cooking:raw-berry-pie",
+        "item": "item:foraging:plain-raw-berry-pie",
         "qty": 1
       }
     ],
@@ -552,7 +552,7 @@
     "name": "Bake Plain Berry Pie",
     "materials": [
       {
-        "item": "item:cooking:raw-berry-pie",
+        "item": "item:foraging:plain-raw-berry-pie",
         "qty": 1
       },
       {
@@ -562,7 +562,7 @@
     ],
     "outputs": [
       {
-        "item": "item:cooking:berry-pie",
+        "item": "item:cooking:plain-berry-pie",
         "qty": 1
       }
     ],
@@ -646,7 +646,7 @@
     ],
     "outputs": [
       {
-        "item": "item:farming:fertilizer",
+        "item": "item:farming:basic-fertilizer",
         "qty": 1
       }
     ],
@@ -657,13 +657,13 @@
     "name": "Make Basic Fertilizer (Berry)",
     "materials": [
       {
-        "item": "item:foraging:berry",
+        "item": "item:foraging:basic-berry",
         "qty": 2
       }
     ],
     "outputs": [
       {
-        "item": "item:farming:fertilizer",
+        "item": "item:farming:basic-fertilizer",
         "qty": 1
       }
     ],
@@ -674,13 +674,13 @@
     "name": "Make Basic Fertilizer (Flower)",
     "materials": [
       {
-        "item": "item:foraging:flower",
+        "item": "item:foraging:basic-flower",
         "qty": 5
       }
     ],
     "outputs": [
       {
-        "item": "item:farming:fertilizer",
+        "item": "item:farming:basic-fertilizer",
         "qty": 1
       }
     ],
@@ -697,7 +697,7 @@
     ],
     "outputs": [
       {
-        "item": "item:farming:fertilizer",
+        "item": "item:farming:basic-fertilizer",
         "qty": 1
       }
     ],
@@ -725,16 +725,253 @@
     "name": "Cook Plain Mushroom Skewer",
     "materials": [
       {
-        "item": "item:foraging:mushroom",
+        "item": "item:foraging:basic-mushroom",
         "qty": 5
       }
     ],
     "outputs": [
       {
-        "item": "item:cooking:mushroom-skewer",
+        "item": "item:cooking:plain-mushroom-skewer",
         "qty": 1
       }
     ],
     "requirement": "requirement:cooking:basic-tools"
+  },
+  {
+    "id": "craft:carpentry:craft-rough-plank",
+    "name": "Craft Rough Plank",
+    "materials": [
+      {
+        "item": "item:carpentry:rough-stripped-wood",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:carpentry:rough-plank",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:carpentry:tier1-carpentry-station"
+  },
+  {
+    "id": "craft:cooking:cook-plain-mushroom-skewer",
+    "name": "Cook Plain Mushroom Skewer",
+    "materials": [
+      {
+        "item": "item:foraging:basic-mushroom",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:cooking:plain-mushroom-skewer",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:cooking:tier1-cooking-station"
+  },
+  {
+    "id": "craft:forestry:burn-pitch",
+    "name": "Burn Pitch",
+    "materials": [
+      {
+        "item": "item:forestry:tree-sap",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:forestry:pitch",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:forestry:tier1-kiln"
+  },
+  {
+    "id": "craft:farming:make-basic-fertilizer",
+    "name": "Make Basic Fertilizer",
+    "materials": [
+      {
+        "item": "item:foraging:basic-berry",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:farming:basic-fertilizer",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:farming:tier1-farming-station"
+  },
+  {
+    "id": "craft:carpentry:craft-training-shortsword",
+    "name": "Craft Training Shortsword",
+    "materials": [
+      {
+        "item": "item:carpentry:stick",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:carpentry:training-shortsword",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:carpentry:tier1-workbench"
+  },
+  {
+    "id": "craft:carpentry:craft-flint-tool-bundle",
+    "name": "Craft Flint Tool Bundle",
+    "materials": [
+      {
+        "item": "item:carpentry:knapped-flint",
+        "qty": 1
+      },
+      {
+        "item": "item:carpentry:stick",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:carpentry:flint-tool-bundle",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:carpentry:tier1-workbench"
+  },
+  {
+    "id": "craft:any:craft-depleted-automata's-heart",
+    "name": "Craft Depleted Automata's Heart",
+    "materials": [
+      {
+        "item": "item:carpentry:knapped-flint",
+        "qty": 10
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:any:depleted-automatas-heart",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:any:tier1-heart-workshop"
+  },
+  {
+    "id": "craft:carpentry:craft-flint-bow",
+    "name": "Craft Flint Bow",
+    "materials": [
+      {
+        "item": "item:carpentry:knapped-flint",
+        "qty": 1
+      },
+      {
+        "item": "item:carpentry:stick",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:carpentry:flint-bow",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:carpentry:tier1-workbench"
+  },
+  {
+    "id": "craft:scholar:crush-basic-flower-into-basic-pigment",
+    "name": "Crush Basic Flower into Basic Pigment",
+    "materials": [
+      {
+        "item": "item:foraging:basic-flower",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:scholar:basic-pigment",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:scholar:tier1-scholar-station"
+  },
+  {
+    "id": "craft:farming:husk-into-basic-starbulb-products",
+    "name": "Husk into Basic Starbulb Products",
+    "materials": [
+      {
+        "item": "item:foraging:basic-starbulb-plant",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:farming:basic-starbulb",
+        "qty": 10
+      },
+      {
+        "item": "item:farming:basic-starbulb-seeds",
+        "qty": 10
+      }
+    ],
+    "requirement": "requirement:farming:tier1-farming-station"
+  },
+  {
+    "id": "craft:cooking:cook-plain-fish-and-bulbs",
+    "name": "Cook Plain Fish and Bulbs",
+    "materials": [
+      {
+        "item": "item:cooking:fish",
+        "qty": 1
+      },
+      {
+        "item": "item:cooking:bulbs",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:cooking:plain-fish-and-bulbs",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:cooking:tier1-cooking-station"
+  },
+  {
+    "id": "craft:cooking:bake-plain-berry-pie",
+    "name": "Bake Plain Berry Pie",
+    "materials": [
+      {
+        "item": "item:foraging:plain-raw-berry-pie",
+        "qty": 1
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:cooking:plain-berry-pie",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:cooking:tier1-oven"
+  },
+  {
+    "id": "craft:any:craft-depleted-automatas-heart",
+    "name": "Craft Depleted Automata's Heart",
+    "materials": [
+      {
+        "item": "item:carpentry:knapped-flint",
+        "qty": 10
+      }
+    ],
+    "outputs": [
+      {
+        "item": "item:any:depleted-automatas-heart",
+        "qty": 1
+      }
+    ],
+    "requirement": "requirement:any:tier1-heart-workshop"
   }
 ]

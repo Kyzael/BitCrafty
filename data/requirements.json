@@ -1,16 +1,326 @@
 [
-  { "id": "requirement:foraging:basic-tools", "name": "Basic Foraging Tools", "profession": { "name": "profession:foraging", "level": 1 }, "tool": { "name": "tool:machete", "level": 1 }, "building": { "name": "building:foraging:station", "level": 1 } },
-  { "id": "requirement:tailoring:basic-tools", "name": "Basic Tailoring Tools", "profession": { "name": "profession:tailoring", "level": 1 }, "tool": { "name": "tool:scissors", "level": 1 }, "building": { "name": "building:tailoring:station", "level": 1 } },
-  { "id": "requirement:tailoring:basic-loom", "name": "Basic Loom", "profession": { "name": "profession:tailoring", "level": 1 }, "building": { "name": "building:tailoring:loom", "level": 1 } },
-  { "id": "requirement:farming:basic-tools", "name": "Basic Farming Tools", "profession": { "name": "profession:farming", "level": 1 }, "tool": { "name": "tool:hoe", "level": 1 }, "building": { "name": "building:farming:station", "level": 1 } },
-  { "id": "requirement:cooking:basic-tools", "name": "Basic Cooking Tools", "profession": { "name": "profession:cooking", "level": 1 }, "tool": { "name": "tool:pot", "level": 1 }, "building": { "name": "building:cooking:station", "level": 1 } },
-  { "id": "requirement:cooking:well", "name": "Well Access", "profession": { "name": "profession:cooking", "level": 1 }, "building": { "name": "building:cooking:well", "level": 1 } },
-  { "id": "requirement:carpentry:basic-tools", "name": "Basic Carpentry Tools", "profession": { "name": "profession:carpentry", "level": 1 }, "tool": { "name": "tool:saw", "level": 1 }, "building": { "name": "building:carpentry:station", "level": 1 } },
-  { "id": "requirement:scholar:basic-tools", "name": "Basic Scholar Tools", "profession": { "name": "profession:scholar", "level": 1 }, "tool": { "name": "tool:quill", "level": 1 }, "building": { "name": "building:scholar:station", "level": 1 } },
-  { "id": "requirement:fishing:basic-tools", "name": "Basic Fishing Tools", "profession": { "name": "profession:fishing", "level": 1 }, "tool": { "name": "tool:rod", "level": 1 }, "building": { "name": "building:fishing:station", "level": 1 } },
-  { "id": "requirement:cooking:basic-fire", "name": "Basic Fire Setup", "profession": { "name": "profession:cooking", "level": 1 }, "tool": { "name": "tool:pot", "level": 1 }, "building": { "name": "building:cooking:fire", "level": 1 } },
-  { "id": "requirement:forestry:basic-tools", "name": "Basic Forestry Tools", "profession": { "name": "profession:forestry", "level": 1 }, "tool": { "name": "tool:axe", "level": 1 }, "building": { "name": "building:forestry:station", "level": 1 } },
-  { "id": "requirement:mining:basic-tools", "name": "Basic Mining Tools", "profession": { "name": "profession:mining", "level": 1 }, "tool": { "name": "tool:pickaxe", "level": 1 }, "building": { "name": "building:mining:station", "level": 1 } },
-  { "id": "requirement:cooking:basic-oven", "name": "Basic Oven", "profession": { "name": "profession:cooking", "level": 1 }, "building": { "name": "building:cooking:oven", "level": 1 } },
-  { "id": "requirement:hunting:basic-tools", "name": "Basic Hunting Tools", "profession": { "name": "profession:hunting", "level": 1 }, "tool": { "name": "tool:bow", "level": 1 }, "building": { "name": "building:hunting:station", "level": 1 } }
+  {
+    "id": "requirement:foraging:basic-tools",
+    "name": "Basic Foraging Tools",
+    "profession": {
+      "name": "profession:foraging",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:machete",
+      "level": 1
+    },
+    "building": {
+      "name": "building:foraging:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:tailoring:basic-tools",
+    "name": "Basic Tailoring Tools",
+    "profession": {
+      "name": "profession:tailoring",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:scissors",
+      "level": 1
+    },
+    "building": {
+      "name": "building:tailoring:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:tailoring:basic-loom",
+    "name": "Basic Loom",
+    "profession": {
+      "name": "profession:tailoring",
+      "level": 1
+    },
+    "building": {
+      "name": "building:tailoring:loom",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:farming:basic-tools",
+    "name": "Basic Farming Tools",
+    "profession": {
+      "name": "profession:farming",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:hoe",
+      "level": 1
+    },
+    "building": {
+      "name": "building:farming:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:cooking:basic-tools",
+    "name": "Basic Cooking Tools",
+    "profession": {
+      "name": "profession:cooking",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:pot",
+      "level": 1
+    },
+    "building": {
+      "name": "building:cooking:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:cooking:well",
+    "name": "Well Access",
+    "profession": {
+      "name": "profession:cooking",
+      "level": 1
+    },
+    "building": {
+      "name": "building:cooking:well",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:carpentry:basic-tools",
+    "name": "Basic Carpentry Tools",
+    "profession": {
+      "name": "profession:carpentry",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:saw",
+      "level": 1
+    },
+    "building": {
+      "name": "building:carpentry:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:scholar:basic-tools",
+    "name": "Basic scholar Tools",
+    "profession": {
+      "name": "profession:scholar",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:quill",
+      "level": 1
+    },
+    "building": {
+      "name": "building:scholar:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:fishing:basic-tools",
+    "name": "Basic Fishing Tools",
+    "profession": {
+      "name": "profession:fishing",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:rod",
+      "level": 1
+    },
+    "building": {
+      "name": "building:fishing:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:cooking:basic-fire",
+    "name": "Basic Fire Setup",
+    "profession": {
+      "name": "profession:cooking",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:pot",
+      "level": 1
+    },
+    "building": {
+      "name": "building:cooking:fire",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:forestry:basic-tools",
+    "name": "Basic Forestry Tools",
+    "profession": {
+      "name": "profession:forestry",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:axe",
+      "level": 1
+    },
+    "building": {
+      "name": "building:forestry:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:mining:basic-tools",
+    "name": "Basic Mining Tools",
+    "profession": {
+      "name": "profession:mining",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:pickaxe",
+      "level": 1
+    },
+    "building": {
+      "name": "building:mining:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:cooking:basic-oven",
+    "name": "Basic Oven",
+    "profession": {
+      "name": "profession:cooking",
+      "level": 1
+    },
+    "building": {
+      "name": "building:cooking:oven",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:hunting:basic-tools",
+    "name": "Basic Hunting Tools",
+    "profession": {
+      "name": "profession:hunting",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:bow",
+      "level": 1
+    },
+    "building": {
+      "name": "building:hunting:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:carpentry:tier1-carpentry-station",
+    "name": "Tier 1 Carpentry Station Requirements",
+    "profession": {
+      "name": "profession:carpentry",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:saw",
+      "level": 1
+    },
+    "building": {
+      "name": "building:carpentry:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:cooking:tier1-cooking-station",
+    "name": "Tier 1 Cooking Station Requirements",
+    "profession": {
+      "name": "profession:cooking",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:pot",
+      "level": 1
+    },
+    "building": {
+      "name": "building:cooking:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:forestry:tier1-kiln",
+    "name": "Tier 1 Kiln Requirements",
+    "profession": {
+      "name": "profession:forestry",
+      "level": 1
+    },
+    "building": {
+      "name": "building:forestry:kiln",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:farming:tier1-farming-station",
+    "name": "Tier 1 Farming Station Requirements",
+    "profession": {
+      "name": "profession:farming",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:hoe",
+      "level": 1
+    },
+    "building": {
+      "name": "building:farming:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:carpentry:tier1-workbench",
+    "name": "Tier 1 Workbench Requirements",
+    "profession": {
+      "name": "profession:carpentry",
+      "level": 1
+    },
+    "building": {
+      "name": "building:carpentry:workbench",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:any:tier1-heart-workshop",
+    "name": "Tier 1 Heart Workshop Requirements",
+    "profession": {
+      "name": "profession:any",
+      "level": 1
+    },
+    "building": {
+      "name": "building:any:heart-workshop",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:scholar:tier1-scholar-station",
+    "name": "Tier 1 scholar Station Requirements",
+    "profession": {
+      "name": "profession:scholar",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:quill",
+      "level": 1
+    },
+    "building": {
+      "name": "building:scholar:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:cooking:tier1-oven",
+    "name": "Tier 1 Oven Requirements",
+    "profession": {
+      "name": "profession:cooking",
+      "level": 1
+    },
+    "building": {
+      "name": "building:cooking:oven",
+      "level": 1
+    }
+  }
 ]

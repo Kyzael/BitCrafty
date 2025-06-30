@@ -1,12 +1,42 @@
 [
-  { "id": "tool:machete",   "name": "Machete" },
-  { "id": "tool:scissors",  "name": "Scissors" },
-  { "id": "tool:hoe",       "name": "Hoe" },
-  { "id": "tool:pot",       "name": "Pot" },
-  { "id": "tool:saw",       "name": "Saw" },
-  { "id": "tool:pickaxe",   "name": "Pickaxe" },
-  { "id": "tool:quill",     "name": "Quill" },
-  { "id": "tool:rod",       "name": "Rod" },
-  { "id": "tool:axe",       "name": "Axe" },
-  { "id": "tool:bow",       "name": "Bow" }
+  {
+    "id": "tool:machete",
+    "name": "Machete"
+  },
+  {
+    "id": "tool:scissors",
+    "name": "Scissors"
+  },
+  {
+    "id": "tool:hoe",
+    "name": "Hoe"
+  },
+  {
+    "id": "tool:pot",
+    "name": "Pot"
+  },
+  {
+    "id": "tool:saw",
+    "name": "Saw"
+  },
+  {
+    "id": "tool:pickaxe",
+    "name": "Pickaxe"
+  },
+  {
+    "id": "tool:quill",
+    "name": "Quill"
+  },
+  {
+    "id": "tool:rod",
+    "name": "Rod"
+  },
+  {
+    "id": "tool:axe",
+    "name": "Axe"
+  },
+  {
+    "id": "tool:bow",
+    "name": "Bow"
+  }
 ]
