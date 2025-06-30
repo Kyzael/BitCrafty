@@ -412,17 +412,5 @@
     "name": "Knapped Flint",
     "tier": 1,
     "rank": "Common"
-  },
-  {
-    "id": "item:cooking:fish",
-    "name": "Fish",
-    "tier": 1,
-    "rank": "Common"
-  },
-  {
-    "id": "item:cooking:bulbs",
-    "name": "Bulbs",
-    "tier": 1,
-    "rank": "Common"
   }
 ]

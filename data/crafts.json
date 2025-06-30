@@ -903,27 +903,6 @@
     "requirement": "requirement:farming:tier1-farming-station"
   },
   {
-    "id": "craft:cooking:cook-plain-fish-and-bulbs",
-    "name": "Cook Plain Fish and Bulbs",
-    "materials": [
-      {
-        "item": "item:cooking:fish",
-        "qty": 1
-      },
-      {
-        "item": "item:cooking:bulbs",
-        "qty": 1
-      }
-    ],
-    "outputs": [
-      {
-        "item": "item:cooking:plain-fish-and-bulbs",
-        "qty": 1
-      }
-    ],
-    "requirement": "requirement:cooking:tier1-cooking-station"
-  },
-  {
     "id": "craft:cooking:bake-plain-berry-pie",
     "name": "Bake Plain Berry Pie",
     "materials": [
