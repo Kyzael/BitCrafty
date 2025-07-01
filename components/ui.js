@@ -52,8 +52,16 @@ function setupEventListeners() {
 function createSidebar() {
   const sidebar = document.createElement('div');
   sidebar.id = 'sidebar';
+  
+  // Get stored width or use default
+  const storedWidth = localStorage.getItem('bitcrafty-sidebar-width');
+  const sidebarWidth = storedWidth ? Math.max(parseInt(storedWidth), 320) : 420; // 320px minimum for search functionality
+  
+  // Check if sidebar should be collapsed
+  const isCollapsed = localStorage.getItem('bitcrafty-sidebar-collapsed') === 'true';
+  
   sidebar.style.cssText = `
-    width: 420px;
+    width: ${sidebarWidth}px;
     min-height: 100vh;
     background: ${COLORS.SIDEBAR_BG};
     display: flex;
@@ -66,6 +74,8 @@ function createSidebar() {
     bottom: 0;
     overflow-y: auto;
     z-index: 10;
+    transform: ${isCollapsed ? 'translateX(-100%)' : 'translateX(0)'};
+    transition: transform 0.3s ease;
   `;
 
   // Add all sidebar components
@@ -76,8 +86,25 @@ function createSidebar() {
   sidebar.appendChild(createResourceContainer());
   sidebar.appendChild(createPathsContainer());
   sidebar.appendChild(createGitHubLink());
+  
+  // Add resize handle only (collapse button will be separate)
+  sidebar.appendChild(createResizeHandle());
 
   document.body.appendChild(sidebar);
+  
+  // Create collapse button 
+  const collapseButton = createCollapseButton(isCollapsed, sidebarWidth);
+  
+  // Attach button to sidebar or body based on collapse state
+  if (isCollapsed) {
+    document.body.appendChild(collapseButton);
+  } else {
+    sidebar.appendChild(collapseButton);
+  }
+  
+  // Update main content margin based on sidebar width and collapse state
+  const finalWidth = isCollapsed ? 0 : sidebarWidth;
+  updateMainContentMargin(finalWidth);
 }
 
 /**
@@ -320,6 +347,231 @@ function createGitHubLink() {
 }
 
 /**
+ * Create resize handle for sidebar
+ */
+function createResizeHandle() {
+  const resizeHandle = document.createElement('div');
+  resizeHandle.id = 'sidebar-resize-handle';
+  resizeHandle.style.cssText = `
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 6px;
+    height: 100%;
+    background: transparent;
+    cursor: col-resize;
+    z-index: 1000;
+    transition: background 0.2s ease;
+  `;
+  
+  // Visual indicator on hover
+  resizeHandle.addEventListener('mouseenter', () => {
+    resizeHandle.style.background = 'rgba(116, 185, 255, 0.3)';
+  });
+  
+  resizeHandle.addEventListener('mouseleave', () => {
+    resizeHandle.style.background = 'transparent';
+  });
+  
+  // Resize functionality
+  let isResizing = false;
+  let startX = 0;
+  let startWidth = 0;
+  
+  resizeHandle.addEventListener('mousedown', (e) => {
+    isResizing = true;
+    startX = e.clientX;
+    const sidebar = document.getElementById('sidebar');
+    startWidth = parseInt(window.getComputedStyle(sidebar).width, 10);
+    
+    // Prevent text selection during resize
+    document.body.style.userSelect = 'none';
+    document.body.style.cursor = 'col-resize';
+    
+    e.preventDefault();
+  });
+  
+  document.addEventListener('mousemove', (e) => {
+    if (!isResizing) return;
+    
+    const width = startWidth + (e.clientX - startX);
+    const minWidth = 320; // Minimum width for search functionality
+    const maxWidth = Math.min(800, window.innerWidth * 0.6); // Max 60% of viewport or 800px
+    
+    const constrainedWidth = Math.max(minWidth, Math.min(maxWidth, width));
+    
+    const sidebar = document.getElementById('sidebar');
+    sidebar.style.width = `${constrainedWidth}px`;
+    
+    // Update main content margin
+    updateMainContentMargin(constrainedWidth);
+    
+    // No need to update collapse button position - it moves with sidebar automatically
+    
+    e.preventDefault();
+  });
+  
+  document.addEventListener('mouseup', () => {
+    if (isResizing) {
+      isResizing = false;
+      document.body.style.userSelect = '';
+      document.body.style.cursor = '';
+      
+      // Save the current width to localStorage
+      const sidebar = document.getElementById('sidebar');
+      const currentWidth = parseInt(window.getComputedStyle(sidebar).width, 10);
+      localStorage.setItem('bitcrafty-sidebar-width', currentWidth.toString());
+    }
+  });
+  
+  return resizeHandle;
+}
+
+/**
+ * Create collapse button for sidebar (independent of sidebar)
+ */
+function createCollapseButton(isCollapsed, sidebarWidth) {
+  const collapseButton = document.createElement('div');
+  collapseButton.id = 'sidebar-collapse-button';
+  
+  // Position based on initial state
+  let initialPosition, initialLeft, initialRight;
+  
+  if (isCollapsed) {
+    // When collapsed, position at left edge of screen
+    initialPosition = 'fixed';
+    initialLeft = '0px';
+    initialRight = 'auto';
+  } else {
+    // When expanded, position relative to sidebar (attached to its right edge)
+    initialPosition = 'absolute';
+    initialLeft = 'auto';
+    initialRight = '-15px';
+  }
+  
+  collapseButton.style.cssText = `
+    position: ${initialPosition};
+    top: 50%;
+    left: ${initialLeft};
+    right: ${initialRight};
+    width: 30px;
+    height: 60px;
+    background: ${COLORS.BACKGROUND};
+    border: 1px solid ${COLORS.BORDER};
+    border-left: ${isCollapsed ? 'none' : '1px solid ' + COLORS.BORDER};
+    border-radius: 0 8px 8px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    transform: translateY(-50%);
+    transition: all 0.3s ease;
+    box-shadow: 2px 0 8px ${COLORS.SHADOW};
+  `;
+  
+  // Arrow icon
+  const arrow = document.createElement('span');
+  arrow.textContent = isCollapsed ? '>' : '<';
+  arrow.style.cssText = `
+    color: ${COLORS.TEXT_SECONDARY};
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    user-select: none;
+  `;
+  
+  collapseButton.appendChild(arrow);
+  
+  // Hover effects
+  collapseButton.addEventListener('mouseenter', () => {
+    collapseButton.style.background = COLORS.SIDEBAR_BG;
+    arrow.style.color = COLORS.ACCENT_CYAN;
+  });
+  
+  collapseButton.addEventListener('mouseleave', () => {
+    collapseButton.style.background = COLORS.BACKGROUND;
+    arrow.style.color = COLORS.TEXT_SECONDARY;
+  });
+  
+  // Click handler for collapse/expand
+  collapseButton.addEventListener('click', () => {
+    toggleSidebarCollapse();
+  });
+  
+  // If not collapsed, append to sidebar so it moves with it
+  if (!isCollapsed) {
+    // We'll append this to the sidebar after it's created
+    collapseButton.dataset.attachToSidebar = 'true';
+  }
+  
+  return collapseButton;
+}
+
+/**
+ * Toggle sidebar collapse/expand
+ */
+function toggleSidebarCollapse() {
+  const sidebar = document.getElementById('sidebar');
+  const collapseButton = document.getElementById('sidebar-collapse-button');
+  const arrow = collapseButton.querySelector('span');
+  
+  const isCollapsed = sidebar.style.transform === 'translateX(-100%)';
+  
+  if (isCollapsed) {
+    // Expand sidebar
+    sidebar.style.transform = 'translateX(0)';
+    arrow.textContent = '<';
+    
+    // Move button from body to sidebar (so it moves with sidebar)
+    collapseButton.style.position = 'absolute';
+    collapseButton.style.left = 'auto';
+    collapseButton.style.right = '-15px';
+    collapseButton.style.borderLeft = `1px solid ${COLORS.BORDER}`;
+    
+    // Move button to be child of sidebar
+    sidebar.appendChild(collapseButton);
+    
+    // Restore main content margin
+    const storedWidth = localStorage.getItem('bitcrafty-sidebar-width');
+    const sidebarWidth = storedWidth ? Math.max(parseInt(storedWidth), 320) : 420;
+    updateMainContentMargin(sidebarWidth);
+    
+    // Save collapse state
+    localStorage.setItem('bitcrafty-sidebar-collapsed', 'false');
+  } else {
+    // Collapse sidebar
+    sidebar.style.transform = 'translateX(-100%)';
+    arrow.textContent = '>';
+    
+    // Move button from sidebar to body (so it stays visible)
+    collapseButton.style.position = 'fixed';
+    collapseButton.style.left = '0px';
+    collapseButton.style.right = 'auto';
+    collapseButton.style.borderLeft = 'none';
+    
+    // Move button to be child of body
+    document.body.appendChild(collapseButton);
+    
+    // Remove main content margin
+    updateMainContentMargin(0);
+    
+    // Save collapse state
+    localStorage.setItem('bitcrafty-sidebar-collapsed', 'true');
+  }
+}
+
+/**
+ * Update main content margin based on sidebar width
+ */
+function updateMainContentMargin(sidebarWidth) {
+  const mainContent = document.getElementById('main-content');
+  if (mainContent) {
+    mainContent.style.marginLeft = `${sidebarWidth}px`;
+  }
+}
+
+/**
  * Create main content wrapper for the network graph
  */
 function createMainContent() {
@@ -327,11 +579,19 @@ function createMainContent() {
   if (!mainContent) {
     mainContent = document.createElement('div');
     mainContent.id = 'main-content';
+    
+    // Get current sidebar width for initial margin
+    const storedWidth = localStorage.getItem('bitcrafty-sidebar-width');
+    const sidebarWidth = storedWidth ? Math.max(parseInt(storedWidth), 320) : 420;
+    const isCollapsed = localStorage.getItem('bitcrafty-sidebar-collapsed') === 'true';
+    const initialMargin = isCollapsed ? 0 : sidebarWidth;
+    
     mainContent.style.cssText = `
-      margin-left: 420px;
+      margin-left: ${initialMargin}px;
       height: 100vh;
       overflow: hidden;
       position: relative;
+      transition: margin-left 0.3s ease;
     `;
     
     // Move existing #network into main-content
