@@ -249,8 +249,10 @@ function createGitHubLink() {
     padding: 12px 18px;
     border-top: 1px solid #3e3d32;
     display: flex;
-    flex-direction: column;
-    gap: 10px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
   `;
   
   // GitHub link
@@ -261,23 +263,31 @@ function createGitHubLink() {
   githubLink.style.cssText = `
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     color: ${COLORS.TEXT_SECONDARY};
     text-decoration: none;
-    font-size: 14px;
+    font-size: 13px;
     transition: color 0.2s ease;
+    flex: 1;
+    min-width: 0;
   `;
   
   // GitHub SVG icon
   const githubIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  githubIcon.setAttribute('width', '20');
-  githubIcon.setAttribute('height', '20');
+  githubIcon.setAttribute('width', '18');
+  githubIcon.setAttribute('height', '18');
   githubIcon.setAttribute('viewBox', '0 0 24 24');
   githubIcon.setAttribute('fill', 'currentColor');
+  githubIcon.style.flexShrink = '0';
   githubIcon.innerHTML = '<path d="M12 0C5.374 0 0 5.373 0 12 0 17.302 3.438 21.8 8.207 23.387c.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>';
   
   const githubText = document.createElement('span');
   githubText.textContent = 'View on GitHub';
+  githubText.style.cssText = `
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  `;
   
   githubLink.appendChild(githubIcon);
   githubLink.appendChild(githubText);
@@ -290,14 +300,6 @@ function createGitHubLink() {
     githubLink.style.color = COLORS.TEXT_SECONDARY;
   });
   
-  // Buy Me A Coffee container
-  const coffeeContainer = document.createElement('div');
-  coffeeContainer.style.cssText = `
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-  `;
-  
   // Create Buy Me A Coffee button with same styling as GitHub link
   const coffeeButton = document.createElement('a');
   coffeeButton.href = 'https://coff.ee/kyzael';
@@ -306,27 +308,35 @@ function createGitHubLink() {
   coffeeButton.style.cssText = `
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     color: ${COLORS.TEXT_SECONDARY};
     text-decoration: none;
-    font-size: 14px;
+    font-size: 13px;
     transition: color 0.2s ease;
+    flex: 1;
+    min-width: 0;
   `;
   
   // Coffee emoji/icon
   const coffeeIcon = document.createElement('span');
   coffeeIcon.textContent = '☕';
   coffeeIcon.style.cssText = `
-    font-size: 18px;
-    width: 20px;
-    height: 20px;
+    font-size: 16px;
+    width: 18px;
+    height: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
   `;
   
   const coffeeText = document.createElement('span');
   coffeeText.textContent = 'Buy me a coffee';
+  coffeeText.style.cssText = `
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  `;
   
   coffeeButton.appendChild(coffeeIcon);
   coffeeButton.appendChild(coffeeText);
@@ -339,10 +349,8 @@ function createGitHubLink() {
     coffeeButton.style.color = COLORS.TEXT_SECONDARY;
   });
   
-  coffeeContainer.appendChild(coffeeButton);
-  
   linksDiv.appendChild(githubLink);
-  linksDiv.appendChild(coffeeContainer);
+  linksDiv.appendChild(coffeeButton);
   return linksDiv;
 }
 
