@@ -52,8 +52,13 @@ function setupEventListeners() {
 function createSidebar() {
   const sidebar = document.createElement('div');
   sidebar.id = 'sidebar';
+  
+  // Get stored width or use default
+  const storedWidth = localStorage.getItem('bitcrafty-sidebar-width');
+  const sidebarWidth = storedWidth ? Math.max(parseInt(storedWidth), 320) : 420; // 320px minimum for search functionality
+  
   sidebar.style.cssText = `
-    width: 420px;
+    width: ${sidebarWidth}px;
     min-height: 100vh;
     background: ${COLORS.SIDEBAR_BG};
     display: flex;
@@ -76,8 +81,14 @@ function createSidebar() {
   sidebar.appendChild(createResourceContainer());
   sidebar.appendChild(createPathsContainer());
   sidebar.appendChild(createGitHubLink());
+  
+  // Add resize handle
+  sidebar.appendChild(createResizeHandle());
 
   document.body.appendChild(sidebar);
+  
+  // Update main content margin based on sidebar width
+  updateMainContentMargin(sidebarWidth);
 }
 
 /**
@@ -320,6 +331,95 @@ function createGitHubLink() {
 }
 
 /**
+ * Create resize handle for sidebar
+ */
+function createResizeHandle() {
+  const resizeHandle = document.createElement('div');
+  resizeHandle.id = 'sidebar-resize-handle';
+  resizeHandle.style.cssText = `
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 6px;
+    height: 100%;
+    background: transparent;
+    cursor: col-resize;
+    z-index: 1000;
+    transition: background 0.2s ease;
+  `;
+  
+  // Visual indicator on hover
+  resizeHandle.addEventListener('mouseenter', () => {
+    resizeHandle.style.background = 'rgba(116, 185, 255, 0.3)';
+  });
+  
+  resizeHandle.addEventListener('mouseleave', () => {
+    resizeHandle.style.background = 'transparent';
+  });
+  
+  // Resize functionality
+  let isResizing = false;
+  let startX = 0;
+  let startWidth = 0;
+  
+  resizeHandle.addEventListener('mousedown', (e) => {
+    isResizing = true;
+    startX = e.clientX;
+    const sidebar = document.getElementById('sidebar');
+    startWidth = parseInt(window.getComputedStyle(sidebar).width, 10);
+    
+    // Prevent text selection during resize
+    document.body.style.userSelect = 'none';
+    document.body.style.cursor = 'col-resize';
+    
+    e.preventDefault();
+  });
+  
+  document.addEventListener('mousemove', (e) => {
+    if (!isResizing) return;
+    
+    const width = startWidth + (e.clientX - startX);
+    const minWidth = 320; // Minimum width for search functionality
+    const maxWidth = Math.min(800, window.innerWidth * 0.6); // Max 60% of viewport or 800px
+    
+    const constrainedWidth = Math.max(minWidth, Math.min(maxWidth, width));
+    
+    const sidebar = document.getElementById('sidebar');
+    sidebar.style.width = `${constrainedWidth}px`;
+    
+    // Update main content margin
+    updateMainContentMargin(constrainedWidth);
+    
+    e.preventDefault();
+  });
+  
+  document.addEventListener('mouseup', () => {
+    if (isResizing) {
+      isResizing = false;
+      document.body.style.userSelect = '';
+      document.body.style.cursor = '';
+      
+      // Save the current width to localStorage
+      const sidebar = document.getElementById('sidebar');
+      const currentWidth = parseInt(window.getComputedStyle(sidebar).width, 10);
+      localStorage.setItem('bitcrafty-sidebar-width', currentWidth.toString());
+    }
+  });
+  
+  return resizeHandle;
+}
+
+/**
+ * Update main content margin based on sidebar width
+ */
+function updateMainContentMargin(sidebarWidth) {
+  const mainContent = document.getElementById('main-content');
+  if (mainContent) {
+    mainContent.style.marginLeft = `${sidebarWidth}px`;
+  }
+}
+
+/**
  * Create main content wrapper for the network graph
  */
 function createMainContent() {
@@ -327,11 +427,17 @@ function createMainContent() {
   if (!mainContent) {
     mainContent = document.createElement('div');
     mainContent.id = 'main-content';
+    
+    // Get current sidebar width for initial margin
+    const storedWidth = localStorage.getItem('bitcrafty-sidebar-width');
+    const sidebarWidth = storedWidth ? Math.max(parseInt(storedWidth), 320) : 420;
+    
     mainContent.style.cssText = `
-      margin-left: 420px;
+      margin-left: ${sidebarWidth}px;
       height: 100vh;
       overflow: hidden;
       position: relative;
+      transition: margin-left 0.1s ease;
     `;
     
     // Move existing #network into main-content
