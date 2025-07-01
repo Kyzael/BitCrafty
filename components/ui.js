@@ -213,16 +213,20 @@ function createPathsContainer() {
 }
 
 /**
- * Create GitHub link at bottom of sidebar
+ * Create GitHub link and Buy me a coffee button at bottom of sidebar
  */
 function createGitHubLink() {
-  const githubDiv = document.createElement('div');
-  githubDiv.style.cssText = `
+  const linksDiv = document.createElement('div');
+  linksDiv.style.cssText = `
     margin-top: auto;
     padding: 12px 18px;
     border-top: 1px solid #3e3d32;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   `;
   
+  // GitHub link
   const githubLink = document.createElement('a');
   githubLink.href = 'https://github.com/Kyzael/BitCrafty';
   githubLink.target = '_blank';
@@ -251,7 +255,7 @@ function createGitHubLink() {
   githubLink.appendChild(githubIcon);
   githubLink.appendChild(githubText);
   
-  // Add hover effects
+  // Add hover effects for GitHub link
   githubLink.addEventListener('mouseenter', () => {
     githubLink.style.color = COLORS.ACCENT_PINK;
   });
@@ -259,8 +263,60 @@ function createGitHubLink() {
     githubLink.style.color = COLORS.TEXT_SECONDARY;
   });
   
-  githubDiv.appendChild(githubLink);
-  return githubDiv;
+  // Buy Me A Coffee container
+  const coffeeContainer = document.createElement('div');
+  coffeeContainer.style.cssText = `
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+  `;
+  
+  // Create Buy Me A Coffee button with same styling as GitHub link
+  const coffeeButton = document.createElement('a');
+  coffeeButton.href = 'https://coff.ee/kyzael';
+  coffeeButton.target = '_blank';
+  coffeeButton.rel = 'noopener noreferrer';
+  coffeeButton.style.cssText = `
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: ${COLORS.TEXT_SECONDARY};
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s ease;
+  `;
+  
+  // Coffee emoji/icon
+  const coffeeIcon = document.createElement('span');
+  coffeeIcon.textContent = '☕';
+  coffeeIcon.style.cssText = `
+    font-size: 18px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  `;
+  
+  const coffeeText = document.createElement('span');
+  coffeeText.textContent = 'Buy me a coffee';
+  
+  coffeeButton.appendChild(coffeeIcon);
+  coffeeButton.appendChild(coffeeText);
+  
+  // Add hover effects for coffee button (same as GitHub)
+  coffeeButton.addEventListener('mouseenter', () => {
+    coffeeButton.style.color = COLORS.ACCENT_PINK;
+  });
+  coffeeButton.addEventListener('mouseleave', () => {
+    coffeeButton.style.color = COLORS.TEXT_SECONDARY;
+  });
+  
+  coffeeContainer.appendChild(coffeeButton);
+  
+  linksDiv.appendChild(githubLink);
+  linksDiv.appendChild(coffeeContainer);
+  return linksDiv;
 }
 
 /**
