@@ -1,6 +1,6 @@
 [
   {
-    "id": "item:forestry:rough-wood-trunk",
+    "id": "item:carpentry:rough-wood-trunk",
     "name": "Rough Wood Trunk",
     "tier": 1,
     "rank": "Common"
@@ -30,25 +30,25 @@
     "rank": "Common"
   },
   {
-    "id": "item:mining:pebbles",
+    "id": "item:mining:rough-pebbles",
     "name": "Rough Pebbles",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:cooking:ground-meat-and-mashed-bulbs",
+    "id": "item:cooking:plain-ground-meat-and-mashed-bulbs",
     "name": "Plain Ground Meat and Mashed Bulbs",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:cooking:roasted-meat",
+    "id": "item:cooking:plain-roasted-meat",
     "name": "Plain Roasted Meat",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:hunting:raw-meat",
+    "id": "item:hunting:basic-raw-meat",
     "name": "Basic Raw Meat",
     "tier": 1,
     "rank": "Common"
@@ -60,25 +60,25 @@
     "rank": "Common"
   },
   {
-    "id": "item:hunting:raw-pelt",
+    "id": "item:hunting:rough-raw-pelt",
     "name": "Rough Raw Pelt",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:hunting:animal-hair",
+    "id": "item:hunting:rough-animal-hair",
     "name": "Rough Animal Hair",
     "tier": 1,
     "rank": "Rare"
   },
   {
-    "id": "item:forestry:amber-resin",
+    "id": "item:forestry:basic-amber-resin",
     "name": "Basic Amber Resin",
     "tier": 1,
     "rank": "Rare"
   },
   {
-    "id": "item:mining:stone-chunk",
+    "id": "item:mining:rough-stone-chunk",
     "name": "Rough Stone Chunk",
     "tier": 1,
     "rank": "Common"
@@ -96,7 +96,7 @@
     "rank": "Common"
   },
   {
-    "id": "item:fishing:fish-oil",
+    "id": "item:fishing:basic-fish-oil",
     "name": "Basic Fish Oil",
     "tier": 1,
     "rank": "Common"
@@ -108,7 +108,7 @@
     "rank": "Common"
   },
   {
-    "id": "item:fishing:chum",
+    "id": "item:fishing:basic-chum",
     "name": "Basic Chum",
     "tier": 1,
     "rank": "Common"
@@ -120,7 +120,7 @@
     "rank": "Common"
   },
   {
-    "id": "item:cooking:roasted-fish",
+    "id": "item:cooking:plain-roasted-fish",
     "name": "Plain Roasted Fish",
     "tier": 1,
     "rank": "Common"
@@ -150,25 +150,25 @@
     "rank": "Common"
   },
   {
-    "id": "item:cooking:food-waste",
+    "id": "item:foraging:basic-food-waste",
     "name": "Basic Food Waste",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:farming:embergrain-seeds",
+    "id": "item:farming:basic-embergrain-seeds",
     "name": "Basic Embergrain Seeds",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:farming:embergrain-plant",
+    "id": "item:farming:basic-embergrain-plant",
     "name": "Basic Embergrain Plant",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:farming:embergrain",
+    "id": "item:farming:basic-embergrain",
     "name": "Basic Embergrain",
     "tier": 1,
     "rank": "Common"
@@ -180,19 +180,19 @@
     "rank": "Rare"
   },
   {
-    "id": "item:cooking:embergrain-dough",
+    "id": "item:cooking:basic-embergrain-dough",
     "name": "Basic Embergrain Dough",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:cooking:cooked-berries",
+    "id": "item:cooking:plain-cooked-berries",
     "name": "Plain Cooked Berries",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:foraging:plain-raw-berry-pie",
+    "id": "item:cooking:plain-raw-berry-pie",
     "name": "Plain Raw Berry Pie",
     "tier": 1,
     "rank": "Common"
@@ -204,13 +204,13 @@
     "rank": "Common"
   },
   {
-    "id": "item:fishing:moonlit-crawdad",
+    "id": "item:foraging:moonlit-crawdad",
     "name": "Moonlit Crawdad",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:fishing:bait",
+    "id": "item:fishing:basic-bait",
     "name": "Basic Bait",
     "tier": 1,
     "rank": "Common"
@@ -222,19 +222,19 @@
     "rank": "Uncommon"
   },
   {
-    "id": "item:cooking:skewered-baitfish",
+    "id": "item:cooking:plain-skewered-baitfish",
     "name": "Plain Skewered Baitfish",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:foraging:citric-berry",
+    "id": "item:foraging:basic-citric-berry",
     "name": "Basic Citric Berry",
     "tier": 1,
     "rank": "Rare"
   },
   {
-    "id": "item:scholar:glass-vial",
+    "id": "item:foraging:rough-glass-vial",
     "name": "Rough Glass Vial",
     "tier": 1,
     "rank": "Common"
@@ -252,7 +252,7 @@
     "rank": "Common"
   },
   {
-    "id": "item:scholar:metal-solvent",
+    "id": "item:scholar:basic-metal-solvent",
     "name": "Basic Metal Solvent",
     "tier": 1,
     "rank": "Epic"
@@ -270,49 +270,49 @@
     "rank": "Common"
   },
   {
-    "id": "item:foraging:basic-starbulb-plant",
+    "id": "item:farming:basic-starbulb-plant",
     "name": "Basic Starbulb Plant",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:farming:crop-oil",
+    "id": "item:foraging:basic-crop-oil",
     "name": "Basic Crop Oil",
     "tier": 1,
     "rank": "Uncommon"
   },
   {
-    "id": "item:cooking:mashed-bulbs",
+    "id": "item:cooking:plain-mashed-bulbs",
     "name": "Plain Mashed Bulbs",
     "tier": 1,
     "rank": "Common"
   },
   {
     "id": "item:farming:wispweave-filament",
-    "name": "Rough Wispweave Filament",
+    "name": "Wispweave Filament",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:farming:wispweave-seeds",
+    "id": "item:farming:basic-wispweave-seeds",
     "name": "Basic Wispweave Seeds",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:farming:wispweave-plant",
+    "id": "item:farming:basic-wispweave-plant",
     "name": "Basic Wispweave Plant",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:foraging:plant-roots",
+    "id": "item:foraging:rough-plant-roots",
     "name": "Rough Plant Roots",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:foraging:plant-fiber",
+    "id": "item:foraging:rough-plant-fiber",
     "name": "Rough Plant Fiber",
     "tier": 1,
     "rank": "Common"
@@ -324,13 +324,13 @@
     "rank": "Common"
   },
   {
-    "id": "item:tailoring:cloth-strip",
+    "id": "item:tailoring:rough-cloth-strip",
     "name": "Rough Cloth Strip",
     "tier": 1,
     "rank": "Common"
   },
   {
-    "id": "item:tailoring:cloth",
+    "id": "item:tailoring:rough-cloth",
     "name": "Rough Cloth",
     "tier": 1,
     "rank": "Common"
@@ -356,7 +356,7 @@
   {
     "id": "item:forestry:tree-sap",
     "name": "Tree Sap",
-    "tier": null,
+    "tier": 1,
     "rank": "Common"
   },
   {
@@ -410,6 +410,360 @@
   {
     "id": "item:carpentry:knapped-flint",
     "name": "Knapped Flint",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:forestry:rough-tree-bark",
+    "name": "Rough Tree Bark",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:carpentry:flint-hammer",
+    "name": "Flint Hammer",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:carpentry:flint-chisel",
+    "name": "Flint Chisel",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:scholar:basic-wood-polish",
+    "name": "Basic Wood Polish",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:carpentry:refined-rough-plank",
+    "name": "Refined Rough Plank",
+    "tier": 1,
+    "rank": "Epic"
+  },
+  {
+    "id": "item:foraging:button-mushrooms",
+    "name": "Button Mushrooms",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:fishing:breezy-fin-darter-filet",
+    "name": "Breezy Fin Darter Filet",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:farming:wild-fiberplant-seeds",
+    "name": "Wild Fiberplant Seeds",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:foraging:wild-vegetable-seeds",
+    "name": "Wild Vegetable Seeds",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:farming:wild-grain-seeds",
+    "name": "Wild Grain Seeds",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:cooking:plain-mushroom-stuffed-bulbs",
+    "name": "Plain Mushroom Stuffed Bulbs",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:fishing:oceancrest-marlin-fillet",
+    "name": "Oceancrest Marlin Fillet",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:fishing:oceancrest-marlin-scale",
+    "name": "Oceancrest Marlin Scale",
+    "tier": 1,
+    "rank": "Epic"
+  },
+  {
+    "id": "item:carpentry:flint-knife",
+    "name": "Flint Knife",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:carpentry:flint-hoe",
+    "name": "Flint Hoe",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:scholar:basic-firesand",
+    "name": "Basic Firesand",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:scholar:basic-ink",
+    "name": "Basic Ink",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:carpentry:flint-pickaxe",
+    "name": "Flint Pickaxe",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:carpentry:flint-machete",
+    "name": "Flint Machete",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:carpentry:flint-quill",
+    "name": "Flint Quill",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:carpentry:flint-rod",
+    "name": "Flint Rod",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:smithing:ferralith-ore-concentrate",
+    "name": "Ferralith Ore Concentrate",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:smithing:molten-ferralith",
+    "name": "Molten Ferralith",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:carpentry:flint-saw",
+    "name": "Flint Saw",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:carpentry:flint-scissors",
+    "name": "Flint Scissors",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:carpentry:flint-axe",
+    "name": "Flint Axe",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:farming:simple-fertilizer",
+    "name": "Simple Fertilizer",
+    "tier": 2,
+    "rank": "Common"
+  },
+  {
+    "id": "item:farming:simple-starbulb-plant",
+    "name": "Simple Starbulb Plant",
+    "tier": 2,
+    "rank": "Common"
+  },
+  {
+    "id": "item:farming:simple-embergrain-plant",
+    "name": "Simple Embergrain Plant",
+    "tier": 2,
+    "rank": "Common"
+  },
+  {
+    "id": "item:leatherworking:rough-cleaned-pelt",
+    "name": "Rough Cleaned Pelt",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:leatherworking:basic-tannin",
+    "name": "Basic Tannin",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:leatherworking:rough-tanned-pelt",
+    "name": "Rough Tanned Pelt",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:mining:ferralith-ore-piece",
+    "name": "Ferralith Ore Piece",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:mining:ferralith-ore-chunk",
+    "name": "Ferralith Ore Chunk",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:tailoring:simple-cloth",
+    "name": "Simple Cloth",
+    "tier": 2,
+    "rank": "Common"
+  },
+  {
+    "id": "item:leatherworking:refined-simple-leather",
+    "name": "Refined Simple Leather",
+    "tier": 2,
+    "rank": "Common"
+  },
+  {
+    "id": "item:any:expanded-automatas-heart-i",
+    "name": "Expanded Automata's Heart I",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:leatherworking:rough-textile",
+    "name": "Rough Textile",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:forestry:sugar",
+    "name": "Sugar",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:cooking:plain-bulb-rolls",
+    "name": "Plain Bulb Rolls",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:cooking:plain-deluxe-bulb-rolls",
+    "name": "Plain Deluxe Bulb Rolls",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:tailoring:refined-rough-cloth",
+    "name": "Refined Rough Cloth",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:cooking:fish",
+    "name": "Fish",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:cooking:bulbs",
+    "name": "Bulbs",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:fishing:oceancrest-marlin",
+    "name": "Oceancrest Marlin",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:foraging:rough-gypsite",
+    "name": "Rough Gypsite",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:carpentry:deed-cart",
+    "name": "Deed Cart",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:cooking:baitfish",
+    "name": "Baitfish",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:cooking:salt",
+    "name": "Salt",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:cooking:plain-deluxe-fish-and-bulbs",
+    "name": "Plain Deluxe Fish and Bulbs",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:mining:clay-lump",
+    "name": "Clay Lump",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:masonry:basic-potters-mix",
+    "name": "Basic Potter's Mix",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:leatherworking:simple-leather",
+    "name": "Simple Leather",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:any:insulating-wires",
+    "name": "Insulating Wires",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:foraging:rough-material",
+    "name": "Rough Material",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:cooking:ground-meat",
+    "name": "Ground Meat",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:cooking:unknown",
+    "name": "Unknown",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:cooking:onion",
+    "name": "Onion",
+    "tier": 1,
+    "rank": "Common"
+  },
+  {
+    "id": "item:tailoring:rough-woven-belt",
+    "name": "Rough Woven Belt",
     "tier": 1,
     "rank": "Common"
   }

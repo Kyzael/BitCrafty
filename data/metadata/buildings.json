@@ -70,5 +70,37 @@
   {
     "id": "building:Scholar:station",
     "name": "Station"
+  },
+  {
+    "id": "building:farming:farming-field",
+    "name": "Farming Field"
+  },
+  {
+    "id": "building:smithing:smelter",
+    "name": "Smelter"
+  },
+  {
+    "id": "building:leatherworking:station",
+    "name": "Station"
+  },
+  {
+    "id": "building:leatherworking:tanning-hub",
+    "name": "Tanning Hub"
+  },
+  {
+    "id": "building:smithing:station",
+    "name": "Station"
+  },
+  {
+    "id": "building:masonry:station",
+    "name": "Station"
+  },
+  {
+    "id": "building:any:workbench",
+    "name": "Workbench"
+  },
+  {
+    "id": "building:forestry:oven",
+    "name": "Oven"
   }
 ]

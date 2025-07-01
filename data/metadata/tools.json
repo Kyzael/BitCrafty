@@ -38,5 +38,30 @@
   {
     "id": "tool:bow",
     "name": "Bow"
+  },
+  {
+    "id": "tool:hammer",
+    "name": "Hammer",
+    "description": "Auto-generated tool: Hammer"
+  },
+  {
+    "id": "tool:knife",
+    "name": "Knife",
+    "description": "Auto-generated tool: Knife"
+  },
+  {
+    "id": "tool:tier-ii-knife",
+    "name": "Tier Ii Knife",
+    "description": "Auto-generated tool: Tier Ii Knife"
+  },
+  {
+    "id": "tool:chisel",
+    "name": "Chisel",
+    "description": "Auto-generated tool: Chisel"
+  },
+  {
+    "id": "tool:tool",
+    "name": "Tool",
+    "description": "Auto-generated tool: Tool"
   }
 ]

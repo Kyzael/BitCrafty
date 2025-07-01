@@ -53,5 +53,20 @@
     "id": "profession:any",
     "name": "any",
     "color": "#FFFFFF"
+  },
+  {
+    "id": "profession:leatherworking",
+    "name": "leatherworking",
+    "color": "#FFFFFF"
+  },
+  {
+    "id": "profession:masonry",
+    "name": "masonry",
+    "color": "#FFFFFF"
+  },
+  {
+    "id": "profession:smithing",
+    "name": "smithing",
+    "color": "#FFFFFF"
   }
 ]

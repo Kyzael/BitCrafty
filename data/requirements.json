@@ -76,18 +76,6 @@
     }
   },
   {
-    "id": "requirement:cooking:well",
-    "name": "Well Access",
-    "profession": {
-      "name": "profession:cooking",
-      "level": 1
-    },
-    "building": {
-      "name": "building:cooking:well",
-      "level": 1
-    }
-  },
-  {
     "id": "requirement:carpentry:basic-tools",
     "name": "Basic Carpentry Tools",
     "profession": {
@@ -320,6 +308,314 @@
     },
     "building": {
       "name": "building:cooking:oven",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:forestry:tier2-forestry-station",
+    "name": "Tier 2 Forestry Station Requirements",
+    "profession": {
+      "name": "profession:forestry",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:axe",
+      "level": 2
+    },
+    "building": {
+      "name": "building:forestry:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:fishing:tier1-fishing-station",
+    "name": "Tier 1 Fishing Station Requirements",
+    "profession": {
+      "name": "profession:fishing",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:tool",
+      "level": 1
+    },
+    "building": {
+      "name": "building:fishing:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:farming:tier1-farming-field",
+    "name": "Tier 1 Farming Field Requirements",
+    "profession": {
+      "name": "profession:farming",
+      "level": 1
+    },
+    "building": {
+      "name": "building:farming:farming-field",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:foraging:tier1-foraging-station",
+    "name": "Tier 1 Foraging Station Requirements",
+    "profession": {
+      "name": "profession:foraging",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:machete",
+      "level": 1
+    },
+    "building": {
+      "name": "building:foraging:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:forestry:tier1-forestry-station",
+    "name": "Tier 1 Forestry Station Requirements",
+    "profession": {
+      "name": "profession:forestry",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:axe",
+      "level": 1
+    },
+    "building": {
+      "name": "building:forestry:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:mining:tier1-mining-station",
+    "name": "Tier 1 Mining Station Requirements",
+    "profession": {
+      "name": "profession:mining",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:pickaxe",
+      "level": 1
+    },
+    "building": {
+      "name": "building:mining:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:tailoring:tier1-tailoring-station",
+    "name": "Tier 1 Tailoring Station Requirements",
+    "profession": {
+      "name": "profession:tailoring",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:scissors",
+      "level": 1
+    },
+    "building": {
+      "name": "building:tailoring:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:smithing:tier1-smelter",
+    "name": "Tier 1 Smelter Requirements",
+    "profession": {
+      "name": "profession:smithing",
+      "level": 1
+    },
+    "building": {
+      "name": "building:smithing:smelter",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:farming:tier2-farming-station",
+    "name": "Tier 2 Farming Station Requirements",
+    "profession": {
+      "name": "profession:farming",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:hoe",
+      "level": 1
+    },
+    "building": {
+      "name": "building:farming:station",
+      "level": 2
+    }
+  },
+  {
+    "id": "requirement:tailoring:tier1-loom",
+    "name": "Tier 1 Loom Requirements",
+    "profession": {
+      "name": "profession:tailoring",
+      "level": 1
+    },
+    "building": {
+      "name": "building:tailoring:loom",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:cooking:tier1-tool-tools",
+    "name": "Tier 1 Tool Tools Requirements",
+    "profession": {
+      "name": "profession:cooking",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:tool",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:hunting:tier1-hunting-station",
+    "name": "Tier 1 Hunting Station Requirements",
+    "profession": {
+      "name": "profession:hunting",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:bow",
+      "level": 1
+    },
+    "building": {
+      "name": "building:hunting:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:cooking:tier1-well",
+    "name": "Tier 1 Well Access",
+    "profession": {
+      "name": "profession:cooking",
+      "level": 1
+    },
+    "building": {
+      "name": "building:cooking:well",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:leatherworking:tier1-leatherworking-station",
+    "name": "Tier 1 Leatherworking Station Requirements",
+    "profession": {
+      "name": "profession:leatherworking",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:knife",
+      "level": 1
+    },
+    "building": {
+      "name": "building:leatherworking:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:leatherworking:tier1-tanning-hub",
+    "name": "Tier 1 Tanning Hub Requirements",
+    "profession": {
+      "name": "profession:leatherworking",
+      "level": 1
+    },
+    "building": {
+      "name": "building:leatherworking:tanning-hub",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:leatherworking:tier1-knife-tools",
+    "name": "Tier 1 Knife Tools Requirements",
+    "profession": {
+      "name": "profession:leatherworking",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:knife",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:smithing:tier1-smithing-station",
+    "name": "Tier 1 Smithing Station Requirements",
+    "profession": {
+      "name": "profession:smithing",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:hammer",
+      "level": 1
+    },
+    "building": {
+      "name": "building:smithing:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:masonry:tier1-masonry-station",
+    "name": "Tier 1 Masonry Station Requirements",
+    "profession": {
+      "name": "profession:masonry",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:chisel",
+      "level": 1
+    },
+    "building": {
+      "name": "building:masonry:station",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:leatherworking:tier1-tier-ii-knife-tools",
+    "name": "Tier 1 Tier Ii Knife Tools Requirements",
+    "profession": {
+      "name": "profession:leatherworking",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:tier-ii-knife",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:any:tier1-workbench",
+    "name": "Tier 1 Workbench Requirements",
+    "profession": {
+      "name": "profession:any",
+      "level": 1
+    },
+    "building": {
+      "name": "building:any:workbench",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:forestry:tier1-oven",
+    "name": "Tier 1 Oven Requirements",
+    "profession": {
+      "name": "profession:forestry",
+      "level": 1
+    },
+    "building": {
+      "name": "building:forestry:oven",
+      "level": 1
+    }
+  },
+  {
+    "id": "requirement:tailoring:tier1-scissors-tools",
+    "name": "Tier 1 Scissors Tools Requirements",
+    "profession": {
+      "name": "profession:tailoring",
+      "level": 1
+    },
+    "tool": {
+      "name": "tool:scissors",
       "level": 1
     }
   }
