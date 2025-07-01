@@ -413,23 +413,6 @@
     "requirement": "requirement:carpentry:basic-tools"
   },
   {
-    "id": "craft:carpentry:wood-plank",
-    "name": "Craft Rough Plank",
-    "materials": [
-      {
-        "item": "item:carpentry:rough-stripped-wood",
-        "qty": 1
-      }
-    ],
-    "outputs": [
-      {
-        "item": "item:carpentry:rough-plank",
-        "qty": 1
-      }
-    ],
-    "requirement": "requirement:carpentry:basic-tools"
-  },
-  {
     "id": "craft:carpentry:fire-kit",
     "name": "Craft Campfire Kit",
     "materials": [
