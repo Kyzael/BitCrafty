@@ -3,6 +3,22 @@ import { GraphNode, GraphEdge, LayoutOptions, GraphData } from '../types'
 import { DEFAULT_LAYOUT_OPTIONS, NODE_STYLES } from './constants'
 
 /**
+ * Extract profession name from entity ID
+ * Handles format: TYPE:PROFESSION:IDENTIFIER
+ * Returns profession name matching the format in professions.json
+ * Special case: "any" remains lowercase, others get capitalized
+ */
+export function extractProfessionFromId(id: string): string {
+  const parts = id.split(':')
+  if (parts.length >= 2) {
+    const professionId = parts[1]
+    // Special case: "any" stays lowercase, others get capitalized
+    return professionId === 'any' ? 'any' : professionId.charAt(0).toUpperCase() + professionId.slice(1)
+  }
+  return 'Unknown'
+}
+
+/**
  * Calculate layout positions for nodes using Dagre
  */
 export function calculateLayout(
@@ -66,8 +82,13 @@ export function filterGraphData(
   // Filter nodes
   const visibleNodes = allNodes.filter(node => {
     // Check profession visibility
-    const profession = node.data.id.split(':')[1] // Extract profession from ID format
-    if (!visibleProfessions.has(profession)) {
+    const professionId = node.data.id.split(':')[1] // Extract profession from ID format (e.g., "foraging")
+    
+    // Convert profession ID to the correct name format for comparison
+    // Special case: "any" stays lowercase, others get capitalized
+    const professionName = professionId === 'any' ? 'any' : professionId.charAt(0).toUpperCase() + professionId.slice(1)
+    
+    if (!visibleProfessions.has(professionName)) {
       return false
     }
     

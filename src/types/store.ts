@@ -22,7 +22,7 @@ export interface AppState {
 // Action types for store mutations
 export interface AppActions {
   // Data actions
-  loadData: (data: { items: ItemData[], crafts: CraftData[], professions: ProfessionData[] }) => void
+  loadData: () => Promise<void>
   
   // Selection actions
   selectNode: (nodeId: string | null) => void

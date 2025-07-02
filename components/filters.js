@@ -50,9 +50,6 @@ function setupFilterEventListeners() {
   });
 }
 
-/**
- * Get active profession filters from UI toggle elements
- */
 function getActiveProfessions() {
   const checkedProfessions = new Set();
   document.querySelectorAll('.prof-filter-toggle').forEach(toggle => {
@@ -120,7 +117,16 @@ export function applyProfessionFilters() {
   
   nodes.forEach(node => {
     const profession = nodeToProfession[node.id];
-    let shouldShow = !profession || checkedProfessions.has(profession);
+    
+    // Check if the profession should be shown (case-insensitive comparison)
+    let shouldShow = !profession; // Always show nodes without a profession
+    
+    if (profession) {
+      // Check if the profession is in the checked professions set (case-insensitive)
+      shouldShow = Array.from(checkedProfessions).some(
+        checkedProf => checkedProf.toLowerCase() === profession.toLowerCase()
+      );
+    }
     
     // If subtree filter is active, also check if node is in visible subtree
     if (subtreeFilterActive) {

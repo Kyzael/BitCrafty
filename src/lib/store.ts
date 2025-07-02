@@ -1,9 +1,16 @@
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
-import { AppState, AppActions, ItemData, CraftData, ProfessionData, QueueItem, GraphData } from '../types'
+import { useMemo } from 'react'
+import { AppState, AppActions, QueueItem, GraphData } from '../types'
+import { loadBitCraftyData, arrayToRecord, professionsArrayToRecord } from './data-loader'
+import { buildGraphData } from './graph-builder'
 
 // Combined store interface
-interface BitCraftyStore extends AppState, AppActions {}
+interface BitCraftyStore extends AppState, AppActions {
+  // Loading state
+  isLoading: boolean
+  loadError: string | null
+}
 
 // Initial state
 const initialState: AppState = {
@@ -27,32 +34,53 @@ const initialState: AppState = {
 export const useBitCraftyStore = create<BitCraftyStore>()(
   subscribeWithSelector((set, get) => ({
     ...initialState,
+    
+    // Loading state
+    isLoading: false,
+    loadError: null,
 
-    // Data actions
-    loadData: (data: { items: ItemData[], crafts: CraftData[], professions: ProfessionData[] }) => {
-      const itemsMap = data.items.reduce((acc, item) => {
-        acc[item.id] = item
-        return acc
-      }, {} as Record<string, ItemData>)
+    // Enhanced data loading
+    loadData: async () => {
+      console.log('Store: Starting data load')
+      set({ isLoading: true, loadError: null })
       
-      const craftsMap = data.crafts.reduce((acc, craft) => {
-        acc[craft.id] = craft
-        return acc
-      }, {} as Record<string, CraftData>)
-      
-      const professionsMap = data.professions.reduce((acc, profession) => {
-        acc[profession.name] = profession
-        return acc
-      }, {} as Record<string, ProfessionData>)
-      
-      const allProfessions = new Set(data.professions.map(p => p.name))
-      
-      set({
-        items: itemsMap,
-        crafts: craftsMap,
-        professions: professionsMap,
-        visibleProfessions: allProfessions
-      })
+      try {
+        const data = await loadBitCraftyData()
+        console.log('Store: Data loaded:', {
+          items: data.items.length,
+          crafts: data.crafts.length,
+          professions: data.professions.length
+        })
+        
+        const graphData = buildGraphData(data.items, data.crafts, data.professions)
+        console.log('Store: Graph data built:', {
+          nodes: graphData.nodes.length,
+          edges: graphData.edges.length
+        })
+        
+        const itemsMap = arrayToRecord(data.items)
+        const craftsMap = arrayToRecord(data.crafts)
+        const professionsMap = professionsArrayToRecord(data.professions)
+        const allProfessions = new Set(data.professions.map(p => p.name))
+        
+        set({
+          items: itemsMap,
+          crafts: craftsMap,
+          professions: professionsMap,
+          graphData,
+          visibleProfessions: allProfessions,
+          isLoading: false,
+          loadError: null
+        })
+        
+        console.log('Store: Data loading complete')
+      } catch (error) {
+        console.error('Failed to load BitCrafty data:', error)
+        set({ 
+          isLoading: false, 
+          loadError: error instanceof Error ? error.message : 'Unknown error'
+        })
+      }
     },
 
     // Selection actions
@@ -66,19 +94,24 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
 
     // Filter actions
     toggleProfession: (professionName: string) => {
+      console.log('Store: toggleProfession called with:', professionName)
       const { visibleProfessions } = get()
       const newVisible = new Set(visibleProfessions)
       
       if (newVisible.has(professionName)) {
         newVisible.delete(professionName)
+        console.log('Store: Removed profession:', professionName)
       } else {
         newVisible.add(professionName)
+        console.log('Store: Added profession:', professionName)
       }
       
+      console.log('Store: New visible professions:', Array.from(newVisible))
       set({ visibleProfessions: newVisible })
     },
 
     setVisibleProfessions: (professions: Set<string>) => {
+      console.log('Store: setVisibleProfessions called with:', Array.from(professions))
       set({ visibleProfessions: new Set(professions) })
     },
 
@@ -117,15 +150,36 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
   }))
 )
 
-// Selector hooks for specific state slices
+// Memoized selectors with proper caching for React 18
+// These avoid the "getSnapshot" warning and infinite loops
 export const useSelectedNode = () => useBitCraftyStore(state => state.selectedNode)
 export const useSearchQuery = () => useBitCraftyStore(state => state.searchQuery)
 export const useVisibleProfessions = () => useBitCraftyStore(state => state.visibleProfessions)
 export const useCraftingQueue = () => useBitCraftyStore(state => state.craftingQueue)
 export const useGraphData = () => useBitCraftyStore(state => state.graphData)
 export const useFocusMode = () => useBitCraftyStore(state => state.focusMode)
+export const useIsLoading = () => useBitCraftyStore(state => state.isLoading)
+export const useLoadError = () => useBitCraftyStore(state => state.loadError)
 
-// Data selector hooks
+// Memoized data array selectors
+// These ensure Object.values() calls don't create new arrays on every render
+export const useItemsArray = () => {
+  const items = useBitCraftyStore(state => state.items)
+  // Use useMemo to ensure the array is only created once per items reference
+  return useMemo(() => Object.values(items), [items])
+}
+
+export const useCraftsArray = () => {
+  const crafts = useBitCraftyStore(state => state.crafts)
+  return useMemo(() => Object.values(crafts), [crafts])
+}
+
+export const useProfessionsArray = () => {
+  const professions = useBitCraftyStore(state => state.professions)
+  return useMemo(() => Object.values(professions), [professions])
+}
+
+// Original data object selectors
 export const useItems = () => useBitCraftyStore(state => state.items)
 export const useCrafts = () => useBitCraftyStore(state => state.crafts)
 export const useProfessions = () => useBitCraftyStore(state => state.professions)

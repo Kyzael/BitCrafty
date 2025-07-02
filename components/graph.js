@@ -33,12 +33,18 @@ function buildGraph() {
   const items = ItemHelpers.getAll();
   const crafts = CraftHelpers.getAll();
   
+  console.log('Building graph with items count:', items.length, 'and crafts count:', crafts.length);
+  
   // Create nodes for items and crafts
   const nodeList = [];
   
   // Item nodes: fill with profession color based on item ID
   items.forEach(item => {
     const color = getProfessionColorFromId(item.id);
+    
+    // Debug profession extraction
+    const profession = item.id.split(':')[1];
+    console.log(`Adding item node: ${item.id}, profession: ${profession}, name: ${item.name}`);
     
     nodeList.push({
       id: item.id,
@@ -67,6 +73,10 @@ function buildGraph() {
   crafts.forEach(craft => {
     const color = getProfessionColorFromId(craft.id);
     
+    // Debug profession extraction
+    const profession = craft.id.split(':')[1];
+    console.log(`Adding craft node: ${craft.id}, profession: ${profession}, name: ${craft.name}`);
+    
     nodeList.push({
       id: craft.id,
       label: craft.name,
@@ -93,11 +103,18 @@ function buildGraph() {
   // Create edges for material inputs and craft outputs
   const edgeList = [];
   
+  console.log('Creating edges for crafts...');
+  let edgeCount = 0;
+  
   crafts.forEach(craft => {
     // Material inputs: item -> craft
     (craft.materials || []).forEach(mat => {
       if (ItemHelpers.getById(mat.item)) {
         const lineWidth = Math.min(Math.max(Math.log2(mat.qty + 1) + 1, 1), 8);
+        
+        // Debug edge creation
+        console.log(`Creating input edge from ${mat.item} to ${craft.id}, qty: ${mat.qty}`);
+        edgeCount++;
         
         edgeList.push({
           from: mat.item,
@@ -115,6 +132,8 @@ function buildGraph() {
             size: 18
           }
         });
+      } else {
+        console.warn(`Item not found for material: ${mat.item} in craft ${craft.id}`);
       }
     });
     
@@ -133,6 +152,10 @@ function buildGraph() {
         
         const lineWidth = Math.min(Math.max(Math.log2(qty + 1) + 1, 1), 8);
         
+        // Debug edge creation
+        console.log(`Creating output edge from ${craft.id} to ${out.item}, qty: ${out.qty}`);
+        edgeCount++;
+        
         edgeList.push({
           from: craft.id,
           to: out.item,
@@ -149,9 +172,13 @@ function buildGraph() {
             size: 18
           }
         });
+      } else {
+        console.warn(`Item not found for output: ${out.item} in craft ${craft.id}`);
       }
     });
   });
+  
+  console.log(`Total edges created: ${edgeCount} for ${crafts.length} crafts`);
 
   // Create vis.js DataSets
   const nodes = new vis.DataSet(nodeList);
@@ -164,6 +191,8 @@ function buildGraph() {
   const container = document.getElementById("network");
   const data = { nodes, edges };
   const options = getNetworkOptions();
+  
+  console.log(`Creating network with ${nodeList.length} nodes and ${edgeList.length} edges`);
   
   window.network = new vis.Network(container, data, options);
   const network = window.network;
