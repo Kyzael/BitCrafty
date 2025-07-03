@@ -376,29 +376,29 @@ export default function App() {
 ## ✅ Validation Criteria
 
 ### Data Loading Success
-- [ ] All 69 items loaded and visible as rounded rectangle nodes
-- [ ] All 49 crafts loaded and visible as pill-shaped nodes  
-- [ ] All edges correctly connect: inputs → craft → outputs
-- [ ] Profession colors match existing app exactly
-- [ ] No console errors during data loading
+- [x] All 69 items loaded and visible as rounded rectangle nodes
+- [x] All 49 crafts loaded and visible as pill-shaped nodes  
+- [x] All edges correctly connect: inputs → craft → outputs
+- [x] Profession colors match existing app exactly (fixed to use dynamic JSON data)
+- [x] No console errors during data loading
 
 ### Graph Rendering Success  
-- [ ] Hierarchical layout applied (items above crafts that use them)
-- [ ] Node positioning matches general structure of existing app
-- [ ] All text clearly readable with Monokai theme
-- [ ] Smooth rendering performance with all nodes visible
+- [x] Hierarchical layout applied (items above crafts that use them)
+- [x] Node positioning matches general structure of existing app
+- [x] All text clearly readable (fixed styling with proper profession colors)
+- [x] Smooth rendering performance with all nodes visible
 
 ### Filtering Success
-- [ ] Profession filter toggles hide/show correct nodes
-- [ ] Connected edges disappear when nodes are filtered out
-- [ ] Graph layout updates smoothly when filters change
-- [ ] All professions toggle correctly: farming, cooking, blacksmithing, carpentry, mining, stonecutting, hunting, fishing
+- [x] Profession filter toggles hide/show correct nodes
+- [x] Connected edges disappear when nodes are filtered out
+- [x] Graph layout updates smoothly when filters change
+- [x] All professions toggle correctly: foraging, tailoring, farming, cooking, carpentry, scholar, fishing, forestry, mining, hunting, any
 
 ### Integration Success
-- [ ] React dev server serves JSON files correctly from /data/
-- [ ] Store updates trigger graph re-renders
-- [ ] TypeScript compilation with no errors
-- [ ] ESLint passes with no warnings
+- [x] React dev server serves JSON files correctly from /data/
+- [x] Store updates trigger graph re-renders
+- [x] TypeScript compilation with no errors
+- [x] ESLint passes with no warnings
 
 ## 🚀 Ready to Continue?
 

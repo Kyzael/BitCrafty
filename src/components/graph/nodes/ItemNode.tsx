@@ -1,19 +1,15 @@
 import { memo } from 'react'
 import { Handle, Position, NodeProps } from 'reactflow'
 import { ItemNodeData } from '../../../types'
-import { extractProfessionFromId } from '../../../lib/utils'
-import { PROFESSION_COLORS } from '../../../lib/constants'
 
 export const ItemNode = memo<NodeProps<ItemNodeData>>(({ data, selected }) => {
-  const profession = extractProfessionFromId(data.id)
-  const color = profession in PROFESSION_COLORS 
-    ? PROFESSION_COLORS[profession as keyof typeof PROFESSION_COLORS] 
-    : '#727072'
+  // Use the color stored in the data by graph-builder
+  const color = data.color || '#727072'
   
   return (
     <div 
       style={{
-        background: '#2d2a2e', // Darker background for better contrast
+        background: 'transparent', // Remove background
         border: `2px solid ${color}`,
         borderRadius: '8px',
         padding: '8px 12px',

@@ -37,15 +37,12 @@ export function buildGraphData(
     // Input edges: item → craft (using materials array)
     if (craft.materials) {
       craft.materials.forEach((material, index) => {
-        const qty = typeof material.qty === 'number' ? material.qty : 1
         edges.push({
           id: `input-${craft.id}-${material.item}-${index}`,
           source: material.item,
           target: craft.id,
           type: 'default',
-          style: { stroke: '#89dceb', strokeWidth: 2 }, // cyan for inputs
-          label: qty > 1 ? `${qty}` : undefined,
-          labelStyle: { fill: '#fcfcfa', fontSize: '10px' }
+          style: { stroke: '#89dceb', strokeWidth: 2 } // cyan for inputs
         })
       })
     }
@@ -53,15 +50,12 @@ export function buildGraphData(
     // Output edges: craft → item
     if (craft.outputs) {
       craft.outputs.forEach((output, index) => {
-        const qty = typeof output.qty === 'number' ? output.qty : 1
         edges.push({
           id: `output-${craft.id}-${output.item}-${index}`,
           source: craft.id,
           target: output.item,
           type: 'default',
-          style: { stroke: '#f5c2e7', strokeWidth: 2 }, // pink for outputs
-          label: qty > 1 ? `${qty}` : undefined,
-          labelStyle: { fill: '#fcfcfa', fontSize: '10px' }
+          style: { stroke: '#f5c2e7', strokeWidth: 2 } // pink for outputs
         })
       })
     }
@@ -116,19 +110,11 @@ function createItemNode(item: ItemData, professionColors: Record<string, string>
       ...item,
       type: 'item',
       selected: false,
-      visible: true
-    },
-    style: {
-      background: '#1e1e2e',
-      border: `2px solid ${color}`,
-      borderRadius: '8px',
-      padding: '8px 12px',
-      color: '#fcfcfa',
-      fontSize: '12px',
-      minWidth: '120px',
-      textAlign: 'center',
-      fontWeight: 'normal'
+      visible: true,
+      color: color, // Add color to data for nodes to use
+      profession: profession // Add profession for easy access
     }
+    // Remove style property - let the component handle all styling
   }
 }
 
@@ -149,19 +135,11 @@ function createCraftNode(craft: CraftData, professionColors: Record<string, stri
       ...craft,
       type: 'craft',
       selected: false,
-      visible: true
-    },
-    style: {
-      background: '#1e1e2e',
-      border: `2px solid ${color}`,
-      borderRadius: '20px',
-      padding: '6px 16px',
-      color: '#fcfcfa',
-      fontSize: '11px',
-      minWidth: '100px',
-      textAlign: 'center',
-      fontWeight: 'normal'
+      visible: true,
+      color: color, // Add color to data for nodes to use
+      profession: profession // Add profession for easy access
     }
+    // Remove style property - let the component handle all styling
   }
 }
 

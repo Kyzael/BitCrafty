@@ -7,12 +7,16 @@ export interface ItemNodeData extends ItemData {
   type: 'item'
   selected?: boolean
   visible?: boolean
+  color?: string // Profession color for styling
+  profession?: string // Extracted profession name
 }
 
 export interface CraftNodeData extends CraftData {
   type: 'craft'
   selected?: boolean
   visible?: boolean
+  color?: string // Profession color for styling
+  profession?: string // Extracted profession name
 }
 
 export type NodeData = ItemNodeData | CraftNodeData
