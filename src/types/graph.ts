@@ -9,6 +9,8 @@ export interface ItemNodeData extends ItemData {
   visible?: boolean
   color?: string // Profession color for styling
   profession?: string // Extracted profession name
+  isSelected?: boolean // Selection state from store
+  isHovered?: boolean // Hover state from store
 }
 
 export interface CraftNodeData extends CraftData {
@@ -17,6 +19,8 @@ export interface CraftNodeData extends CraftData {
   visible?: boolean
   color?: string // Profession color for styling
   profession?: string // Extracted profession name
+  isSelected?: boolean // Selection state from store
+  isHovered?: boolean // Hover state from store
 }
 
 export type NodeData = ItemNodeData | CraftNodeData

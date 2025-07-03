@@ -2,24 +2,56 @@ import { memo } from 'react'
 import { Handle, Position, NodeProps } from 'reactflow'
 import { CraftNodeData } from '../../../types'
 
-export const CraftNode = memo<NodeProps<CraftNodeData>>(({ data, selected }) => {
+interface CraftNodeProps extends NodeProps<CraftNodeData> {
+  isSelected?: boolean
+  isHovered?: boolean
+}
+
+export const CraftNode = memo<CraftNodeProps>(({ data, isSelected = false, isHovered = false }) => {
   // Use the color stored in the data by graph-builder
   const color = data.color || '#727072'
+  
+  // Enhanced styling based on interaction state
+  const getBorderStyle = () => {
+    if (isSelected) {
+      return `3px solid ${color}`
+    } else if (isHovered) {
+      return `2px solid ${color}`
+    } else {
+      return `2px solid ${color}`
+    }
+  }
+  
+  const getBoxShadow = () => {
+    if (isSelected) {
+      return `0 0 12px ${color}80` // 50% opacity
+    } else if (isHovered) {
+      return `0 0 8px ${color}40` // 25% opacity
+    } else {
+      return 'none'
+    }
+  }
   
   return (
     <div 
       style={{
-        background: 'transparent', // Remove background
-        border: `2px solid ${color}`,
+        background: 'transparent',
+        border: getBorderStyle(),
         borderRadius: '20px',
         padding: '6px 16px',
-        color: '#fcfcfa', // Very light text color
-        fontSize: '13px', // Slightly larger font
-        fontWeight: 'bold', // Always bold for better visibility
+        color: '#fcfcfa',
+        fontSize: '13px',
+        fontWeight: 'bold',
         minWidth: '100px',
         textAlign: 'center',
-        boxShadow: selected ? `0 0 8px ${color}` : 'none',
-        cursor: 'pointer'
+        boxShadow: getBoxShadow(),
+        cursor: 'pointer',
+        textShadow: '0 1px 2px #000',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        transform: isSelected ? 'scale(1.05)' : 'scale(1)',
+        transition: 'all 0.2s ease-in-out'
       }}
     >
       <Handle 
@@ -27,14 +59,7 @@ export const CraftNode = memo<NodeProps<CraftNodeData>>(({ data, selected }) => 
         position={Position.Top} 
         style={{ opacity: 0, pointerEvents: 'none' }} 
       />
-      <div style={{ 
-        textShadow: '0 1px 2px #000', // Text shadow for better readability
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap'
-      }}>
-        {data.name}
-      </div>
+      {data.name}
       <Handle 
         type="source" 
         position={Position.Bottom} 
@@ -42,6 +67,13 @@ export const CraftNode = memo<NodeProps<CraftNodeData>>(({ data, selected }) => 
       />
     </div>
   )
+}, (prevProps, nextProps) => {
+  // Custom comparison function to prevent unnecessary re-renders
+  return (
+    prevProps.id === nextProps.id &&
+    prevProps.data.name === nextProps.data.name &&
+    prevProps.data.color === nextProps.data.color &&
+    prevProps.isSelected === nextProps.isSelected &&
+    prevProps.isHovered === nextProps.isHovered
+  )
 })
-
-CraftNode.displayName = 'CraftNode'

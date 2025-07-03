@@ -2,17 +2,15 @@ import React, { createContext, useContext, useMemo } from 'react';
 import { 
   ReactFlowProvider,
   NodeTypes,
-  ReactFlowProps,
   ReactFlowInstance
 } from 'reactflow';
-import { ItemNode } from './graph/nodes/ItemNode';
-import { CraftNode } from './graph/nodes/CraftNode';
+import { ItemNodeWrapper, CraftNodeWrapper } from './graph/nodes/NodeWrappers';
 
 // Create a global, static nodeTypes object that won't change across renders
 // This ensures React Flow always sees the same reference
 const GLOBAL_NODE_TYPES: NodeTypes = {
-  item: ItemNode,
-  craft: CraftNode
+  item: ItemNodeWrapper,
+  craft: CraftNodeWrapper
 };
 
 // Context to provide the constant nodeTypes throughout the app

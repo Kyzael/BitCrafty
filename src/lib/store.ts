@@ -21,6 +21,9 @@ const initialState: AppState = {
   
   // UI state
   selectedNode: null,
+  hoveredNode: null,
+  highlightedEdges: new Set(),
+  searchResults: new Set(),
   searchQuery: '',
   visibleProfessions: new Set(),
   craftingQueue: [],
@@ -88,8 +91,16 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
       set({ selectedNode: nodeId })
     },
 
+    setHoveredNode: (nodeId: string | null) => {
+      set({ hoveredNode: nodeId })
+    },
+
     setSearchQuery: (query: string) => {
       set({ searchQuery: query })
+    },
+
+    setSearchResults: (results: Set<string>) => {
+      set({ searchResults: results })
     },
 
     // Filter actions
@@ -153,6 +164,9 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
 // Memoized selectors with proper caching for React 18
 // These avoid the "getSnapshot" warning and infinite loops
 export const useSelectedNode = () => useBitCraftyStore(state => state.selectedNode)
+export const useHoveredNode = () => useBitCraftyStore(state => state.hoveredNode)
+export const useHighlightedEdges = () => useBitCraftyStore(state => state.highlightedEdges)
+export const useSearchResults = () => useBitCraftyStore(state => state.searchResults)
 export const useSearchQuery = () => useBitCraftyStore(state => state.searchQuery)
 export const useVisibleProfessions = () => useBitCraftyStore(state => state.visibleProfessions)
 export const useCraftingQueue = () => useBitCraftyStore(state => state.craftingQueue)
@@ -184,17 +198,17 @@ export const useItems = () => useBitCraftyStore(state => state.items)
 export const useCrafts = () => useBitCraftyStore(state => state.crafts)
 export const useProfessions = () => useBitCraftyStore(state => state.professions)
 
-// Action hooks
-export const useStoreActions = () => useBitCraftyStore(state => ({
-  loadData: state.loadData,
-  selectNode: state.selectNode,
-  setSearchQuery: state.setSearchQuery,
-  toggleProfession: state.toggleProfession,
-  setVisibleProfessions: state.setVisibleProfessions,
-  addToQueue: state.addToQueue,
-  removeFromQueue: state.removeFromQueue,
-  clearQueue: state.clearQueue,
-  updateQueueItem: state.updateQueueItem,
-  updateGraphData: state.updateGraphData,
-  setFocusMode: state.setFocusMode
-}))
+// Individual action hooks - these provide stable references
+export const useLoadData = () => useBitCraftyStore(state => state.loadData)
+export const useSelectNode = () => useBitCraftyStore(state => state.selectNode)
+export const useSetHoveredNode = () => useBitCraftyStore(state => state.setHoveredNode)
+export const useSetSearchQuery = () => useBitCraftyStore(state => state.setSearchQuery)
+export const useSetSearchResults = () => useBitCraftyStore(state => state.setSearchResults)
+export const useToggleProfession = () => useBitCraftyStore(state => state.toggleProfession)
+export const useSetVisibleProfessions = () => useBitCraftyStore(state => state.setVisibleProfessions)
+export const useAddToQueue = () => useBitCraftyStore(state => state.addToQueue)
+export const useRemoveFromQueue = () => useBitCraftyStore(state => state.removeFromQueue)
+export const useClearQueue = () => useBitCraftyStore(state => state.clearQueue)
+export const useUpdateQueueItem = () => useBitCraftyStore(state => state.updateQueueItem)
+export const useUpdateGraphData = () => useBitCraftyStore(state => state.updateGraphData)
+export const useSetFocusMode = () => useBitCraftyStore(state => state.setFocusMode)

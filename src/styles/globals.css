@@ -56,17 +56,18 @@ body {
   height: 100%;
 }
 
+/* Override default React Flow node styling to remove outer box */
 .react-flow__node {
-  border-radius: 8px;
-  border: 2px solid #727072;
-  background: #1e1e2e;
-  color: #fcfcfa;
-  font-size: 12px;
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
 }
 
 .react-flow__node.selected {
-  border-color: #89b4fa;
-  box-shadow: 0 0 0 2px #89b4fa33;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .react-flow__edge-path {

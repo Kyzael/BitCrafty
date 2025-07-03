@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react'
-import ReactFlow, { useNodesState, useEdgesState, Panel } from 'reactflow'
+import ReactFlow, { useNodesState, useEdgesState, Panel, Node } from 'reactflow'
 import { filterGraphData } from '../../lib/utils'
-import { useIsLoading, useGraphData, useVisibleProfessions, useSearchQuery } from '../../lib/store'
+import { useIsLoading, useGraphData, useVisibleProfessions, useSearchQuery, useSelectedNode, useHoveredNode, useSelectNode, useSetHoveredNode } from '../../lib/store'
 import { useFlowContext, getGlobalNodeTypes } from '../BitCraftyFlowProvider'
 
 // Get the global nodeTypes directly - do not import from another module
@@ -15,6 +15,10 @@ function GraphContainerInner() {
   const graphData = useGraphData()
   const visibleProfessions = useVisibleProfessions()
   const searchQuery = useSearchQuery()
+  const selectedNode = useSelectedNode()
+  const hoveredNode = useHoveredNode()
+  const selectNode = useSelectNode()
+  const setHoveredNode = useSetHoveredNode()
   const { setRfInstance } = useFlowContext()
   
   const [nodes, setNodes, onNodesChange] = useNodesState([])
@@ -26,6 +30,35 @@ function GraphContainerInner() {
   const onInit = useCallback((instance: any) => {
     setRfInstance(instance)
   }, [setRfInstance])
+
+  // Handle node clicks for selection
+  const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
+    event.stopPropagation()
+    const nodeId = node.id
+    const isCurrentlySelected = selectedNode === nodeId
+    
+    // Toggle selection: if already selected, deselect; otherwise select
+    selectNode(isCurrentlySelected ? null : nodeId)
+    
+    console.log('Node clicked:', nodeId, 'Selected:', !isCurrentlySelected)
+  }, [selectedNode, selectNode])
+
+  // Handle node hover for hover state
+  const onNodeMouseEnter = useCallback((_event: React.MouseEvent, node: Node) => {
+    setHoveredNode(node.id)
+  }, [setHoveredNode])
+
+  const onNodeMouseLeave = useCallback(() => {
+    setHoveredNode(null)
+  }, [setHoveredNode])
+
+  // Handle background clicks to deselect
+  const onPaneClick = useCallback(() => {
+    if (selectedNode) {
+      selectNode(null)
+      console.log('Background clicked, deselecting node')
+    }
+  }, [selectedNode, selectNode])
 
   // Measure container dimensions
   useEffect(() => {
@@ -87,9 +120,20 @@ function GraphContainerInner() {
   // Update nodes and edges when filtered data changes
   useEffect(() => {
     console.log('GraphContainer: Setting filtered data with', filteredData.nodes.length, 'nodes and', filteredData.edges.length, 'edges')
-    setNodes(filteredData.nodes)
+    
+    // Enhance nodes with selection and hover state
+    const enhancedNodes = filteredData.nodes.map(node => ({
+      ...node,
+      data: {
+        ...node.data,
+        isSelected: selectedNode === node.id,
+        isHovered: hoveredNode === node.id
+      }
+    }))
+    
+    setNodes(enhancedNodes)
     setEdges(filteredData.edges)
-  }, [filteredData, setNodes, setEdges])
+  }, [filteredData, selectedNode, hoveredNode, setNodes, setEdges])
 
   if (isLoading) {
     return (
@@ -139,6 +183,10 @@ function GraphContainerInner() {
           edges={edges}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
+          onNodeClick={onNodeClick}
+          onNodeMouseEnter={onNodeMouseEnter}
+          onNodeMouseLeave={onNodeMouseLeave}
+          onPaneClick={onPaneClick}
           nodeTypes={globalNodeTypes}
           onInit={onInit}
           fitView

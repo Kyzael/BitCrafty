@@ -10,7 +10,10 @@ export interface AppState {
   
   // UI state
   selectedNode: string | null
+  hoveredNode: string | null
+  highlightedEdges: Set<string>
   searchQuery: string
+  searchResults: Set<string>
   visibleProfessions: Set<string>
   craftingQueue: QueueItem[]
   
@@ -26,7 +29,9 @@ export interface AppActions {
   
   // Selection actions
   selectNode: (nodeId: string | null) => void
+  setHoveredNode: (nodeId: string | null) => void
   setSearchQuery: (query: string) => void
+  setSearchResults: (results: Set<string>) => void
   
   // Filter actions
   toggleProfession: (professionName: string) => void
