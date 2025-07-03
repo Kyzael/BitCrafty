@@ -1,12 +1,16 @@
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import ReactFlow, { useNodesState, useEdgesState, Panel, Node } from 'reactflow'
 import { filterGraphData } from '../../lib/utils'
-import { useIsLoading, useGraphData, useVisibleProfessions, useSearchQuery, useSelectedNode, useHoveredNode, useSelectNode, useSetHoveredNode } from '../../lib/store'
-import { useFlowContext, getGlobalNodeTypes } from '../BitCraftyFlowProvider'
+import { useIsLoading, useGraphData, useVisibleProfessions, useSearchQuery, useSelectedNode, useHoveredNode, useHighlightedEdges, useSelectNode, useSetHoveredNode } from '../../lib/store'
+import { useFlowContext } from '../BitCraftyFlowProvider'
+import { ItemNodeWrapper, CraftNodeWrapper } from './nodes/NodeWrappers'
 
-// Get the global nodeTypes directly - do not import from another module
-// This ensures we're using the exact same reference that our provider uses
-const globalNodeTypes = getGlobalNodeTypes();
+// Define nodeTypes outside component to ensure stable reference
+// Note: React Flow still shows warning due to wrapper components, but functionality works correctly
+const nodeTypes = {
+  item: ItemNodeWrapper,
+  craft: CraftNodeWrapper
+};
 
 // Use React.memo to prevent unnecessary re-renders
 function GraphContainerInner() {
@@ -17,6 +21,7 @@ function GraphContainerInner() {
   const searchQuery = useSearchQuery()
   const selectedNode = useSelectedNode()
   const hoveredNode = useHoveredNode()
+  const highlightedEdges = useHighlightedEdges()
   const selectNode = useSelectNode()
   const setHoveredNode = useSetHoveredNode()
   const { setRfInstance } = useFlowContext()
@@ -131,9 +136,21 @@ function GraphContainerInner() {
       }
     }))
     
+    // Enhance edges with highlighting state
+    const enhancedEdges = filteredData.edges.map(edge => ({
+      ...edge,
+      style: {
+        ...edge.style,
+        strokeWidth: highlightedEdges.has(edge.id) ? 3 : 1,
+        stroke: highlightedEdges.has(edge.id) ? '#ffd700' : edge.style?.stroke,
+        opacity: highlightedEdges.has(edge.id) ? 1 : 0.6,
+      },
+      animated: highlightedEdges.has(edge.id)
+    }))
+    
     setNodes(enhancedNodes)
-    setEdges(filteredData.edges)
-  }, [filteredData, selectedNode, hoveredNode, setNodes, setEdges])
+    setEdges(enhancedEdges)
+  }, [filteredData, selectedNode, hoveredNode, highlightedEdges, setNodes, setEdges])
 
   if (isLoading) {
     return (
@@ -187,7 +204,7 @@ function GraphContainerInner() {
           onNodeMouseEnter={onNodeMouseEnter}
           onNodeMouseLeave={onNodeMouseLeave}
           onPaneClick={onPaneClick}
-          nodeTypes={globalNodeTypes}
+          nodeTypes={nodeTypes}
           onInit={onInit}
           fitView
           fitViewOptions={{ padding: 0.2 }}

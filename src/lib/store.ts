@@ -88,7 +88,27 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
 
     // Selection actions
     selectNode: (nodeId: string | null) => {
-      set({ selectedNode: nodeId })
+      const { graphData } = get()
+      
+      if (nodeId) {
+        // Calculate connected edges for highlighting
+        const connectedEdges = graphData.edges
+          .filter(edge => edge.source === nodeId || edge.target === nodeId)
+          .map(edge => edge.id)
+        
+        set({ 
+          selectedNode: nodeId,
+          highlightedEdges: new Set(connectedEdges)
+        })
+        
+        console.log('Node selected:', nodeId, 'Connected edges:', connectedEdges.length)
+      } else {
+        set({ 
+          selectedNode: null,
+          highlightedEdges: new Set()
+        })
+        console.log('Node deselected')
+      }
     },
 
     setHoveredNode: (nodeId: string | null) => {

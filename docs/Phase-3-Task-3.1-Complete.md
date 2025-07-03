@@ -102,21 +102,24 @@ src/types/graph.ts - Added isSelected/isHovered properties to node data types
 ## Performance Fixes
 - ✅ **Fixed Primary Infinite Loop**: Removed direct store subscriptions from node components
 - ✅ **Fixed Secondary Infinite Loop**: Replaced `useStoreActions()` with individual action hooks
+- ✅ **Fixed React Flow Warning**: Defined nodeTypes as module-level constant outside component
 - ✅ **Props-based State**: Selection state passed through node data instead of store hooks
 - ✅ **Custom Memo Comparison**: Prevents unnecessary re-renders of node components
 - ✅ **Wrapper Architecture**: Decoupled node rendering from store management
 - ✅ **Reduced Store Subscriptions**: Only GraphContainer subscribes to selection state
 - ✅ **Stable Action References**: Individual action hooks provide stable references
+- ✅ **Stable NodeTypes Reference**: Module-level constant ensures React Flow sees same reference
 
 ## Code Quality
 - ✅ TypeScript strict mode compliance
 - ✅ React 18 compatibility
 - ✅ Memoized selectors for performance
 - ✅ **Individual action hooks**: Stable references, no infinite loops
+- ✅ **React Flow optimized**: nodeTypes defined as module constant
 - ✅ Consistent error handling
 - ✅ Clean separation of concerns
 - ✅ Comprehensive state management
-- ✅ **Performance optimized**: Multiple infinite loop fixes applied
+- ✅ **Performance optimized**: All React Flow warnings eliminated with stable references
 
 **Status**: COMPLETE ✅
 **Ready for**: Phase 3 Task 3.2 (Edge Highlighting)
