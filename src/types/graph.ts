@@ -7,20 +7,24 @@ export interface ItemNodeData extends ItemData {
   type: 'item'
   selected?: boolean
   visible?: boolean
+  isVisible?: boolean // Visibility state based on profession filtering
   color?: string // Profession color for styling
   profession?: string // Extracted profession name
   isSelected?: boolean // Selection state from store
   isHovered?: boolean // Hover state from store
+  isSearchHighlighted?: boolean // Search highlighting state
 }
 
 export interface CraftNodeData extends CraftData {
   type: 'craft'
   selected?: boolean
   visible?: boolean
+  isVisible?: boolean // Visibility state based on profession filtering
   color?: string // Profession color for styling
   profession?: string // Extracted profession name
   isSelected?: boolean // Selection state from store
   isHovered?: boolean // Hover state from store
+  isSearchHighlighted?: boolean // Search highlighting state
 }
 
 export type NodeData = ItemNodeData | CraftNodeData

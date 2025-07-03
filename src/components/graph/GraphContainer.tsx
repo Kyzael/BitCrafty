@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import ReactFlow, { useNodesState, useEdgesState, Panel, Node } from 'reactflow'
 import { filterGraphData } from '../../lib/utils'
-import { useIsLoading, useGraphData, useVisibleProfessions, useSearchQuery, useSelectedNode, useHoveredNode, useHighlightedEdges, useSelectNode, useSetHoveredNode } from '../../lib/store'
+import { useIsLoading, useGraphData, useVisibleProfessions, useSearchResults, useSelectedNode, useHoveredNode, useHighlightedEdges, useSelectNode, useSetHoveredNode } from '../../lib/store'
 import { useFlowContext } from '../BitCraftyFlowProvider'
 import { ItemNodeWrapper, CraftNodeWrapper } from './nodes/NodeWrappers'
 
@@ -18,13 +18,13 @@ function GraphContainerInner() {
   const isLoading = useIsLoading()
   const graphData = useGraphData()
   const visibleProfessions = useVisibleProfessions()
-  const searchQuery = useSearchQuery()
+  const searchResults = useSearchResults()
   const selectedNode = useSelectedNode()
   const hoveredNode = useHoveredNode()
   const highlightedEdges = useHighlightedEdges()
   const selectNode = useSelectNode()
   const setHoveredNode = useSetHoveredNode()
-  const { setRfInstance } = useFlowContext()
+  const { setRfInstance, rfInstance } = useFlowContext()
   
   const [nodes, setNodes, onNodesChange] = useNodesState([])
   const [edges, setEdges, onEdgesChange] = useEdgesState([])
@@ -56,6 +56,52 @@ function GraphContainerInner() {
   const onNodeMouseLeave = useCallback(() => {
     setHoveredNode(null)
   }, [setHoveredNode])
+
+  // Handle double-click for smooth navigation and zoom
+  const onNodeDoubleClick = useCallback((event: React.MouseEvent, node: Node) => {
+    event.stopPropagation()
+    event.preventDefault()
+    
+    const nodeId = node.id
+    console.log('Node double-clicked:', nodeId)
+    
+    // Select the node if not already selected
+    if (selectedNode !== nodeId) {
+      selectNode(nodeId)
+    }
+    
+    // Focus and zoom to the node using React Flow instance
+    if (rfInstance) {
+      const reactFlowNode = rfInstance.getNode(nodeId)
+      if (reactFlowNode) {
+        const x = reactFlowNode.position.x + (reactFlowNode.width || 120) / 2
+        const y = reactFlowNode.position.y + (reactFlowNode.height || 40) / 2
+        
+        rfInstance.setCenter(x, y, {
+          zoom: 1.2,
+          duration: 800
+        })
+      }
+    }
+  }, [selectedNode, selectNode, rfInstance])
+
+  // Navigate to node when selectedNode changes (for search selection)
+  useEffect(() => {
+    if (selectedNode && rfInstance) {
+      const reactFlowNode = rfInstance.getNode(selectedNode)
+      if (reactFlowNode) {
+        const x = reactFlowNode.position.x + (reactFlowNode.width || 120) / 2
+        const y = reactFlowNode.position.y + (reactFlowNode.height || 40) / 2
+        
+        rfInstance.setCenter(x, y, {
+          zoom: 1.2,
+          duration: 800
+        })
+        
+        console.log('Navigated to selected node:', selectedNode)
+      }
+    }
+  }, [selectedNode, rfInstance])
 
   // Handle background clicks to deselect
   const onPaneClick = useCallback(() => {
@@ -89,7 +135,7 @@ function GraphContainerInner() {
     }
   }, [])
 
-  // Filter graph data based on visible professions and search
+  // Apply visibility filtering based on visible professions
   const filteredData = useMemo(() => {
     if (isLoading || !graphData?.nodes?.length) {
       return { nodes: [], edges: [] }
@@ -99,58 +145,59 @@ function GraphContainerInner() {
     const uniqueProfessions = new Set<string>();
     graphData.nodes.forEach(node => {
       const professionId = node.data.id.split(':')[1]; // e.g., "foraging" or "any"
-      // Apply same logic as filtering: "any" stays lowercase, others get capitalized
-      const professionName = professionId === 'any' ? 'any' : professionId.charAt(0).toUpperCase() + professionId.slice(1);
+      // Capitalize the first letter for all professions (including "any" -> "Any")
+      const professionName = professionId.charAt(0).toUpperCase() + professionId.slice(1);
       uniqueProfessions.add(professionName);
     });
     
     const filtered = filterGraphData(
       graphData.nodes,
       graphData.edges,
-      visibleProfessions,
-      searchQuery
+      visibleProfessions
     )
     
-    console.log('DEBUG - Filtering:', { 
+    console.log('DEBUG - Visibility filtering:', { 
       uniqueProfessions: Array.from(uniqueProfessions).sort(),
       visibleProfessions: Array.from(visibleProfessions).sort(),
       totalNodes: graphData.nodes.length,
-      filteredNodes: filtered.nodes.length,
-      filteredEdges: filtered.edges.length
+      visibleNodes: filtered.nodes.filter(n => n.data.isVisible).length,
+      fadedNodes: filtered.nodes.filter(n => !n.data.isVisible).length
     });
     
     return filtered
-  }, [graphData, visibleProfessions, searchQuery, isLoading])
+  }, [graphData, visibleProfessions, isLoading])
 
   // Update nodes and edges when filtered data changes
   useEffect(() => {
     console.log('GraphContainer: Setting filtered data with', filteredData.nodes.length, 'nodes and', filteredData.edges.length, 'edges')
     
-    // Enhance nodes with selection and hover state
+    // Enhance nodes with selection, hover, search, and visibility state
     const enhancedNodes = filteredData.nodes.map(node => ({
       ...node,
       data: {
         ...node.data,
         isSelected: selectedNode === node.id,
-        isHovered: hoveredNode === node.id
+        isHovered: hoveredNode === node.id,
+        isSearchHighlighted: searchResults.has(node.id)
+        // Keep the isVisible property from filterGraphData
       }
     }))
     
-    // Enhance edges with highlighting state
+    // Enhance edges with highlighting and visibility state
     const enhancedEdges = filteredData.edges.map(edge => ({
       ...edge,
       style: {
         ...edge.style,
         strokeWidth: highlightedEdges.has(edge.id) ? 3 : 1,
         stroke: highlightedEdges.has(edge.id) ? '#ffd700' : edge.style?.stroke,
-        opacity: highlightedEdges.has(edge.id) ? 1 : 0.6,
+        opacity: edge.data?.isVisible ? (highlightedEdges.has(edge.id) ? 1 : 0.6) : 0.1,
       },
-      animated: highlightedEdges.has(edge.id)
+      animated: highlightedEdges.has(edge.id) && edge.data?.isVisible
     }))
     
     setNodes(enhancedNodes)
     setEdges(enhancedEdges)
-  }, [filteredData, selectedNode, hoveredNode, highlightedEdges, setNodes, setEdges])
+  }, [filteredData, selectedNode, hoveredNode, highlightedEdges, searchResults, setNodes, setEdges])
 
   if (isLoading) {
     return (
@@ -201,6 +248,7 @@ function GraphContainerInner() {
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onNodeClick={onNodeClick}
+          onNodeDoubleClick={onNodeDoubleClick}
           onNodeMouseEnter={onNodeMouseEnter}
           onNodeMouseLeave={onNodeMouseLeave}
           onPaneClick={onPaneClick}
@@ -222,7 +270,7 @@ function GraphContainerInner() {
             {nodes.length} nodes · {edges.length} connections
             {visibleProfessions.size < 11 && (
               <div style={{ fontSize: '10px', color: '#f38ba8' }}>
-                Filtered: {visibleProfessions.size}/11 professions
+                {nodes.filter(n => n.data.isVisible).length} visible · {nodes.filter(n => !n.data.isVisible).length} faded
               </div>
             )}
           </Panel>

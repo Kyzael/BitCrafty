@@ -14,6 +14,7 @@ export interface AppState {
   highlightedEdges: Set<string>
   searchQuery: string
   searchResults: Set<string>
+  searchMode: 'name' | 'profession' | 'all'
   visibleProfessions: Set<string>
   craftingQueue: QueueItem[]
   
@@ -32,6 +33,7 @@ export interface AppActions {
   setHoveredNode: (nodeId: string | null) => void
   setSearchQuery: (query: string) => void
   setSearchResults: (results: Set<string>) => void
+  setSearchMode: (mode: 'name' | 'profession' | 'all') => void
   
   // Filter actions
   toggleProfession: (professionName: string) => void

@@ -7,6 +7,7 @@ import {
   useVisibleProfessions 
 } from '../../lib/store'
 import { useBitCraftyStore } from '../../lib'
+import { SearchInput } from './SearchInput'
 
 export function Sidebar() {
   // Data from store using memoized selectors
@@ -31,11 +32,6 @@ export function Sidebar() {
     useBitCraftyStore.getState().setVisibleProfessions(new Set(professionNames))
   }, [])
   
-  const hideAllProfessions = useCallback(() => {
-    console.log('Hide All button clicked')
-    useBitCraftyStore.getState().setVisibleProfessions(new Set())
-  }, [])
-  
   return (
     <aside style={{ 
       width: '250px', 
@@ -47,6 +43,9 @@ export function Sidebar() {
       <h2 style={{ color: '#fcfcfa', marginBottom: '1rem', fontSize: '18px' }}>
         BitCrafty
       </h2>
+      
+      {/* Search Component */}
+      <SearchInput />
       
       {/* Data Summary */}
       <div style={{ marginBottom: '1.5rem', padding: '10px', background: '#2d2a2e', borderRadius: '4px' }}>
@@ -82,88 +81,82 @@ export function Sidebar() {
             {visibleProfessions.size}/{professions.length}
           </span>
         </h3>
-        <div style={{ display: 'grid', gap: '4px' }}>
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: '1fr 1fr',
+          gap: '6px'
+        }}>
           {professions.map(profession => (
-            <label 
+            <button
               key={profession.name}
+              onClick={() => toggleProfession(profession.name)}
               style={{ 
                 display: 'flex', 
                 alignItems: 'center',
-                gap: '8px',
+                gap: '6px',
                 cursor: 'pointer',
                 padding: '6px 8px',
                 borderRadius: '4px',
                 backgroundColor: visibleProfessions.has(profession.name) 
-                  ? profession.color + '22' 
+                  ? profession.color + '33' 
                   : 'transparent',
-                border: `1px solid ${visibleProfessions.has(profession.name) 
-                  ? profession.color + '44' 
-                  : 'transparent'}`,
-                transition: 'all 0.2s ease'
+                border: `2px solid ${visibleProfessions.has(profession.name) 
+                  ? profession.color 
+                  : '#5c5c5c'}`,
+                transition: 'all 0.2s ease',
+                color: '#fcfcfa',
+                fontSize: '11px',
+                fontWeight: visibleProfessions.has(profession.name) ? 'bold' : 'normal',
+                opacity: visibleProfessions.has(profession.name) ? 1 : 0.7
               }}
             >
-              <input
-                type="checkbox"
-                checked={visibleProfessions.has(profession.name)}
-                onChange={() => toggleProfession(profession.name)}
-                style={{ margin: 0, accentColor: profession.color }}
-              />
               <div 
                 style={{
-                  width: '12px',
-                  height: '12px',
+                  width: '10px',
+                  height: '10px',
                   backgroundColor: profession.color,
                   borderRadius: '2px',
                   opacity: visibleProfessions.has(profession.name) ? 1 : 0.5
                 }}
               />
               <span style={{ 
-                color: '#fcfcfa', 
-                fontSize: '12px',
-                opacity: visibleProfessions.has(profession.name) ? 1 : 0.7
+                flex: 1,
+                textAlign: 'left',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
               }}>
                 {profession.name}
               </span>
-            </label>
+            </button>
           ))}
         </div>
       </div>
       
-      {/* Quick Actions */}
-      <div style={{ marginTop: '1.5rem', padding: '10px', background: '#2d2a2e', borderRadius: '4px' }}>
-        <div style={{ color: '#fcfcfa', fontSize: '12px', marginBottom: '8px' }}>
-          <strong>Quick Actions:</strong>
-        </div>
+      {/* Clear Filters */}
+      <div style={{ marginTop: '1.5rem' }}>
         <button
           onClick={showAllProfessions}
           style={{
             width: '100%',
-            padding: '6px 12px',
-            marginBottom: '4px',
+            padding: '8px 12px',
             background: '#89b4fa',
             border: 'none',
             borderRadius: '4px',
             color: '#1e1e2e',
-            fontSize: '11px',
-            cursor: 'pointer'
+            fontSize: '12px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            transition: 'background-color 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = '#a1c5ff'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#89b4fa'
           }}
         >
-          Show All
-        </button>
-        <button
-          onClick={hideAllProfessions}
-          style={{
-            width: '100%',
-            padding: '6px 12px',
-            background: '#f38ba8',
-            border: 'none',
-            borderRadius: '4px',
-            color: '#1e1e2e',
-            fontSize: '11px',
-            cursor: 'pointer'
-          }}
-        >
-          Hide All
+          Show All Professions
         </button>
       </div>
     </aside>

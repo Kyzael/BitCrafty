@@ -2,6 +2,46 @@ import dagre from 'dagre'
 import { GraphNode, GraphEdge, LayoutOptions, GraphData } from '../types'
 import { DEFAULT_LAYOUT_OPTIONS, NODE_STYLES } from './constants'
 
+// Search types
+export type SearchMode = 'name' | 'profession' | 'all'
+
+/**
+ * Search functionality for finding nodes based on query and mode
+ */
+export function searchNodes(
+  nodes: GraphNode[],
+  query: string,
+  mode: SearchMode = 'all',
+  limit: number = 10
+): string[] {
+  if (!query.trim()) {
+    return []
+  }
+  
+  const searchTerms = query.toLowerCase().split(' ').filter(term => term.length > 0)
+  
+  return nodes
+    .filter(node => {
+      const searchableText = getSearchableText(node, mode)
+      return searchTerms.every(term => 
+        searchableText.includes(term)
+      )
+    })
+    .slice(0, limit)
+    .map(node => node.id)
+}
+
+function getSearchableText(node: GraphNode, mode: SearchMode): string {
+  switch (mode) {
+    case 'name':
+      return node.data.name.toLowerCase()
+    case 'profession':
+      return node.data.profession?.toLowerCase() || ''
+    case 'all':
+      return `${node.data.name} ${node.data.profession || ''}`.toLowerCase()
+  }
+}
+
 /**
  * Extract profession name from entity ID
  * Handles format: TYPE:PROFESSION:IDENTIFIER
@@ -69,51 +109,55 @@ export function calculateLayout(
 }
 
 /**
- * Filter nodes and edges based on visible professions and search query
+ * Apply visibility filtering to nodes and edges
+ * Instead of hiding nodes, they are faded out for better graph structure visibility
  */
 export function filterGraphData(
   allNodes: GraphNode[],
   allEdges: GraphEdge[],
-  visibleProfessions: Set<string>,
-  searchQuery: string = ''
+  visibleProfessions: Set<string>
 ): GraphData {
-  const query = searchQuery.toLowerCase().trim()
   
-  // Filter nodes
-  const visibleNodes = allNodes.filter(node => {
+  // Add visibility state to all nodes based on profession filtering
+  const nodesWithVisibility = allNodes.map(node => {
     // Check profession visibility
     const professionId = node.data.id.split(':')[1] // Extract profession from ID format (e.g., "foraging")
     
     // Convert profession ID to the correct name format for comparison
-    // Special case: "any" stays lowercase, others get capitalized
-    const professionName = professionId === 'any' ? 'any' : professionId.charAt(0).toUpperCase() + professionId.slice(1)
+    // Capitalize the first letter for all professions (including "any" -> "Any")
+    const professionName = professionId.charAt(0).toUpperCase() + professionId.slice(1)
     
-    if (!visibleProfessions.has(professionName)) {
-      return false
+    const isVisible = visibleProfessions.has(professionName)
+    
+    return {
+      ...node,
+      data: {
+        ...node.data,
+        isVisible
+      }
     }
-    
-    // Check search query
-    if (query) {
-      const name = node.data.name.toLowerCase()
-      const description = 'description' in node.data && typeof node.data.description === 'string' 
-        ? node.data.description.toLowerCase() 
-        : ''
-      return name.includes(query) || description.includes(query)
-    }
-    
-    return true
   })
   
-  const visibleNodeIds = new Set(visibleNodes.map(node => node.id))
-  
-  // Filter edges to only include connections between visible nodes
-  const visibleEdges = allEdges.filter(edge => 
-    visibleNodeIds.has(edge.source) && visibleNodeIds.has(edge.target)
-  )
+  // Add visibility state to edges based on connected nodes
+  const edgesWithVisibility = allEdges.map(edge => {
+    const sourceNode = nodesWithVisibility.find(n => n.id === edge.source)
+    const targetNode = nodesWithVisibility.find(n => n.id === edge.target)
+    
+    // Edge is visible if both connected nodes are visible
+    const isVisible = sourceNode?.data.isVisible && targetNode?.data.isVisible
+    
+    return {
+      ...edge,
+      data: {
+        ...edge.data,
+        isVisible
+      }
+    }
+  })
   
   return {
-    nodes: visibleNodes,
-    edges: visibleEdges
+    nodes: nodesWithVisibility,
+    edges: edgesWithVisibility
   }
 }
 

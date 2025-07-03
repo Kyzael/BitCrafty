@@ -11,6 +11,7 @@ export const ItemNodeWrapper = (props: NodeProps<ItemNodeData>) => {
       {...props}
       isSelected={data.isSelected}
       isHovered={data.isHovered}
+      isSearchHighlighted={data.isSearchHighlighted}
     />
   )
 }
@@ -23,6 +24,7 @@ export const CraftNodeWrapper = (props: NodeProps<CraftNodeData>) => {
       {...props}
       isSelected={data.isSelected}
       isHovered={data.isHovered}
+      isSearchHighlighted={data.isSearchHighlighted}
     />
   )
 }

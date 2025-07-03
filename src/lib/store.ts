@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { AppState, AppActions, QueueItem, GraphData } from '../types'
 import { loadBitCraftyData, arrayToRecord, professionsArrayToRecord } from './data-loader'
 import { buildGraphData } from './graph-builder'
+import { SearchMode } from './utils'
 
 // Combined store interface
 interface BitCraftyStore extends AppState, AppActions {
@@ -25,6 +26,7 @@ const initialState: AppState = {
   highlightedEdges: new Set(),
   searchResults: new Set(),
   searchQuery: '',
+  searchMode: 'all',
   visibleProfessions: new Set(),
   craftingQueue: [],
   
@@ -119,6 +121,10 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
       set({ searchQuery: query })
     },
 
+    setSearchMode: (mode: SearchMode) => {
+      set({ searchMode: mode })
+    },
+
     setSearchResults: (results: Set<string>) => {
       set({ searchResults: results })
     },
@@ -188,6 +194,7 @@ export const useHoveredNode = () => useBitCraftyStore(state => state.hoveredNode
 export const useHighlightedEdges = () => useBitCraftyStore(state => state.highlightedEdges)
 export const useSearchResults = () => useBitCraftyStore(state => state.searchResults)
 export const useSearchQuery = () => useBitCraftyStore(state => state.searchQuery)
+export const useSearchMode = () => useBitCraftyStore(state => state.searchMode)
 export const useVisibleProfessions = () => useBitCraftyStore(state => state.visibleProfessions)
 export const useCraftingQueue = () => useBitCraftyStore(state => state.craftingQueue)
 export const useGraphData = () => useBitCraftyStore(state => state.graphData)
@@ -223,6 +230,7 @@ export const useLoadData = () => useBitCraftyStore(state => state.loadData)
 export const useSelectNode = () => useBitCraftyStore(state => state.selectNode)
 export const useSetHoveredNode = () => useBitCraftyStore(state => state.setHoveredNode)
 export const useSetSearchQuery = () => useBitCraftyStore(state => state.setSearchQuery)
+export const useSetSearchMode = () => useBitCraftyStore(state => state.setSearchMode)
 export const useSetSearchResults = () => useBitCraftyStore(state => state.setSearchResults)
 export const useToggleProfession = () => useBitCraftyStore(state => state.toggleProfession)
 export const useSetVisibleProfessions = () => useBitCraftyStore(state => state.setVisibleProfessions)

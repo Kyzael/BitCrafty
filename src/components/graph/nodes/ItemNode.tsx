@@ -5,11 +5,15 @@ import { ItemNodeData } from '../../../types'
 interface ItemNodeProps extends NodeProps<ItemNodeData> {
   isSelected?: boolean
   isHovered?: boolean
+  isSearchHighlighted?: boolean
 }
 
-export const ItemNode = memo<ItemNodeProps>(({ data, isSelected = false, isHovered = false }) => {
+export const ItemNode = memo<ItemNodeProps>(({ data, isSelected = false, isHovered = false, isSearchHighlighted = false }) => {
   // Use the color stored in the data by graph-builder
   const color = data.color || '#727072'
+  
+  // Check if node is visible based on profession filtering
+  const isVisible = data.isVisible !== false // Default to visible if not specified
   
   // Enhanced styling based on interaction state
   const getBorderStyle = () => {
@@ -17,6 +21,8 @@ export const ItemNode = memo<ItemNodeProps>(({ data, isSelected = false, isHover
       return `3px solid ${color}`
     } else if (isHovered) {
       return `2px solid ${color}`
+    } else if (isSearchHighlighted) {
+      return `2px solid #78dce8` // Search highlight color
     } else {
       return `2px solid ${color}`
     }
@@ -27,15 +33,33 @@ export const ItemNode = memo<ItemNodeProps>(({ data, isSelected = false, isHover
       return `0 0 12px ${color}80` // 50% opacity
     } else if (isHovered) {
       return `0 0 8px ${color}40` // 25% opacity
+    } else if (isSearchHighlighted) {
+      return `0 0 8px #78dce840` // Search highlight glow
     } else {
       return 'none'
     }
   }
   
+  const getBackgroundColor = () => {
+    if (isSearchHighlighted) {
+      return '#78dce820' // Light search highlight background
+    } else {
+      return 'transparent'
+    }
+  }
+  
+  const getOpacity = () => {
+    // Fade out invisible nodes but keep them visible in the graph
+    if (!isVisible) {
+      return 0.2
+    }
+    return 1
+  }
+  
   return (
     <div 
       style={{
-        background: 'transparent',
+        background: getBackgroundColor(),
         border: getBorderStyle(),
         borderRadius: '8px',
         padding: '8px 12px',
@@ -51,7 +75,9 @@ export const ItemNode = memo<ItemNodeProps>(({ data, isSelected = false, isHover
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
         transform: isSelected ? 'scale(1.05)' : 'scale(1)',
-        transition: 'all 0.2s ease-in-out'
+        transition: 'all 0.2s ease-in-out',
+        opacity: getOpacity(),
+        pointerEvents: isVisible ? 'auto' : 'none' // Prevent interactions with faded nodes
       }}
     >
       <Handle 
@@ -73,8 +99,10 @@ export const ItemNode = memo<ItemNodeProps>(({ data, isSelected = false, isHover
     prevProps.id === nextProps.id &&
     prevProps.data.name === nextProps.data.name &&
     prevProps.data.color === nextProps.data.color &&
+    prevProps.data.isVisible === nextProps.data.isVisible &&
     prevProps.isSelected === nextProps.isSelected &&
-    prevProps.isHovered === nextProps.isHovered
+    prevProps.isHovered === nextProps.isHovered &&
+    prevProps.isSearchHighlighted === nextProps.isSearchHighlighted
   )
 })
 
