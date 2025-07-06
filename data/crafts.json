@@ -152,7 +152,7 @@
     "name": "Grow Basic Starbulb Plant",
     "materials": [
       {
-        "item": "item:farming:wispweave-seeds",
+        "item": "item:farming:basic-starbulb-seeds",
         "qty": 1
       },
       {
@@ -164,31 +164,6 @@
       {
         "item": "item:foraging:basic-starbulb-plant",
         "qty": 1
-      }
-    ],
-    "requirement": "requirement:farming:basic-tools"
-  },
-  {
-    "id": "craft:farming:starbulb-products",
-    "name": "Husk into Basic Starbulb Products",
-    "materials": [
-      {
-        "item": "item:foraging:basic-starbulb-plant",
-        "qty": 1
-      }
-    ],
-    "outputs": [
-      {
-        "item": "item:farming:basic-starbulb-seeds",
-        "qty": "1-3"
-      },
-      {
-        "item": "item:farming:basic-starbulb",
-        "qty": "5-10"
-      },
-      {
-        "item": "item:farming:crop-oil",
-        "qty": "0-1"
       }
     ],
     "requirement": "requirement:farming:basic-tools"
@@ -219,7 +194,7 @@
         "qty": 1
       },
       {
-        "item": "item:farming:embergrain",
+        "item": "item:farming:basic-fertilizer",
         "qty": 1
       }
     ],
@@ -413,23 +388,6 @@
     "requirement": "requirement:carpentry:basic-tools"
   },
   {
-    "id": "craft:carpentry:wood-plank",
-    "name": "Craft Rough Plank",
-    "materials": [
-      {
-        "item": "item:carpentry:rough-stripped-wood",
-        "qty": 1
-      }
-    ],
-    "outputs": [
-      {
-        "item": "item:carpentry:rough-plank",
-        "qty": 1
-      }
-    ],
-    "requirement": "requirement:carpentry:basic-tools"
-  },
-  {
     "id": "craft:carpentry:fire-kit",
     "name": "Craft Campfire Kit",
     "materials": [
@@ -546,27 +504,6 @@
       }
     ],
     "requirement": "requirement:cooking:basic-tools"
-  },
-  {
-    "id": "craft:cooking:berry-pie",
-    "name": "Bake Plain Berry Pie",
-    "materials": [
-      {
-        "item": "item:foraging:plain-raw-berry-pie",
-        "qty": 1
-      },
-      {
-        "item": "item:cooking:embergrain-dough",
-        "qty": 1
-      }
-    ],
-    "outputs": [
-      {
-        "item": "item:cooking:plain-berry-pie",
-        "qty": 1
-      }
-    ],
-    "requirement": "requirement:cooking:basic-oven"
   },
   {
     "id": "craft:hunting:harvest-animal",
@@ -787,23 +724,6 @@
       }
     ],
     "requirement": "requirement:forestry:tier1-kiln"
-  },
-  {
-    "id": "craft:farming:make-basic-fertilizer",
-    "name": "Make Basic Fertilizer",
-    "materials": [
-      {
-        "item": "item:foraging:basic-berry",
-        "qty": 1
-      }
-    ],
-    "outputs": [
-      {
-        "item": "item:farming:basic-fertilizer",
-        "qty": 1
-      }
-    ],
-    "requirement": "requirement:farming:tier1-farming-station"
   },
   {
     "id": "craft:carpentry:craft-training-shortsword",

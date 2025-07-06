@@ -4,10 +4,12 @@ import {
   useItemsArray, 
   useCraftsArray, 
   useProfessionsArray, 
-  useVisibleProfessions 
+  useVisibleProfessions,
+  useSelectedNode 
 } from '../../lib/store'
 import { useBitCraftyStore } from '../../lib'
 import { SearchInput } from './SearchInput'
+import { NodeDetailsPanel } from './NodeDetailsPanel'
 
 export function Sidebar() {
   // Data from store using memoized selectors
@@ -16,6 +18,7 @@ export function Sidebar() {
   const professions = useProfessionsArray()
   const visibleProfessions = useVisibleProfessions()
   const isLoading = useIsLoading()
+  const selectedNode = useSelectedNode()
   
   // Safe access to store actions
   const toggleProfession = useCallback((professionName: string) => {
@@ -34,11 +37,14 @@ export function Sidebar() {
   
   return (
     <aside style={{ 
-      width: '250px', 
+      width: '280px', 
       background: '#1e1e2e', 
       borderRight: '1px solid #727072',
       padding: '1rem',
-      overflowY: 'auto'
+      overflowY: 'auto',
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%'
     }}>
       <h2 style={{ color: '#fcfcfa', marginBottom: '1rem', fontSize: '18px' }}>
         BitCrafty
@@ -134,7 +140,7 @@ export function Sidebar() {
       </div>
       
       {/* Clear Filters */}
-      <div style={{ marginTop: '1.5rem' }}>
+      <div style={{ marginTop: '1.5rem', marginBottom: '1rem' }}>
         <button
           onClick={showAllProfessions}
           style={{
@@ -158,6 +164,31 @@ export function Sidebar() {
         >
           Show All Professions
         </button>
+      </div>
+
+      {/* Node Details Section */}
+      <div style={{ 
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: 0 // Allow flex child to shrink
+      }}>
+        <h3 style={{ 
+          color: '#fcfcfa', 
+          fontSize: '14px', 
+          marginBottom: '0.5rem'
+        }}>
+          Node Details
+        </h3>
+        <div style={{
+          flex: 1,
+          minHeight: 0,
+          border: '1px solid #444',
+          borderRadius: '4px',
+          overflow: 'hidden'
+        }}>
+          <NodeDetailsPanel />
+        </div>
       </div>
     </aside>
   )

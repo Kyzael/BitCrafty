@@ -11,10 +11,9 @@ export const NodeDetailsPanel: React.FC = () => {
 
   if (!selectedNode) {
     return (
-      <div className="details-panel">
+      <div className="details-panel sidebar-details">
         <div className="details-panel-empty">
-          <h3>Node Details</h3>
-          <p>Click on a node to view detailed information</p>
+          <p>Select a node to view details</p>
         </div>
       </div>
     )
@@ -24,9 +23,8 @@ export const NodeDetailsPanel: React.FC = () => {
   const node = graphData.nodes.find(n => n.id === selectedNode)
   if (!node) {
     return (
-      <div className="details-panel">
+      <div className="details-panel sidebar-details">
         <div className="details-panel-error">
-          <h3>Error</h3>
           <p>Selected node not found</p>
         </div>
       </div>
@@ -38,7 +36,7 @@ export const NodeDetailsPanel: React.FC = () => {
   const color = node.data.color || '#727072'
 
   return (
-    <div className="details-panel">
+    <div className="details-panel sidebar-details">
       <div className="details-header">
         <h3>{node.data.name}</h3>
         <span 
@@ -62,8 +60,6 @@ export const NodeDetailsPanel: React.FC = () => {
         ) : (
           <CraftDetails nodeId={selectedNode} nodeData={node.data} />
         )}
-        
-        <ConnectionsSection nodeId={selectedNode} />
       </div>
     </div>
   )
@@ -251,58 +247,6 @@ const CraftDetails: React.FC<CraftDetailsProps> = ({ nodeId }) => {
           <p className="no-connections">No material connections found</p>
         </div>
       )}
-    </div>
-  )
-}
-
-/**
- * ConnectionsSection shows connected nodes and allows navigation
- */
-interface ConnectionsSectionProps {
-  nodeId: string
-}
-
-const ConnectionsSection: React.FC<ConnectionsSectionProps> = ({ nodeId }) => {
-  const graphData = useGraphData()
-  const selectNode = useSelectNode()
-  
-  // Find all connected nodes (both directions)
-  const connectedEdges = graphData.edges.filter(
-    edge => edge.source === nodeId || edge.target === nodeId
-  )
-  
-  const connectedNodes = connectedEdges.map(edge => {
-    const connectedNodeId = edge.source === nodeId ? edge.target : edge.source
-    return graphData.nodes.find(n => n.id === connectedNodeId)
-  }).filter(node => node !== undefined)
-
-  const handleConnectionClick = (connectionId: string) => {
-    selectNode(connectionId)
-  }
-
-  if (connectedNodes.length === 0) {
-    return null
-  }
-
-  return (
-    <div className="details-section">
-      <h4>Connected Nodes ({connectedNodes.length})</h4>
-      <div className="connections-list">
-        {connectedNodes.map(node => (
-          <div 
-            key={node!.id} 
-            className="connection-item clickable"
-            onClick={() => handleConnectionClick(node!.id)}
-          >
-            <span 
-              className="connection-color-dot"
-              style={{ backgroundColor: node!.data.color }}
-            />
-            <span className="connection-name">{node!.data.name}</span>
-            <span className="connection-type">({node!.type})</span>
-          </div>
-        ))}
-      </div>
     </div>
   )
 }

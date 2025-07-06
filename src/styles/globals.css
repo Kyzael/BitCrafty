@@ -187,10 +187,54 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Sidebar version - more compact */
+.details-panel.sidebar-details {
+  width: 100%;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  font-size: 12px;
+}
+
+.details-panel.sidebar-details .details-header {
+  padding: 12px;
+  background: #2d2d2d;
+  border-radius: 4px 4px 0 0;
+}
+
+.details-panel.sidebar-details .details-content {
+  padding: 8px 12px 12px 12px;
+  background: #2d2d2d;
+  border-radius: 0 0 4px 4px;
+}
+
+.details-panel.sidebar-details .details-section {
+  margin-bottom: 12px;
+}
+
+.details-panel.sidebar-details .details-section h4 {
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.details-panel.sidebar-details .craft-item,
+.details-panel.sidebar-details .item-entry {
+  padding: 4px 6px;
+  font-size: 11px;
+  gap: 6px;
+}
+
 .details-panel-empty {
   padding: 20px;
   text-align: center;
   color: #999;
+}
+
+.details-panel.sidebar-details .details-panel-empty {
+  padding: 16px 12px;
+  background: #2d2d2d;
+  border-radius: 4px;
+  font-size: 11px;
 }
 
 .details-panel-empty h3 {
@@ -198,10 +242,21 @@ body {
   color: #fcfcfa;
 }
 
+.details-panel.sidebar-details .details-panel-empty h3 {
+  display: none; /* Hide heading in sidebar version */
+}
+
 .details-panel-error {
   padding: 20px;
   text-align: center;
   color: #ff6b6b;
+}
+
+.details-panel.sidebar-details .details-panel-error {
+  padding: 16px 12px;
+  background: #2d2d2d;
+  border-radius: 4px;
+  font-size: 11px;
 }
 
 .details-header {
@@ -274,16 +329,14 @@ body {
 }
 
 .craft-list,
-.item-list,
-.connections-list {
+.item-list {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
 .craft-item,
-.item-entry,
-.connection-item {
+.item-entry {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -295,14 +348,12 @@ body {
 }
 
 .craft-item.clickable,
-.item-entry.clickable,
-.connection-item.clickable {
+.item-entry.clickable {
   cursor: pointer;
 }
 
 .craft-item.clickable:hover,
-.item-entry.clickable:hover,
-.connection-item.clickable:hover {
+.item-entry.clickable:hover {
   background: #4a4a4a;
   transform: translateX(2px);
 }
@@ -315,18 +366,11 @@ body {
   flex: 1;
 }
 
-.item-color-dot,
-.connection-color-dot {
+.item-color-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
-}
-
-.connection-type {
-  font-size: 11px;
-  color: #999;
-  font-style: italic;
 }
 
 .no-connections {

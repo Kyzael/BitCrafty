@@ -4,7 +4,6 @@ import { Header } from './components/ui/Header'
 import { Sidebar } from './components/ui/Sidebar'
 import { GraphContainer } from './components/graph/GraphContainer'
 import { CraftingPanel } from './components/ui/CraftingPanel'
-import { NodeDetailsPanel } from './components/ui/NodeDetailsPanel'
 import { useIsLoading, useLoadError } from './lib/store'
 import 'reactflow/dist/style.css'
 
@@ -85,7 +84,6 @@ function App() {
         >
           <GraphContainer />
         </div>
-        <NodeDetailsPanel />
         <CraftingPanel />
       </div>
     </div>
