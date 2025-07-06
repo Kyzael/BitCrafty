@@ -59,37 +59,6 @@ const NodeDetailsPanelInner: React.FC = () => {
   const selectedNode = useSelectedNode()
   const graphData = useGraphData()
   const panelRef = useRef<HTMLDivElement>(null)
-  const titleRef = useRef<HTMLHeadingElement>(null)
-  const [titleFontSize, setTitleFontSize] = useState(18)
-
-  // Auto-scale title text to fit
-  useEffect(() => {
-    if (!titleRef.current || !selectedNode) return
-
-    const adjustFontSize = () => {
-      const element = titleRef.current!
-      const container = element.parentElement!
-      
-      // Reset to max size
-      let fontSize = 18
-      element.style.fontSize = `${fontSize}px`
-      
-      // Get available width (container minus padding and badge space)
-      const containerWidth = container.clientWidth - 100 // Reserve space for profession badge
-      
-      // Reduce font size until text fits
-      while (fontSize > 10 && element.scrollWidth > containerWidth) {
-        fontSize -= 0.5
-        element.style.fontSize = `${fontSize}px`
-      }
-      
-      setTitleFontSize(fontSize)
-    }
-
-    // Adjust on mount and when selected node changes
-    const timeoutId = setTimeout(adjustFontSize, 0)
-    return () => clearTimeout(timeoutId)
-  }, [selectedNode])
 
   // Set up keyboard navigation for the details panel
   useEffect(() => {
@@ -154,9 +123,8 @@ const NodeDetailsPanelInner: React.FC = () => {
     <div className="details-panel sidebar-details" ref={panelRef} tabIndex={-1}>
       <div className="details-header">
         <h3 
-          ref={titleRef}
           style={{
-            fontSize: `${titleFontSize}px`,
+            fontSize: '12px',
             margin: 0,
             fontWeight: 'bold',
             color: '#fcfcfa',
@@ -231,19 +199,24 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({ nodeId, nodeData }) => {
   return (
     <div className="item-details">
       <div className="details-section">
-        <div className="info-grid">
-          <div className="info-item">
+        <div className="info-line" style={{
+          display: 'flex',
+          gap: '12px',
+          flexWrap: 'wrap',
+          alignItems: 'center'
+        }}>
+          <div className="info-item" style={{ display: 'flex', gap: '4px' }}>
             <span className="label">Type:</span>
             <span className="value">Item</span>
           </div>
           {nodeData.tier && (
-            <div className="info-item">
+            <div className="info-item" style={{ display: 'flex', gap: '4px' }}>
               <span className="label">Tier:</span>
               <span className="value">{nodeData.tier}</span>
             </div>
           )}
           {nodeData.rank && (
-            <div className="info-item">
+            <div className="info-item" style={{ display: 'flex', gap: '4px' }}>
               <span className="label">Rank:</span>
               <span className="value">{nodeData.rank}</span>
             </div>
@@ -271,6 +244,9 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({ nodeId, nodeData }) => {
                   width: '100%',
                   textAlign: 'left',
                   marginBottom: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
                   transition: 'all 0.2s ease'
                 }}
                 onMouseEnter={(e) => {
@@ -292,6 +268,16 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({ nodeId, nodeData }) => {
                   e.currentTarget.style.outline = 'none'
                 }}
               >
+                <span 
+                  className="craft-color-dot"
+                  style={{ 
+                    backgroundColor: craft!.data.color,
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    flexShrink: 0
+                  }}
+                />
                 <span className="craft-name">{craft!.data.name}</span>
               </button>
             ))}
@@ -319,6 +305,9 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({ nodeId, nodeData }) => {
                   width: '100%',
                   textAlign: 'left',
                   marginBottom: '4px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
                   transition: 'all 0.2s ease'
                 }}
                 onMouseEnter={(e) => {
@@ -340,6 +329,16 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({ nodeId, nodeData }) => {
                   e.currentTarget.style.outline = 'none'
                 }}
               >
+                <span 
+                  className="craft-color-dot"
+                  style={{ 
+                    backgroundColor: craft!.data.color,
+                    width: '12px',
+                    height: '12px',
+                    borderRadius: '50%',
+                    flexShrink: 0
+                  }}
+                />
                 <span className="craft-name">{craft!.data.name}</span>
               </button>
             ))}
@@ -409,8 +408,13 @@ const CraftDetails: React.FC<CraftDetailsProps> = ({ nodeId }) => {
   return (
     <div className="craft-details">
       <div className="details-section">
-        <div className="info-grid">
-          <div className="info-item">
+        <div className="info-line" style={{
+          display: 'flex',
+          gap: '12px',
+          flexWrap: 'wrap',
+          alignItems: 'center'
+        }}>
+          <div className="info-item" style={{ display: 'flex', gap: '4px' }}>
             <span className="label">Type:</span>
             <span className="value">Craft</span>
           </div>

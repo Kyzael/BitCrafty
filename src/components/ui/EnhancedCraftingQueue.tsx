@@ -5,7 +5,6 @@ import {
   useClearEnhancedQueue, 
   useReorderEnhancedQueue,
   useUpdateEnhancedQueueItem,
-  useQueueSummary,
   useDragState,
   useSetDragState,
   useResetDragState,
@@ -15,7 +14,6 @@ import type { EnhancedQueueItem } from '../../types'
 
 const EnhancedCraftingQueue: React.FC = () => {
   const queue = useEnhancedQueue()
-  const queueSummary = useQueueSummary()
   const dragState = useDragState()
   const items = useItemsArray()
   
@@ -36,7 +34,7 @@ const EnhancedCraftingQueue: React.FC = () => {
   }
 
   // Handle drag start
-  const handleDragStart = (e: React.DragEvent, item: EnhancedQueueItem, index: number) => {
+  const handleDragStart = (e: React.DragEvent, item: EnhancedQueueItem) => {
     setDragState({
       isDragging: true,
       draggedItemId: item.id,
@@ -100,26 +98,6 @@ const EnhancedCraftingQueue: React.FC = () => {
     }
   }
 
-  // Get status color
-  const getStatusColor = (status: EnhancedQueueItem['status']) => {
-    switch (status) {
-      case 'ready': return 'text-green-600'
-      case 'blocked': return 'text-red-600'
-      case 'complete': return 'text-blue-600'
-      default: return 'text-gray-600'
-    }
-  }
-
-  // Get status icon
-  const getStatusIcon = (status: EnhancedQueueItem['status']) => {
-    switch (status) {
-      case 'ready': return '✓'
-      case 'blocked': return '⚠'
-      case 'complete': return '✅'
-      default: return '⏳'
-    }
-  }
-
   if (queue.length === 0) {
     return (
       <div className="crafting-queue-empty">
@@ -148,102 +126,64 @@ const EnhancedCraftingQueue: React.FC = () => {
         </button>
       </div>
 
-      {/* Queue Summary */}
-      {queueSummary && (
-        <div className="queue-summary">
-          <div className="summary-item">
-            <span className="summary-label">Total Items:</span>
-            <span className="summary-value">{queueSummary.totalItems}</span>
-          </div>
-          {queueSummary.estimatedTime && (
-            <div className="summary-item">
-              <span className="summary-label">Est. Time:</span>
-              <span className="summary-value">{queueSummary.estimatedTime}min</span>
-            </div>
-          )}
-        </div>
-      )}
-
       {/* Queue Items */}
       <div className="queue-items">
         {queue.map((item, index) => (
           <div
             key={item.id}
             draggable
-            onDragStart={(e) => handleDragStart(e, item, index)}
+            onDragStart={(e) => handleDragStart(e, item)}
             onDragOver={(e) => handleDragOver(e, index)}
             onDragEnd={handleDragEnd}
             onDrop={(e) => handleDrop(e, index)}
             className={`
-              queue-item 
+              queue-item-compact 
               ${dragState.isDragging && dragState.draggedItemId === item.id ? 'dragging' : ''}
               ${dragState.dropTargetIndex === index ? 'drop-target' : ''}
             `}
           >
             {/* Drag Handle */}
-            <div className="drag-handle" title="Drag to reorder">
+            <div className="drag-handle-compact" title="Drag to reorder">
               ⋮⋮
             </div>
 
-            {/* Priority Badge */}
-            <div className="priority-badge">
-              #{item.priority + 1}
-            </div>
-
-            {/* Item Details */}
-            <div className="item-details">
-              <div className="item-name" title={`Item ID: ${item.itemId}`}>
-                {getItemName(item.itemId)}
-              </div>
-              
-              {/* Quantity */}
-              <div className="item-quantity">
-                {editingId === item.id ? (
-                  <input
-                    type="number"
-                    value={editingQty}
-                    onChange={(e) => setEditingQty(parseInt(e.target.value) || 1)}
-                    onBlur={saveEdit}
-                    onKeyDown={handleKeyPress}
-                    className="qty-input"
-                    min="1"
-                    autoFocus
-                  />
-                ) : (
-                  <span 
-                    className="qty-display"
-                    onClick={() => startEdit(item)}
-                    title="Click to edit quantity"
-                  >
-                    {item.qty}x
-                  </span>
-                )}
-              </div>
-
-              {/* Status */}
-              <div className={`item-status ${getStatusColor(item.status)}`}>
-                <span className="status-icon">{getStatusIcon(item.status)}</span>
-                <span className="status-text">{item.status}</span>
-              </div>
-
-              {/* Notes */}
-              {item.notes && (
-                <div className="item-notes" title={item.notes}>
-                  📝 {item.notes.length > 20 ? `${item.notes.slice(0, 20)}...` : item.notes}
-                </div>
+            {/* Quantity */}
+            <div className="quantity-compact">
+              {editingId === item.id ? (
+                <input
+                  type="number"
+                  value={editingQty}
+                  onChange={(e) => setEditingQty(parseInt(e.target.value) || 1)}
+                  onBlur={saveEdit}
+                  onKeyDown={handleKeyPress}
+                  className="qty-input-compact"
+                  min="1"
+                  autoFocus
+                />
+              ) : (
+                <span 
+                  className="qty-display-compact"
+                  onClick={() => startEdit(item)}
+                  title="Click to edit quantity"
+                >
+                  {item.qty}
+                </span>
               )}
             </div>
 
-            {/* Actions */}
-            <div className="item-actions">
-              <button 
-                onClick={() => removeFromQueue(item.id)}
-                className="remove-btn"
-                title="Remove from queue"
-              >
-                ✕
-              </button>
+            {/* Item Name */}
+            <div className="item-name-compact" title={`Item ID: ${item.itemId}`}>
+              {getItemName(item.itemId)}
             </div>
+
+            {/* Remove Button */}
+            <button 
+              onClick={() => removeFromQueue(item.id)}
+              className="remove-btn-compact"
+              title="Remove from queue"
+            >
+              ✕
+            </button>
           </div>
         ))}
       </div>

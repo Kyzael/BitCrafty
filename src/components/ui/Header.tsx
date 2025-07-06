@@ -21,56 +21,66 @@ export function Header() {
       display: 'flex',
       alignItems: 'center',
       padding: '0 1rem',
-      gap: '2rem'
+      gap: '1rem'
     }}>
       <h1 style={{ color: '#fcfcfa', margin: 0 }}>BitCrafty</h1>
-      <div style={{ 
-        flex: 1, 
-        maxWidth: '400px',
-        minWidth: '200px'
-      }}>
-        <SearchInput />
-      </div>
       
-      {/* Keyboard Shortcuts Hint */}
-      <div style={{
-        fontSize: '12px',
-        color: '#727072',
+      {/* Search and shortcuts section */}
+      <div style={{ 
         display: 'flex',
         alignItems: 'center',
-        gap: '12px'
+        gap: '1rem'
       }}>
-        <span>Quick Keys:</span>
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <kbd style={{
-            background: '#403e41',
-            color: '#a9dc76',
-            padding: '2px 6px',
-            borderRadius: '3px',
-            border: '1px solid #5a5a5a',
-            fontSize: '11px',
-            fontWeight: 'bold'
-          }}>+</kbd>
-          <span style={{ fontSize: '10px' }}>Add</span>
-          <kbd style={{
-            background: '#403e41',
-            color: '#ff6188',
-            padding: '2px 6px',
-            borderRadius: '3px',
-            border: '1px solid #5a5a5a',
-            fontSize: '11px',
-            fontWeight: 'bold'
-          }}>−</kbd>
-          <span style={{ fontSize: '10px' }}>Remove</span>
+        <div style={{ 
+          width: '400px',
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          <div style={{ width: '100%' }}>
+            <SearchInput />
+          </div>
+        </div>
+        
+        {/* Keyboard Shortcuts Hint */}
+        <div style={{
+          fontSize: '12px',
+          color: '#727072',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px'
+        }}>
+          <span>Quick Keys:</span>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <kbd style={{
+              background: '#403e41',
+              color: '#a9dc76',
+              padding: '2px 6px',
+              borderRadius: '3px',
+              border: '1px solid #5a5a5a',
+              fontSize: '11px',
+              fontWeight: 'bold'
+            }}>+</kbd>
+            <span style={{ fontSize: '10px' }}>Add</span>
+            <kbd style={{
+              background: '#403e41',
+              color: '#ff6188',
+              padding: '2px 6px',
+              borderRadius: '3px',
+              border: '1px solid #5a5a5a',
+              fontSize: '11px',
+              fontWeight: 'bold'
+            }}>−</kbd>
+            <span style={{ fontSize: '10px' }}>Remove</span>
+          </div>
         </div>
       </div>
       
       {/* Data Summary on the right */}
       <div style={{ 
+        flex: 1,
         display: 'flex',
         alignItems: 'center',
-        gap: '1rem',
-        marginLeft: 'auto'
+        justifyContent: 'flex-end'
       }}>
         {isLoading ? (
           <div style={{ 

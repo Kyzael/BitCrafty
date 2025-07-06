@@ -38,7 +38,7 @@ const initialState: AppState = {
     draggedItemId: null,
     dropTargetIndex: null
   },
-  sharedSurplus: {},
+  sharedSurplus: {} as SharedSurplus,
   
   // Graph state
   graphData: { nodes: [], edges: [] },
@@ -271,12 +271,12 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
       set({ 
         enhancedQueue: [],
         queueSummary: null,
-        sharedSurplus: {}
+        sharedSurplus: {} as SharedSurplus
       })
     },
 
     calculateQueueSummary: () => {
-      const { enhancedQueue, items, crafts } = get()
+      const { enhancedQueue } = get()
       
       if (enhancedQueue.length === 0) {
         set({ queueSummary: null })
@@ -325,7 +325,7 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
     },
 
     clearSharedSurplus: () => {
-      set({ sharedSurplus: {} })
+      set({ sharedSurplus: {} as SharedSurplus })
     },
 
     // Graph actions

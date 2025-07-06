@@ -127,36 +127,7 @@ export function Sidebar() {
         maxWidth: '600px'
       }}
     >
-      {/* Header with collapse button */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        padding: '1rem',
-        borderBottom: '1px solid #444'
-      }}>
-        <button
-          onClick={toggleSidebar}
-          style={{
-            width: '32px',
-            height: '32px',
-            background: '#89b4fa',
-            border: 'none',
-            borderRadius: '4px',
-            color: '#1e1e2e',
-            fontSize: '14px',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}
-          title="Collapse sidebar"
-        >
-          ←
-        </button>
-      </div>
-      
-      {/* Scrollable content */}
+      {/* Scrollable content - now starts from top */}
       <div style={{
         flex: 1,
         overflowY: 'auto',
@@ -291,6 +262,42 @@ export function Sidebar() {
           <EnhancedCraftingQueue />
         </div>
       </div>
+      
+      {/* Collapse button positioned on the border */}
+      <button
+        onClick={toggleSidebar}
+        style={{
+          position: 'absolute',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          right: '-12px',
+          width: '24px',
+          height: '24px',
+          background: '#89b4fa',
+          border: 'none',
+          borderRadius: '50%',
+          color: '#1e1e2e',
+          fontSize: '12px',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+          zIndex: 10,
+          transition: 'all 0.2s ease'
+        }}
+        title="Collapse sidebar"
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)'
+          e.currentTarget.style.background = '#a1c5ff'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'translateY(-50%) scale(1)'
+          e.currentTarget.style.background = '#89b4fa'
+        }}
+      >
+        ←
+      </button>
       
       {/* Resize handle */}
       <div
