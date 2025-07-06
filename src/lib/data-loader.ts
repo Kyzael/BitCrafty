@@ -1,4 +1,5 @@
 import { ItemData, CraftData, ProfessionData } from '../types'
+import { BASE_CRAFT_ITEMS } from './constants'
 
 /**
  * Load all BitCrafty data from JSON files
@@ -129,4 +130,78 @@ export function professionsArrayToRecord(professions: ProfessionData[]): Record<
     acc[profession.name] = profession
     return acc
   }, {} as Record<string, ProfessionData>)
+}
+
+/**
+ * Analyze crafts data to identify true base resources
+ * Base resources are items that meet any of these criteria:
+ * 1. Items that have no craft node parent (never produced by any craft)
+ * 2. Items where parent crafts have 0-X random output (unreliable production)
+ * 3. Items in BASE_CRAFT_ITEMS constant (loop prevention guardrails)
+ */
+export function identifyBaseResources(
+  items: ItemData[],
+  crafts: CraftData[]
+): Set<string> {
+  const allItemIds = new Set(items.map(item => item.id))
+  const baseResources = new Set<string>()
+  
+  // Case 3: Always include hardcoded base items (loop prevention)
+  for (const itemId of BASE_CRAFT_ITEMS) {
+    if (allItemIds.has(itemId)) {
+      baseResources.add(itemId)
+    }
+  }
+  
+  // Find all items that are reliably produced by crafts
+  const reliablyProducedItems = new Set<string>()
+  
+  for (const craft of crafts) {
+    if (craft.outputs) {
+      for (const output of craft.outputs) {
+        // Case 2: Check if this is a reliable production (not random 0-X)
+        const isReliableOutput = !isRandomOutput(output.qty)
+        
+        if (isReliableOutput) {
+          reliablyProducedItems.add(output.item)
+        }
+        // If it's random (0-X), we DON'T add it to reliablyProducedItems
+        // This means it will be treated as a base resource
+      }
+    }
+  }
+  
+  // Case 1: Items that exist but are never reliably produced are base resources
+  for (const itemId of allItemIds) {
+    if (!reliablyProducedItems.has(itemId)) {
+      baseResources.add(itemId)
+    }
+  }
+  
+  console.log('Identified base resources:', {
+    total: baseResources.size,
+    reliablyProduced: reliablyProducedItems.size,
+    allItems: allItemIds.size,
+    hardcodedIncluded: BASE_CRAFT_ITEMS.size,
+    baseResourceIds: Array.from(baseResources).slice(0, 10) // Log first 10 for debugging
+  })
+  
+  return baseResources
+}
+
+/**
+ * Check if an output quantity represents random production (0-X range)
+ */
+function isRandomOutput(qty: number | string): boolean {
+  if (typeof qty === 'string') {
+    // Check for patterns like "0-5", "1-3", etc.
+    const rangeMatch = qty.match(/^(\d+)-(\d+)$/)
+    if (rangeMatch) {
+      const min = parseInt(rangeMatch[1])
+      return min === 0 // Random if minimum is 0
+    }
+  }
+  
+  // Fixed quantities are reliable
+  return false
 }

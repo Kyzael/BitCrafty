@@ -31,26 +31,9 @@ export const PROFESSION_COLORS = {
 
 // Base craft items (items treated as base resources)
 export const BASE_CRAFT_ITEMS = new Set([
-  'item:farming:carrot',
-  'item:farming:potato', 
-  'item:farming:cabbage',
-  'item:farming:apple',
   'item:farming:embergrain',
-  'item:farming:luminfruit',
-  'item:fishing:salmon',
-  'item:fishing:bass',
-  'item:fishing:mackerel',
-  'item:fishing:tuna',
-  'item:hunting:deer_meat',
-  'item:hunting:bear_meat',
-  'item:hunting:wolf_meat',
-  'item:hunting:rabbit_meat',
-  'item:mining:iron_ore',
-  'item:mining:copper_ore',
-  'item:mining:tin_ore',
-  'item:mining:silver_ore',
-  'item:mining:coal',
-  'item:mining:stone'
+  'item:farming:basic-starbulb',
+  'item:farming:rough-wispweave-filament'
 ])
 
 // Default graph layout options

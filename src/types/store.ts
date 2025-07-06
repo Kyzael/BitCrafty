@@ -8,6 +8,7 @@ export interface AppState {
   items: Record<string, ItemData>
   crafts: Record<string, CraftData>
   professions: Record<string, ProfessionData>
+  baseResources: Set<string> // Dynamically identified base resources
   
   // UI state
   selectedNode: string | null

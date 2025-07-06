@@ -5,7 +5,6 @@
 
 import type { EnhancedQueueItem, ResourceCalculation, SharedSurplus } from '../types/crafting'
 import type { ItemData, CraftData } from '../types/data'
-import { BASE_CRAFT_ITEMS } from './constants'
 
 export interface ResourceSummary {
   baseResources: Record<string, number>
@@ -32,7 +31,8 @@ export interface CraftingPath {
 export function calculateQueueResources(
   queue: EnhancedQueueItem[],
   items: Record<string, ItemData>,
-  crafts: Record<string, CraftData>
+  crafts: Record<string, CraftData>,
+  dynamicBaseResources: Set<string>
 ): ResourceSummary {
   const sharedSurplus: SharedSurplus = {}
   const baseResources: Record<string, number> = {}
@@ -46,7 +46,9 @@ export function calculateQueueResources(
       queueItem.qty,
       items,
       crafts,
-      sharedSurplus
+      sharedSurplus,
+      new Set(),
+      dynamicBaseResources
     )
 
     // Merge base resources
@@ -57,7 +59,7 @@ export function calculateQueueResources(
 
     // Merge intermediate items
     for (const [itemId, qty] of Object.entries(itemCalculation.directMaterials)) {
-      if (!isBaseResource(itemId)) {
+      if (!isBaseResource(itemId, dynamicBaseResources)) {
         intermediateItems[itemId] = (intermediateItems[itemId] || 0) + qty
       }
     }
@@ -92,7 +94,8 @@ export function calculateItemResources(
   items: Record<string, ItemData>,
   crafts: Record<string, CraftData>,
   sharedSurplus: SharedSurplus = {},
-  visited: Set<string> = new Set()
+  visited: Set<string> = new Set(),
+  dynamicBaseResources: Set<string>
 ): ResourceCalculation {
   // Prevent circular dependencies
   if (visited.has(itemId)) {
@@ -136,7 +139,7 @@ export function calculateItemResources(
   const dependencies: string[] = []
 
   // Check if this is a base resource
-  if (isBaseResource(itemId)) {
+  if (isBaseResource(itemId, dynamicBaseResources)) {
     baseMaterials[itemId] = neededQty
     visited.delete(itemId)
     return {
@@ -205,7 +208,8 @@ export function calculateItemResources(
         items,
         crafts,
         sharedSurplus,
-        visited
+        visited,
+        dynamicBaseResources
       )
 
       // Merge base materials from material
@@ -237,12 +241,13 @@ export function calculateItemResources(
 export function generateCraftingPaths(
   queue: EnhancedQueueItem[],
   items: Record<string, ItemData>,
-  crafts: Record<string, CraftData>
+  crafts: Record<string, CraftData>,
+  baseResources: Set<string>
 ): CraftingPath[] {
   const paths: CraftingPath[] = []
 
   for (const queueItem of queue) {
-    const path = buildCraftingPath(queueItem.itemId, queueItem.qty, items, crafts)
+    const path = buildCraftingPath(queueItem.itemId, queueItem.qty, items, crafts, baseResources)
     if (path) {
       paths.push(path)
     }
@@ -259,6 +264,7 @@ function buildCraftingPath(
   qty: number,
   items: Record<string, ItemData>,
   crafts: Record<string, CraftData>,
+  baseResources: Set<string>,
   visited: Set<string> = new Set()
 ): CraftingPath | null {
   if (visited.has(itemId)) {
@@ -273,7 +279,7 @@ function buildCraftingPath(
     return null
   }
 
-  const isBase = isBaseResource(itemId)
+  const isBase = isBaseResource(itemId, baseResources)
   const path: CraftingPath = {
     itemId,
     itemName: item.name,
@@ -305,7 +311,7 @@ function buildCraftingPath(
     if (craft.materials) {
       for (const material of craft.materials) {
         const requiredMaterialQty = craftCount * material.qty
-        const materialPath = buildCraftingPath(material.item, requiredMaterialQty, items, crafts, visited)
+        const materialPath = buildCraftingPath(material.item, requiredMaterialQty, items, crafts, baseResources, visited)
         if (materialPath) {
           path.dependencies.push(materialPath)
         }
@@ -319,21 +325,23 @@ function buildCraftingPath(
 
 /**
  * Check if an item should be treated as a base resource
+ * Uses the dynamically identified base resources from data loading
  */
-function isBaseResource(itemId: string): boolean {
-  return BASE_CRAFT_ITEMS.has(itemId)
+function isBaseResource(itemId: string, baseResources: Set<string>): boolean {
+  return baseResources.has(itemId)
 }
 
 /**
  * Get base resources only (filtered from all resources)
  */
 export function getBaseResourcesOnly(
-  allResources: Record<string, number>
+  allResources: Record<string, number>,
+  baseResources: Set<string>
 ): Record<string, number> {
   const baseOnly: Record<string, number> = {}
   
   for (const [itemId, qty] of Object.entries(allResources)) {
-    if (isBaseResource(itemId)) {
+    if (isBaseResource(itemId, baseResources)) {
       baseOnly[itemId] = qty
     }
   }

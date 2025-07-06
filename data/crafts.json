@@ -76,7 +76,7 @@
         "qty": 1
       },
       {
-        "item": "item:farming:wispweave-filament",
+        "item": "item:farming:rough-wispweave-filament",
         "qty": 5
       }
     ],
@@ -141,7 +141,7 @@
         "qty": "1-3"
       },
       {
-        "item": "item:farming:wispweave-filament",
+        "item": "item:farming:rough-wispweave-filament",
         "qty": "2-5"
       }
     ],

@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 import { useMemo } from 'react'
 import { AppState, AppActions, QueueItem, GraphData, EnhancedQueueItem, QueueSummary, DragState, SharedSurplus } from '../types'
-import { loadBitCraftyData, arrayToRecord, professionsArrayToRecord } from './data-loader'
+import { loadBitCraftyData, arrayToRecord, professionsArrayToRecord, identifyBaseResources } from './data-loader'
 import { buildGraphData } from './graph-builder'
 import { calculateQueueResources, generateCraftingPaths } from './resource-calculator'
 import { SearchMode } from './utils'
@@ -20,6 +20,7 @@ const initialState: AppState = {
   items: {},
   crafts: {},
   professions: {},
+  baseResources: new Set(),
   
   // UI state
   selectedNode: null,
@@ -72,6 +73,9 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
           professions: data.professions.length
         })
         
+        // Identify base resources by analyzing craft outputs
+        const baseResources = identifyBaseResources(data.items, data.crafts)
+        
         const graphData = buildGraphData(data.items, data.crafts, data.professions)
         console.log('Store: Graph data built:', {
           nodes: graphData.nodes.length,
@@ -87,6 +91,7 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
           items: itemsMap,
           crafts: craftsMap,
           professions: professionsMap,
+          baseResources,
           graphData,
           visibleProfessions: allProfessions,
           isLoading: false,
@@ -277,7 +282,7 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
     },
 
     calculateQueueSummary: () => {
-      const { enhancedQueue, items, crafts } = get()
+      const { enhancedQueue, items, crafts, baseResources } = get()
       
       if (enhancedQueue.length === 0) {
         set({ queueSummary: null })
@@ -285,7 +290,7 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
       }
 
       // Use resource calculator to get accurate summary
-      const resourceSummary = calculateQueueResources(enhancedQueue, items, crafts)
+      const resourceSummary = calculateQueueResources(enhancedQueue, items, crafts, baseResources)
       
       const summary: QueueSummary = {
         totalItems: enhancedQueue.length,
@@ -333,8 +338,8 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
 
     // Get crafting paths for the queue
     getCraftingPaths: () => {
-      const { enhancedQueue, items, crafts } = get()
-      return generateCraftingPaths(enhancedQueue, items, crafts)
+      const { enhancedQueue, items, crafts, baseResources } = get()
+      return generateCraftingPaths(enhancedQueue, items, crafts, baseResources)
     },
 
     // Graph actions
@@ -403,6 +408,7 @@ export const useProfessionsArray = () => {
 export const useItems = () => useBitCraftyStore(state => state.items)
 export const useCrafts = () => useBitCraftyStore(state => state.crafts)
 export const useProfessions = () => useBitCraftyStore(state => state.professions)
+export const useBaseResources = () => useBitCraftyStore(state => state.baseResources)
 
 // Individual action hooks - these provide stable references
 export const useLoadData = () => useBitCraftyStore(state => state.loadData)
