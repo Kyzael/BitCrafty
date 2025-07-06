@@ -7,7 +7,7 @@
     "dev": "vite --config vite.config.ts",
     "build": "vite build --config vite.config.ts",
     "preview": "vite preview --config vite.config.ts",
-    "test": "npm --test",
+    "test": "npm run validate",
     "test:unit": "node --test test/react-components/store.test.js test/lib/react-lib.test.js",
     "validate": "node test/data-validation.test.js",
     "validate:github": "node test/data-validation.test.js --github"
