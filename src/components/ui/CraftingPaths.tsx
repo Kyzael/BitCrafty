@@ -287,7 +287,6 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = () => {
           color: '#a6a6a6'
         }}>
           Click on items with arrows to expand/collapse their crafting dependencies.
-          Base resources are gathered/farmed, crafted items require materials.
         </p>
       </div>
     </div>

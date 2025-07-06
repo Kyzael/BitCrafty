@@ -461,20 +461,20 @@ button[tabindex="-1"]:focus-visible {
 
 /* Enhanced Crafting Queue Styles (Phase 4) */
 .enhanced-crafting-queue {
-  background: #403e41;
-  border: 1px solid #5a5a5a;
+  background: #2d2a2e;
+  border: 1px solid #5c5c5c;
   border-radius: 6px;
-  padding: 12px;
-  margin-bottom: 12px;
+  padding: 1rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .queue-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #5a5a5a;
+  margin-bottom: 0.75rem;
 }
 
 .queue-title {
@@ -485,24 +485,28 @@ button[tabindex="-1"]:focus-visible {
 }
 
 .clear-queue-btn {
-  background: #ff6188;
-  color: white;
+  background: #a6e3a1;
+  color: #1e1e2e;
   border: none;
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 6px 12px;
+  border-radius: 3px;
   font-size: 12px;
+  font-weight: bold;
   cursor: pointer;
   transition: background-color 0.2s;
+  height: 28px;
 }
 
 .clear-queue-btn:hover {
-  background: #ff4757;
+  background: #94d3a2;
 }
 
 .queue-items {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .queue-item {
@@ -566,10 +570,10 @@ button[tabindex="-1"]:focus-visible {
 
 /* Compact Queue Item Styles */
 .queue-item-compact {
-  background: #2d2a2e;
-  border: 1px solid #5a5a5a;
-  border-radius: 4px;
-  padding: 4px 6px;
+  background: #3e3e3e;
+  border: 1px solid #5c5c5c;
+  border-radius: 3px;
+  padding: 0.5rem 0.75rem;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -580,7 +584,7 @@ button[tabindex="-1"]:focus-visible {
 }
 
 .queue-item-compact:hover {
-  background: #34313a;
+  background: #4a4a4a;
   border-color: #78dce8;
 }
 
@@ -617,15 +621,20 @@ button[tabindex="-1"]:focus-visible {
 .qty-display-compact {
   background: #403e41;
   color: #a9dc76;
-  padding: 2px 4px;
+  padding: 6px 8px;
   border-radius: 3px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
   cursor: pointer;
   border: 1px solid transparent;
   transition: all 0.2s;
-  min-width: 20px;
+  min-width: 30px;
   text-align: center;
+  height: 28px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .qty-display-compact:hover {
@@ -637,12 +646,14 @@ button[tabindex="-1"]:focus-visible {
   background: #2d2a2e;
   color: #a9dc76;
   border: 1px solid #a9dc76;
-  padding: 2px 4px;
+  padding: 6px 8px;
   border-radius: 3px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: bold;
-  width: 40px;
+  width: 50px;
   text-align: center;
+  height: 28px;
+  box-sizing: border-box;
 }
 
 .qty-input-compact:focus {
@@ -784,12 +795,15 @@ button[tabindex="-1"]:focus-visible {
 }
 
 .crafting-queue-empty {
-  background: #403e41;
-  border: 1px solid #5a5a5a;
+  background: #2d2a2e;
+  border: 1px solid #5c5c5c;
   border-radius: 6px;
-  padding: 20px;
+  padding: 1rem;
   text-align: center;
-  margin-bottom: 12px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .empty-message p {
@@ -890,14 +904,15 @@ button[tabindex="-1"]:focus-visible {
   background: #2d2a2e;
   color: #fcfcfa;
   border: 1px solid #5a5a5a;
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-size: 14px;
-  width: 80px;
+  padding: 6px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+  width: 60px;
   text-align: center;
   font-weight: 600;
   transition: all 0.2s;
-  height: 36px;
+  height: 28px;
+  box-sizing: border-box;
 }
 
 .inline-qty-input:focus {
@@ -914,14 +929,14 @@ button[tabindex="-1"]:focus-visible {
   background: linear-gradient(135deg, #a9dc76, #78dce8);
   color: #2d2a2e;
   border: none;
-  padding: 0 16px;
-  border-radius: 4px;
-  font-size: 14px;
+  padding: 6px 12px;
+  border-radius: 3px;
+  font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  height: 36px;
-  min-width: 80px;
+  height: 28px;
+  min-width: 60px;
   box-shadow: 0 1px 3px rgba(169, 220, 118, 0.3);
 }
 
