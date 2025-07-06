@@ -3,14 +3,15 @@ import { useBitCraftyStore } from './lib'
 import { Header } from './components/ui/Header'
 import { Sidebar } from './components/ui/Sidebar'
 import { GraphContainer } from './components/graph/GraphContainer'
-import { CraftingPanel } from './components/ui/CraftingPanel'
-import { useIsLoading, useLoadError } from './lib/store'
+import { useIsLoading, useLoadError, useSidebarCollapsed, useSidebarWidth } from './lib/store'
 import 'reactflow/dist/style.css'
 
 function App() {
   // Use memoized selectors to avoid infinite loops
   const isLoading = useIsLoading()
   const loadError = useLoadError()
+  const sidebarCollapsed = useSidebarCollapsed()
+  const sidebarWidth = useSidebarWidth()
   
   useEffect(() => {
     // Call loadData directly from the store to avoid dependency issues
@@ -70,7 +71,12 @@ function App() {
   return (
     <div className="app">
       <Header />
-      <div className="app-content">
+      <div 
+        className="app-content"
+        style={{
+          '--sidebar-width': sidebarCollapsed ? '60px' : `${sidebarWidth}px`
+        } as React.CSSProperties}
+      >
         <Sidebar />
         <div 
           style={{ 
@@ -84,7 +90,6 @@ function App() {
         >
           <GraphContainer />
         </div>
-        <CraftingPanel />
       </div>
     </div>
   )

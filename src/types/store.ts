@@ -18,6 +18,10 @@ export interface AppState {
   visibleProfessions: Set<string>
   craftingQueue: QueueItem[]
   
+  // Sidebar state
+  sidebarCollapsed: boolean
+  sidebarWidth: number
+  
   // Graph state
   graphData: GraphData
   focusMode: boolean
@@ -48,4 +52,8 @@ export interface AppActions {
   // Graph actions
   updateGraphData: (data: GraphData) => void
   setFocusMode: (enabled: boolean) => void
+  
+  // Sidebar actions
+  setSidebarCollapsed: (collapsed: boolean) => void
+  setSidebarWidth: (width: number) => void
 }

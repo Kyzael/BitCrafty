@@ -5,6 +5,12 @@
   box-sizing: border-box;
 }
 
+/* Animations */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -27,6 +33,13 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden; /* Prevent scrolling on the app container */
+}
+
+.app-content {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  --sidebar-width: 280px; /* Default sidebar width, overridden by CSS custom property */
 }
 
 /* Search Component Styles */

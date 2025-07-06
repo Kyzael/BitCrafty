@@ -32,7 +32,11 @@ const initialState: AppState = {
   
   // Graph state
   graphData: { nodes: [], edges: [] },
-  focusMode: false
+  focusMode: false,
+  
+  // Sidebar state
+  sidebarCollapsed: false,
+  sidebarWidth: 280
 }
 
 // Create Zustand store with React integration
@@ -183,6 +187,18 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
 
     setFocusMode: (enabled: boolean) => {
       set({ focusMode: enabled })
+    },
+    
+    // Sidebar actions
+    setSidebarCollapsed: (collapsed: boolean) => {
+      console.log('Store: setSidebarCollapsed called:', collapsed)
+      set({ sidebarCollapsed: collapsed })
+    },
+
+    setSidebarWidth: (width: number) => {
+      const clampedWidth = Math.max(200, Math.min(600, width)) // Min 200px, max 600px
+      console.log('Store: setSidebarWidth called:', width, 'clamped to:', clampedWidth)
+      set({ sidebarWidth: clampedWidth })
     }
   }))
 )
@@ -201,6 +217,8 @@ export const useGraphData = () => useBitCraftyStore(state => state.graphData)
 export const useFocusMode = () => useBitCraftyStore(state => state.focusMode)
 export const useIsLoading = () => useBitCraftyStore(state => state.isLoading)
 export const useLoadError = () => useBitCraftyStore(state => state.loadError)
+export const useSidebarCollapsed = () => useBitCraftyStore(state => state.sidebarCollapsed)
+export const useSidebarWidth = () => useBitCraftyStore(state => state.sidebarWidth)
 
 // Memoized data array selectors
 // These ensure Object.values() calls don't create new arrays on every render

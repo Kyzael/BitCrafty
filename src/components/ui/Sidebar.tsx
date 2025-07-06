@@ -1,24 +1,24 @@
-import { useCallback } from 'react'
+import { useCallback, useRef, useState, useEffect } from 'react'
 import { 
-  useIsLoading, 
-  useItemsArray, 
-  useCraftsArray, 
   useProfessionsArray, 
   useVisibleProfessions,
-  useSelectedNode 
+  useSidebarCollapsed,
+  useSidebarWidth
 } from '../../lib/store'
 import { useBitCraftyStore } from '../../lib'
-import { SearchInput } from './SearchInput'
 import { NodeDetailsPanel } from './NodeDetailsPanel'
+import { CraftingQueue } from './CraftingQueue'
 
 export function Sidebar() {
   // Data from store using memoized selectors
-  const items = useItemsArray()
-  const crafts = useCraftsArray()
   const professions = useProfessionsArray()
   const visibleProfessions = useVisibleProfessions()
-  const isLoading = useIsLoading()
-  const selectedNode = useSelectedNode()
+  const sidebarCollapsed = useSidebarCollapsed()
+  const sidebarWidth = useSidebarWidth()
+  
+  // State for resizing
+  const [isResizing, setIsResizing] = useState(false)
+  const sidebarRef = useRef<HTMLDivElement>(null)
   
   // Safe access to store actions
   const toggleProfession = useCallback((professionName: string) => {
@@ -35,163 +35,286 @@ export function Sidebar() {
     useBitCraftyStore.getState().setVisibleProfessions(new Set(professionNames))
   }, [])
   
-  return (
-    <aside style={{ 
-      width: '280px', 
-      background: '#1e1e2e', 
-      borderRight: '1px solid #727072',
-      padding: '1rem',
-      overflowY: 'auto',
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%'
-    }}>
-      <h2 style={{ color: '#fcfcfa', marginBottom: '1rem', fontSize: '18px' }}>
-        BitCrafty
-      </h2>
+  const toggleSidebar = useCallback(() => {
+    useBitCraftyStore.getState().setSidebarCollapsed(!sidebarCollapsed)
+  }, [sidebarCollapsed])
+  
+  // Handle mouse events for resizing
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    if (sidebarCollapsed) return
+    e.preventDefault()
+    setIsResizing(true)
+  }, [sidebarCollapsed])
+  
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return
       
-      {/* Search Component */}
-      <SearchInput />
-      
-      {/* Data Summary */}
-      <div style={{ marginBottom: '1.5rem', padding: '10px', background: '#2d2a2e', borderRadius: '4px' }}>
-        <div style={{ color: '#fcfcfa', fontSize: '14px', marginBottom: '8px' }}>
-          <strong>Data Loaded:</strong>
-        </div>
-        {isLoading ? (
-          <div style={{ color: '#f38ba8', fontSize: '12px' }}>Loading...</div>
-        ) : (
-          <>
-            <div style={{ color: '#a6e3a1', fontSize: '12px' }}>
-              {items.length} items • {crafts.length} crafts
-            </div>
-            <div style={{ color: '#89b4fa', fontSize: '12px' }}>
-              {professions.length} professions
-            </div>
-          </>
-        )}
-      </div>
-      
-      {/* Profession Filters */}
-      <div style={{ marginBottom: '1rem' }}>
-        <h3 style={{ 
-          color: '#fcfcfa', 
-          fontSize: '14px', 
-          marginBottom: '0.5rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          Professions
-          <span style={{ fontSize: '12px', color: '#727072' }}>
-            {visibleProfessions.size}/{professions.length}
-          </span>
-        </h3>
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: '1fr 1fr',
-          gap: '6px'
-        }}>
-          {professions.map(profession => (
-            <button
-              key={profession.name}
-              onClick={() => toggleProfession(profession.name)}
-              tabIndex={-1}
-              style={{ 
-                display: 'flex', 
-                alignItems: 'center',
-                gap: '6px',
-                cursor: 'pointer',
-                padding: '6px 8px',
-                borderRadius: '4px',
-                backgroundColor: visibleProfessions.has(profession.name) 
-                  ? profession.color + '33' 
-                  : 'transparent',
-                border: `2px solid ${visibleProfessions.has(profession.name) 
-                  ? profession.color 
-                  : '#5c5c5c'}`,
-                transition: 'all 0.2s ease',
-                color: '#fcfcfa',
-                fontSize: '11px',
-                fontWeight: visibleProfessions.has(profession.name) ? 'bold' : 'normal',
-                opacity: visibleProfessions.has(profession.name) ? 1 : 0.7
-              }}
-            >
-              <div 
-                style={{
-                  width: '10px',
-                  height: '10px',
-                  backgroundColor: profession.color,
-                  borderRadius: '2px',
-                  opacity: visibleProfessions.has(profession.name) ? 1 : 0.5
-                }}
-              />
-              <span style={{ 
-                flex: 1,
-                textAlign: 'left',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap'
-              }}>
-                {profession.name}
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
-      
-      {/* Clear Filters */}
-      <div style={{ marginTop: '1.5rem', marginBottom: '1rem' }}>
+      const newWidth = e.clientX
+      if (newWidth >= 200 && newWidth <= 600) {
+        useBitCraftyStore.getState().setSidebarWidth(newWidth)
+      }
+    }
+    
+    const handleMouseUp = () => {
+      setIsResizing(false)
+    }
+    
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove)
+      document.addEventListener('mouseup', handleMouseUp)
+      document.body.style.cursor = 'col-resize'
+      document.body.style.userSelect = 'none'
+    }
+    
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+      document.body.style.cursor = ''
+      document.body.style.userSelect = ''
+    }
+  }, [isResizing])
+  
+  // Render collapsed sidebar (no floating search needed)
+  if (sidebarCollapsed) {
+    return (
+      <div style={{
+        position: 'relative',
+        width: '60px',
+        background: '#1e1e2e',
+        borderRight: '1px solid #727072',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '1rem 0.5rem'
+      }}>
+        {/* Expand button */}
         <button
-          onClick={showAllProfessions}
-          tabIndex={-1}
+          onClick={toggleSidebar}
           style={{
-            width: '100%',
-            padding: '8px 12px',
+            width: '40px',
+            height: '40px',
+            background: '#89b4fa',
+            border: 'none',
+            borderRadius: '6px',
+            color: '#1e1e2e',
+            fontSize: '18px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          title="Expand sidebar"
+        >
+          →
+        </button>
+      </div>
+    )
+  }
+  
+  return (
+    <aside 
+      ref={sidebarRef}
+      style={{ 
+        width: `${sidebarWidth}px`, 
+        background: '#1e1e2e', 
+        borderRight: '1px solid #727072',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        position: 'relative',
+        minWidth: '200px',
+        maxWidth: '600px'
+      }}
+    >
+      {/* Header with collapse button */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        padding: '1rem',
+        borderBottom: '1px solid #444'
+      }}>
+        <button
+          onClick={toggleSidebar}
+          style={{
+            width: '32px',
+            height: '32px',
             background: '#89b4fa',
             border: 'none',
             borderRadius: '4px',
             color: '#1e1e2e',
-            fontSize: '12px',
-            fontWeight: 'bold',
+            fontSize: '14px',
             cursor: 'pointer',
-            transition: 'background-color 0.2s ease'
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#a1c5ff'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#89b4fa'
-          }}
+          title="Collapse sidebar"
         >
-          Show All Professions
+          ←
         </button>
       </div>
-
-      {/* Node Details Section */}
-      <div style={{ 
+      
+      {/* Scrollable content */}
+      <div style={{
         flex: 1,
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: 0 // Allow flex child to shrink
+        overflowY: 'auto',
+        padding: '1rem'
       }}>
-        <h3 style={{ 
-          color: '#fcfcfa', 
-          fontSize: '14px', 
-          marginBottom: '0.5rem'
+        {/* Profession Filters */}
+        <div style={{ marginBottom: '1rem' }}>
+          <h3 style={{ 
+            color: '#fcfcfa', 
+            fontSize: '14px', 
+            marginBottom: '0.5rem',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            Professions
+            <span style={{ fontSize: '12px', color: '#727072' }}>
+              {visibleProfessions.size}/{professions.length}
+            </span>
+          </h3>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: '1fr 1fr 1fr',
+            gap: '4px'
+          }}>
+            {professions.map(profession => (
+              <button
+                key={profession.name}
+                onClick={() => toggleProfession(profession.name)}
+                tabIndex={-1}
+                style={{ 
+                  display: 'flex', 
+                  alignItems: 'center',
+                  gap: '4px',
+                  cursor: 'pointer',
+                  padding: '4px 6px',
+                  borderRadius: '3px',
+                  backgroundColor: visibleProfessions.has(profession.name) 
+                    ? profession.color + '33' 
+                    : 'transparent',
+                  border: `1px solid ${visibleProfessions.has(profession.name) 
+                    ? profession.color 
+                    : '#5c5c5c'}`,
+                  transition: 'all 0.2s ease',
+                  color: '#fcfcfa',
+                  fontSize: '10px',
+                  fontWeight: visibleProfessions.has(profession.name) ? 'bold' : 'normal',
+                  opacity: visibleProfessions.has(profession.name) ? 1 : 0.7,
+                  minWidth: 0 // Allow flex items to shrink below content size
+                }}
+              >
+                <div 
+                  style={{
+                    width: '8px',
+                    height: '8px',
+                    backgroundColor: profession.color,
+                    borderRadius: '2px',
+                    opacity: visibleProfessions.has(profession.name) ? 1 : 0.5,
+                    flexShrink: 0 // Prevent color dot from shrinking
+                  }}
+                />
+                <span style={{ 
+                  flex: 1,
+                  textAlign: 'left',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  minWidth: 0 // Allow text to shrink and show ellipsis
+                }}>
+                  {profession.name}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+        
+        {/* Clear Filters */}
+        <div style={{ marginTop: '1rem', marginBottom: '1rem' }}>
+          <button
+            onClick={showAllProfessions}
+            tabIndex={-1}
+            style={{
+              width: '100%',
+              padding: '6px 10px',
+              background: '#89b4fa',
+              border: 'none',
+              borderRadius: '3px',
+              color: '#1e1e2e',
+              fontSize: '11px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#a1c5ff'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#89b4fa'
+            }}
+          >
+            Clear Filters
+          </button>
+        </div>
+
+        {/* Node Details Section */}
+        <div style={{ 
+          marginBottom: '1rem'
         }}>
-          Node Details
-        </h3>
-        <div style={{
+          <h3 style={{ 
+            color: '#fcfcfa', 
+            fontSize: '14px', 
+            marginBottom: '0.5rem'
+          }}>
+            Node Details
+          </h3>
+          <div style={{
+            height: '200px',
+            border: '1px solid #444',
+            borderRadius: '4px',
+            overflow: 'hidden'
+          }}>
+            <NodeDetailsPanel />
+          </div>
+        </div>
+        
+        {/* Crafting Queue Section */}
+        <div style={{ 
           flex: 1,
-          minHeight: 0,
-          border: '1px solid #444',
-          borderRadius: '4px',
-          overflow: 'hidden'
+          minHeight: '150px'
         }}>
-          <NodeDetailsPanel />
+          <CraftingQueue />
         </div>
       </div>
+      
+      {/* Resize handle */}
+      <div
+        onMouseDown={handleMouseDown}
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: -2,
+          width: '4px',
+          height: '100%',
+          cursor: 'col-resize',
+          background: isResizing ? '#89b4fa' : 'transparent',
+          transition: 'background-color 0.2s ease'
+        }}
+        onMouseEnter={(e) => {
+          if (!isResizing) {
+            e.currentTarget.style.background = '#89b4fa55'
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!isResizing) {
+            e.currentTarget.style.background = 'transparent'
+          }
+        }}
+      />
     </aside>
   )
 }
