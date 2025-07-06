@@ -379,3 +379,59 @@ body {
   text-align: center;
   padding: 10px;
 }
+
+/* Enhanced search dropdown for keyboard navigation */
+.search-dropdown-item.selected {
+  background-color: #49483e !important;
+}
+
+.search-dropdown-item:focus-visible {
+  outline: 2px solid #78dce8;
+  outline-offset: -2px;
+}
+
+/* Navigation button focus styles */
+.navigation-button:focus-visible {
+  outline: 2px solid #78dce8 !important;
+  outline-offset: 2px;
+}
+
+/* Details panel keyboard navigation */
+.details-panel:focus-visible {
+  outline: none;
+}
+
+.craft-item:focus-visible,
+.item-entry:focus-visible {
+  outline: 2px solid #78dce8 !important;
+  outline-offset: 2px;
+}
+
+/* Smooth transitions for all interactive elements */
+.navigation-button,
+.craft-item,
+.item-entry {
+  transition: all 0.2s ease !important;
+}
+
+/* Screen reader accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip tab navigation for profession filters */
+button[tabindex="-1"]:focus {
+  outline: none !important;
+}
+
+button[tabindex="-1"]:focus-visible {
+  outline: none !important;
+}

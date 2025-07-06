@@ -96,6 +96,7 @@ export function Sidebar() {
             <button
               key={profession.name}
               onClick={() => toggleProfession(profession.name)}
+              tabIndex={-1}
               style={{ 
                 display: 'flex', 
                 alignItems: 'center',
@@ -143,6 +144,7 @@ export function Sidebar() {
       <div style={{ marginTop: '1.5rem', marginBottom: '1rem' }}>
         <button
           onClick={showAllProfessions}
+          tabIndex={-1}
           style={{
             width: '100%',
             padding: '8px 12px',

@@ -1,10 +1,13 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import { useSearchQuery, useSetSearchQuery, useSetSearchResults, useSelectNode } from '../../lib/store'
 import { useGraphData } from '../../lib/store'
 
 /**
  * SearchInput component provides fuzzy search functionality for items
- * Shows dropdown of matching items for selection
+ * Features:
+ * - Global keyboard typing to auto-focus and search
+ * - Arrow key navigation in dropdown
+ * - Enter to select, Escape to cancel
  */
 export const SearchInput: React.FC = () => {
   const searchQuery = useSearchQuery()
@@ -15,6 +18,8 @@ export const SearchInput: React.FC = () => {
 
   const [localQuery, setLocalQuery] = useState(searchQuery)
   const [showDropdown, setShowDropdown] = useState(false)
+  const [selectedIndex, setSelectedIndex] = useState(-1)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   // Filter to only include item nodes for search
   const itemNodes = useMemo(() => {
@@ -80,6 +85,7 @@ export const SearchInput: React.FC = () => {
     setLocalQuery(query)
     setSearchQuery(query)
     setShowDropdown(query.trim().length > 0)
+    setSelectedIndex(-1) // Reset selection when query changes
     
     // Clear search results if query is empty
     if (!query.trim()) {
@@ -96,19 +102,77 @@ export const SearchInput: React.FC = () => {
     setSearchResults(new Set())
   }, [selectNode, setSearchQuery, setSearchResults])
 
+  // Handle keyboard navigation in dropdown
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (!showDropdown || searchResults.length === 0) return
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault()
+        setSelectedIndex(i => Math.min(i + 1, searchResults.length - 1))
+        break
+      case 'ArrowUp':
+        e.preventDefault()
+        setSelectedIndex(i => Math.max(i - 1, -1))
+        break
+      case 'Enter':
+        e.preventDefault()
+        if (selectedIndex >= 0) {
+          handleItemSelect(searchResults[selectedIndex].id)
+        }
+        break
+      case 'Escape':
+        e.preventDefault()
+        setShowDropdown(false)
+        setSelectedIndex(-1)
+        setLocalQuery('')
+        setSearchQuery('')
+        setSearchResults(new Set())
+        inputRef.current?.blur()
+        break
+    }
+  }, [showDropdown, searchResults, selectedIndex, handleItemSelect, setSearchQuery, setSearchResults])
+
   // Handle input blur with delay for dropdown clicks
   const handleInputBlur = useCallback(() => {
     setTimeout(() => setShowDropdown(false), 200)
   }, [])
+
+  // Global keyboard listener for auto-focus typing
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      // Only auto-focus if not already focused and typing alphanumeric
+      if (
+        document.activeElement !== inputRef.current &&
+        !e.ctrlKey && !e.altKey && !e.metaKey &&
+        e.key.length === 1 &&
+        /[a-zA-Z0-9\s]/.test(e.key) &&
+        // Don't interfere with other inputs or text areas
+        !(document.activeElement?.tagName === 'INPUT' || 
+          document.activeElement?.tagName === 'TEXTAREA' ||
+          (document.activeElement as HTMLElement)?.contentEditable === 'true')
+      ) {
+        e.preventDefault()
+        inputRef.current?.focus()
+        // Set the typed character as the search query
+        handleSearchChange(e.key)
+      }
+    }
+    
+    document.addEventListener('keydown', handleGlobalKeyDown)
+    return () => document.removeEventListener('keydown', handleGlobalKeyDown)
+  }, [handleSearchChange])
 
   return (
     <div className="search-container">
       <div className="search-input-group">
         <div className="search-input-wrapper">
           <input
+            ref={inputRef}
             type="text"
             value={localQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
+            onKeyDown={handleKeyDown}
             onFocus={() => localQuery.trim() && setShowDropdown(true)}
             onBlur={handleInputBlur}
             placeholder="Search items..."
@@ -116,11 +180,14 @@ export const SearchInput: React.FC = () => {
           />
           {showDropdown && searchResults.length > 0 && (
             <div className="search-dropdown">
-              {searchResults.map(result => (
+              {searchResults.map((result, index) => (
                 <div
                   key={result.id}
-                  className="search-dropdown-item"
+                  className={`search-dropdown-item ${index === selectedIndex ? 'selected' : ''}`}
                   onClick={() => handleItemSelect(result.id)}
+                  style={{
+                    backgroundColor: index === selectedIndex ? '#49483e' : 'transparent'
+                  }}
                 >
                   <div className="search-dropdown-item-name">{result.name}</div>
                 </div>
