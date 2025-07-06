@@ -182,10 +182,4 @@ npm run validate      # Data validation only
 5. **Code Review:** Ensure all guidelines are followed
 6. **CI/CD:** All GitHub Actions must pass before merging
 
-**Key Changes from Legacy Version:**
-- Moved from vanilla JS to React + TypeScript
-- Event-driven communication replaced with React patterns
-- Custom DOM helpers replaced with React components
-- vis.js replaced with React Flow
-- Monokai theme requirements relaxed for cleaner design
 
