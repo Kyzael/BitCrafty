@@ -8,10 +8,10 @@ import { useEnhancedQueue, useGetCraftingPaths, useItems, useCrafts } from '../.
 import type { CraftingPath } from '../../types/crafting'
 
 interface CraftingPathsProps {
-  className?: string
+  // No props needed currently
 }
 
-export const CraftingPaths: React.FC<CraftingPathsProps> = ({ className = '' }) => {
+export const CraftingPaths: React.FC<CraftingPathsProps> = () => {
   const enhancedQueue = useEnhancedQueue()
   const getCraftingPaths = useGetCraftingPaths()
   const items = useItems()
@@ -20,9 +20,27 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = ({ className = '' }) 
 
   if (enhancedQueue.length === 0) {
     return (
-      <div className={`bg-gray-800 rounded-lg p-4 ${className}`}>
-        <h3 className="text-lg font-medium text-white mb-2">Crafting Paths</h3>
-        <p className="text-gray-400 text-sm">Add items to queue to see crafting dependencies.</p>
+      <div style={{
+        backgroundColor: '#2d2a2e',
+        borderRadius: '6px',
+        border: '1px solid #5c5c5c',
+        padding: '1rem',
+        height: '100%'
+      }}>
+        <h3 style={{
+          fontSize: '14px',
+          fontWeight: 'bold',
+          color: '#fcfcfa',
+          marginBottom: '0.5rem'
+        }}>
+          Crafting Paths
+        </h3>
+        <p style={{
+          color: '#a6a6a6',
+          fontSize: '11px'
+        }}>
+          Add items to queue to see crafting dependencies.
+        </p>
       </div>
     )
   }
@@ -46,37 +64,89 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = ({ className = '' }) 
     const hasChildren = path.dependencies.length > 0
 
     return (
-      <div key={pathId} className="w-full">
+      <div key={pathId} style={{ width: '100%' }}>
         <div 
-          className="flex items-center gap-2 py-2 px-3 bg-gray-700 rounded cursor-pointer hover:bg-gray-600 transition-colors"
-          style={{ marginLeft: `${depth * 16}px` }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            padding: '0.5rem 0.75rem',
+            backgroundColor: '#3e3e3e',
+            border: '1px solid #5c5c5c',
+            borderRadius: '3px',
+            cursor: hasChildren ? 'pointer' : 'default',
+            transition: 'background-color 0.2s ease',
+            marginLeft: `${depth * 16}px`
+          }}
           onClick={() => hasChildren && togglePathExpanded(pathId)}
+          onMouseEnter={(e) => {
+            if (hasChildren) {
+              e.currentTarget.style.backgroundColor = '#4a4a4a'
+            }
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = '#3e3e3e'
+          }}
         >
           {/* Expand/Collapse Icon */}
           {hasChildren && (
-            <div className="w-4 h-4 flex items-center justify-center text-gray-400">
+            <div style={{
+              width: '12px',
+              height: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#a6a6a6',
+              fontSize: '10px'
+            }}>
               {isExpanded ? '▼' : '▶'}
             </div>
           )}
-          {!hasChildren && <div className="w-4" />}
+          {!hasChildren && <div style={{ width: '12px' }} />}
 
           {/* Resource Type Indicator */}
-          <div className={`w-3 h-3 rounded-full ${
-            path.isBaseResource ? 'bg-blue-400' : 'bg-orange-400'
-          }`} />
+          <div style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            backgroundColor: path.isBaseResource ? '#89b4fa' : '#fab387'
+          }} />
 
           {/* Item Info */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <span className="text-white font-medium truncate">
+          <div style={{
+            flex: 1,
+            minWidth: 0
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}>
+              <span style={{
+                color: '#fcfcfa',
+                fontWeight: 'bold',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                fontSize: '11px'
+              }}>
                 {item?.name || path.itemName}
               </span>
-              <span className="text-gray-400 text-sm">
+              <span style={{
+                color: '#a6a6a6',
+                fontSize: '10px'
+              }}>
                 × {path.requiredQty}
               </span>
             </div>
             {craft && (
-              <div className="text-xs text-gray-400 truncate">
+              <div style={{
+                fontSize: '10px',
+                color: '#a6a6a6',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
+              }}>
                 via {craft.name}
               </div>
             )}
@@ -84,7 +154,14 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = ({ className = '' }) 
 
           {/* Base Resource Badge */}
           {path.isBaseResource && (
-            <div className="text-xs bg-blue-500 text-white px-2 py-1 rounded">
+            <div style={{
+              fontSize: '10px',
+              backgroundColor: '#89b4fa',
+              color: '#1e1e2e',
+              padding: '2px 6px',
+              borderRadius: '3px',
+              fontWeight: 'bold'
+            }}>
               Base
             </div>
           )}
@@ -92,7 +169,12 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = ({ className = '' }) 
 
         {/* Dependencies */}
         {hasChildren && isExpanded && (
-          <div className="mt-1 space-y-1">
+          <div style={{
+            marginTop: '0.25rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.25rem'
+          }}>
             {path.dependencies.map((dependency, index) => 
               renderCraftingPath(dependency, depth + 1, `${pathId}-${index}`)
             )}
@@ -103,28 +185,89 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = ({ className = '' }) 
   }
 
   return (
-    <div className={`bg-gray-800 rounded-lg p-4 ${className}`}>
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-lg font-medium text-white">Crafting Paths</h3>
-        <div className="flex gap-2 text-xs">
-          <div className="flex items-center gap-1">
-            <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-            <span className="text-gray-400">Base</span>
+    <div style={{
+      backgroundColor: '#2d2a2e',
+      borderRadius: '6px',
+      border: '1px solid #5c5c5c',
+      padding: '1rem',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: '0.75rem'
+      }}>
+        <h3 style={{
+          fontSize: '14px',
+          fontWeight: 'bold',
+          color: '#fcfcfa'
+        }}>
+          Crafting Paths
+        </h3>
+        <div style={{
+          display: 'flex',
+          gap: '0.5rem',
+          fontSize: '10px'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.25rem'
+          }}>
+            <div style={{
+              width: '6px',
+              height: '6px',
+              borderRadius: '50%',
+              backgroundColor: '#89b4fa'
+            }} />
+            <span style={{ color: '#a6a6a6' }}>Base</span>
           </div>
-          <div className="flex items-center gap-1">
-            <div className="w-2 h-2 rounded-full bg-orange-400"></div>
-            <span className="text-gray-400">Crafted</span>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.25rem'
+          }}>
+            <div style={{
+              width: '6px',
+              height: '6px',
+              borderRadius: '50%',
+              backgroundColor: '#fab387'
+            }} />
+            <span style={{ color: '#a6a6a6' }}>Crafted</span>
           </div>
         </div>
       </div>
 
       {craftingPaths.length === 0 ? (
-        <p className="text-gray-400 text-sm">No crafting paths found for queue items.</p>
+        <p style={{
+          color: '#a6a6a6',
+          fontSize: '11px'
+        }}>
+          No crafting paths found for queue items.
+        </p>
       ) : (
-        <div className="space-y-2 max-h-96 overflow-y-auto">
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.5rem',
+          maxHeight: '400px',
+          overflowY: 'auto'
+        }}>
           {craftingPaths.map((path, index) => (
-            <div key={`${path.itemId}-${index}`} className="border-b border-gray-600 last:border-b-0 pb-2 last:pb-0">
-              <div className="text-sm text-gray-300 mb-2 font-medium">
+            <div key={`${path.itemId}-${index}`} style={{
+              borderBottom: index < craftingPaths.length - 1 ? '1px solid #5c5c5c' : 'none',
+              paddingBottom: index < craftingPaths.length - 1 ? '0.5rem' : '0'
+            }}>
+              <div style={{
+                fontSize: '11px',
+                color: '#a6a6a6',
+                marginBottom: '0.5rem',
+                fontWeight: 'bold'
+              }}>
                 Queue Item #{index + 1}: {enhancedQueue[index]?.qty || 0} × {path.itemName}
               </div>
               {renderCraftingPath(path, 0, `main-${index}`)}
@@ -134,8 +277,15 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = ({ className = '' }) 
       )}
 
       {/* Instructions */}
-      <div className="mt-4 pt-3 border-t border-gray-600">
-        <p className="text-xs text-gray-400">
+      <div style={{
+        marginTop: '1rem',
+        paddingTop: '0.75rem',
+        borderTop: '1px solid #5c5c5c'
+      }}>
+        <p style={{
+          fontSize: '10px',
+          color: '#a6a6a6'
+        }}>
           Click on items with arrows to expand/collapse their crafting dependencies.
           Base resources are gathered/farmed, crafted items require materials.
         </p>

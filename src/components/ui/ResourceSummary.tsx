@@ -8,18 +8,36 @@ import { useQueueSummary, useItems } from '../../lib/store'
 import { formatResourceSummary } from '../../lib/resource-calculator'
 
 interface ResourceSummaryProps {
-  className?: string
+  // No props needed currently
 }
 
-export const ResourceSummary: React.FC<ResourceSummaryProps> = ({ className = '' }) => {
+export const ResourceSummary: React.FC<ResourceSummaryProps> = () => {
   const queueSummary = useQueueSummary()
   const items = useItems()
 
   if (!queueSummary || Object.keys(queueSummary.baseResources).length === 0) {
     return (
-      <div className={`bg-gray-800 rounded-lg p-4 ${className}`}>
-        <h3 className="text-lg font-medium text-white mb-2">Resource Summary</h3>
-        <p className="text-gray-400 text-sm">No resources calculated. Add items to queue to see requirements.</p>
+      <div style={{
+        backgroundColor: '#2d2a2e',
+        borderRadius: '6px',
+        border: '1px solid #5c5c5c',
+        padding: '1rem',
+        height: '100%'
+      }}>
+        <h3 style={{
+          fontSize: '14px',
+          fontWeight: 'bold',
+          color: '#fcfcfa',
+          marginBottom: '0.5rem'
+        }}>
+          Resource Summary
+        </h3>
+        <p style={{
+          color: '#a6a6a6',
+          fontSize: '11px'
+        }}>
+          No resources calculated. Add items to queue to see requirements.
+        </p>
       </div>
     )
   }
@@ -36,49 +54,166 @@ export const ResourceSummary: React.FC<ResourceSummaryProps> = ({ className = ''
   const formatted = formatResourceSummary(resourceSummary)
 
   return (
-    <div className={`bg-gray-800 rounded-lg p-4 ${className}`}>
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-lg font-medium text-white">Resource Summary</h3>
-        <div className="text-xs px-2 py-1 rounded bg-gray-700 text-gray-300">
+    <div style={{
+      backgroundColor: '#2d2a2e',
+      borderRadius: '6px',
+      border: '1px solid #5c5c5c',
+      padding: '1rem',
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: '0.75rem'
+      }}>
+        <h3 style={{
+          fontSize: '14px',
+          fontWeight: 'bold',
+          color: '#fcfcfa'
+        }}>
+          Resource Summary
+        </h3>
+        <div style={{
+          fontSize: '10px',
+          padding: '4px 8px',
+          borderRadius: '3px',
+          backgroundColor: '#3e3e3e',
+          border: '1px solid #5c5c5c',
+          color: '#a6a6a6'
+        }}>
           {formatted.complexityDescription}
         </div>
       </div>
 
       {/* Summary Stats */}
-      <div className="grid grid-cols-3 gap-3 mb-4 text-sm">
-        <div className="bg-gray-700 rounded p-2 text-center">
-          <div className="text-blue-400 font-medium">{formatted.baseResourceCount}</div>
-          <div className="text-gray-400 text-xs">Base Resources</div>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr 1fr',
+        gap: '0.5rem',
+        marginBottom: '1rem'
+      }}>
+        <div style={{
+          backgroundColor: '#3e3e3e',
+          border: '1px solid #5c5c5c',
+          borderRadius: '3px',
+          padding: '0.5rem',
+          textAlign: 'center'
+        }}>
+          <div style={{
+            color: '#89b4fa',
+            fontWeight: 'bold',
+            fontSize: '12px'
+          }}>
+            {formatted.baseResourceCount}
+          </div>
+          <div style={{
+            color: '#a6a6a6',
+            fontSize: '10px'
+          }}>
+            Base Resources
+          </div>
         </div>
-        <div className="bg-gray-700 rounded p-2 text-center">
-          <div className="text-green-400 font-medium">{resourceSummary.totalItemsNeeded}</div>
-          <div className="text-gray-400 text-xs">Total Items</div>
+        <div style={{
+          backgroundColor: '#3e3e3e',
+          border: '1px solid #5c5c5c',
+          borderRadius: '3px',
+          padding: '0.5rem',
+          textAlign: 'center'
+        }}>
+          <div style={{
+            color: '#a6e3a1',
+            fontWeight: 'bold',
+            fontSize: '12px'
+          }}>
+            {resourceSummary.totalItemsNeeded}
+          </div>
+          <div style={{
+            color: '#a6a6a6',
+            fontSize: '10px'
+          }}>
+            Total Items
+          </div>
         </div>
-        <div className="bg-gray-700 rounded p-2 text-center">
-          <div className="text-purple-400 font-medium">{queueSummary.totalItems}</div>
-          <div className="text-gray-400 text-xs">Queue Items</div>
+        <div style={{
+          backgroundColor: '#3e3e3e',
+          border: '1px solid #5c5c5c',
+          borderRadius: '3px',
+          padding: '0.5rem',
+          textAlign: 'center'
+        }}>
+          <div style={{
+            color: '#b4befe',
+            fontWeight: 'bold',
+            fontSize: '12px'
+          }}>
+            {queueSummary.totalItems}
+          </div>
+          <div style={{
+            color: '#a6a6a6',
+            fontSize: '10px'
+          }}>
+            Queue Items
+          </div>
         </div>
       </div>
 
       {/* Base Resources List */}
-      <div className="space-y-2">
-        <h4 className="text-sm font-medium text-gray-300 border-b border-gray-600 pb-1">
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+        <h4 style={{
+          fontSize: '11px',
+          fontWeight: 'bold',
+          color: '#a6a6a6',
+          borderBottom: '1px solid #5c5c5c',
+          paddingBottom: '0.25rem',
+          marginBottom: '0.5rem'
+        }}>
           Base Resources Required
         </h4>
-        <div className="max-h-48 overflow-y-auto space-y-1">
+        <div style={{
+          flex: 1,
+          maxHeight: '200px',
+          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '0.25rem'
+        }}>
           {Object.entries(queueSummary.baseResources)
             .sort(([, a], [, b]) => b - a) // Sort by quantity descending
             .map(([itemId, qty]) => {
               const item = items[itemId]
               return (
-                <div key={itemId} className="flex items-center justify-between bg-gray-700 rounded px-3 py-2 text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-blue-400"></div>
-                    <span className="text-white">
+                <div key={itemId} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  backgroundColor: '#3e3e3e',
+                  border: '1px solid #5c5c5c',
+                  borderRadius: '3px',
+                  padding: '0.5rem 0.75rem',
+                  fontSize: '11px'
+                }}>
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}>
+                    <div style={{
+                      width: '6px',
+                      height: '6px',
+                      borderRadius: '50%',
+                      backgroundColor: '#89b4fa'
+                    }} />
+                    <span style={{ color: '#fcfcfa' }}>
                       {item?.name || itemId.split(':').pop()}
                     </span>
                   </div>
-                  <div className="text-blue-400 font-medium">
+                  <div style={{
+                    color: '#89b4fa',
+                    fontWeight: 'bold'
+                  }}>
                     {qty}
                   </div>
                 </div>
@@ -89,24 +224,62 @@ export const ResourceSummary: React.FC<ResourceSummaryProps> = ({ className = ''
 
       {/* Surplus Resources (if any) */}
       {Object.keys(queueSummary.surplus).length > 0 && (
-        <div className="space-y-2 mt-4">
-          <h4 className="text-sm font-medium text-gray-300 border-b border-gray-600 pb-1">
+        <div style={{
+          marginTop: '1rem',
+          display: 'flex',
+          flexDirection: 'column'
+        }}>
+          <h4 style={{
+            fontSize: '11px',
+            fontWeight: 'bold',
+            color: '#a6a6a6',
+            borderBottom: '1px solid #5c5c5c',
+            paddingBottom: '0.25rem',
+            marginBottom: '0.5rem'
+          }}>
             Surplus Resources
           </h4>
-          <div className="max-h-32 overflow-y-auto space-y-1">
+          <div style={{
+            maxHeight: '120px',
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.25rem'
+          }}>
             {Object.entries(queueSummary.surplus)
               .sort(([, a], [, b]) => b - a)
               .map(([itemId, qty]) => {
                 const item = items[itemId]
                 return (
-                  <div key={itemId} className="flex items-center justify-between bg-gray-700 rounded px-3 py-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-green-400"></div>
-                      <span className="text-white">
+                  <div key={itemId} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    backgroundColor: '#3e3e3e',
+                    border: '1px solid #5c5c5c',
+                    borderRadius: '3px',
+                    padding: '0.5rem 0.75rem',
+                    fontSize: '11px'
+                  }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem'
+                    }}>
+                      <div style={{
+                        width: '6px',
+                        height: '6px',
+                        borderRadius: '50%',
+                        backgroundColor: '#a6e3a1'
+                      }} />
+                      <span style={{ color: '#fcfcfa' }}>
                         {item?.name || itemId.split(':').pop()}
                       </span>
                     </div>
-                    <div className="text-green-400 font-medium">
+                    <div style={{
+                      color: '#a6e3a1',
+                      fontWeight: 'bold'
+                    }}>
                       +{qty}
                     </div>
                   </div>
@@ -117,8 +290,15 @@ export const ResourceSummary: React.FC<ResourceSummaryProps> = ({ className = ''
       )}
 
       {/* Help Text */}
-      <div className="mt-4 pt-3 border-t border-gray-600">
-        <p className="text-xs text-gray-400">
+      <div style={{
+        marginTop: '1rem',
+        paddingTop: '0.75rem',
+        borderTop: '1px solid #5c5c5c'
+      }}>
+        <p style={{
+          fontSize: '10px',
+          color: '#a6a6a6'
+        }}>
           Base resources are materials you need to gather or farm. 
           Surplus shows extra items produced by crafting.
         </p>

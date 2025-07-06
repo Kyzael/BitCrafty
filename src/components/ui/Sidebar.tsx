@@ -273,34 +273,105 @@ export function Sidebar() {
         </div>
         
         {/* Tab Navigation */}
-        <div className="flex bg-gray-700 rounded-lg p-1 mb-4">
+        <div style={{ 
+          display: 'flex', 
+          gap: '4px',
+          marginBottom: '1rem',
+          padding: '4px',
+          backgroundColor: '#2d2a2e',
+          borderRadius: '6px',
+          border: '1px solid #5c5c5c'
+        }}>
           <button
             onClick={() => setActiveTab('queue')}
-            className={`flex-1 px-3 py-2 text-sm rounded font-medium transition-colors ${
-              activeTab === 'queue' 
-                ? 'bg-blue-600 text-white' 
-                : 'text-gray-300 hover:text-white hover:bg-gray-600'
-            }`}
+            tabIndex={-1}
+            style={{
+              flex: 1,
+              padding: '8px 12px',
+              background: activeTab === 'queue' ? '#89b4fa' : 'transparent',
+              border: `1px solid ${activeTab === 'queue' ? '#89b4fa' : '#5c5c5c'}`,
+              borderRadius: '3px',
+              color: activeTab === 'queue' ? '#1e1e2e' : '#fcfcfa',
+              fontSize: '11px',
+              fontWeight: activeTab === 'queue' ? 'bold' : 'normal',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              opacity: activeTab === 'queue' ? 1 : 0.7
+            }}
+            onMouseEnter={(e) => {
+              if (activeTab !== 'queue') {
+                e.currentTarget.style.opacity = '1'
+                e.currentTarget.style.backgroundColor = '#5c5c5c33'
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== 'queue') {
+                e.currentTarget.style.opacity = '0.7'
+                e.currentTarget.style.backgroundColor = 'transparent'
+              }
+            }}
           >
             Queue
           </button>
           <button
             onClick={() => setActiveTab('resources')}
-            className={`flex-1 px-3 py-2 text-sm rounded font-medium transition-colors ${
-              activeTab === 'resources' 
-                ? 'bg-blue-600 text-white' 
-                : 'text-gray-300 hover:text-white hover:bg-gray-600'
-            }`}
+            tabIndex={-1}
+            style={{
+              flex: 1,
+              padding: '8px 12px',
+              background: activeTab === 'resources' ? '#89b4fa' : 'transparent',
+              border: `1px solid ${activeTab === 'resources' ? '#89b4fa' : '#5c5c5c'}`,
+              borderRadius: '3px',
+              color: activeTab === 'resources' ? '#1e1e2e' : '#fcfcfa',
+              fontSize: '11px',
+              fontWeight: activeTab === 'resources' ? 'bold' : 'normal',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              opacity: activeTab === 'resources' ? 1 : 0.7
+            }}
+            onMouseEnter={(e) => {
+              if (activeTab !== 'resources') {
+                e.currentTarget.style.opacity = '1'
+                e.currentTarget.style.backgroundColor = '#5c5c5c33'
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== 'resources') {
+                e.currentTarget.style.opacity = '0.7'
+                e.currentTarget.style.backgroundColor = 'transparent'
+              }
+            }}
           >
             Resources
           </button>
           <button
             onClick={() => setActiveTab('paths')}
-            className={`flex-1 px-3 py-2 text-sm rounded font-medium transition-colors ${
-              activeTab === 'paths' 
-                ? 'bg-blue-600 text-white' 
-                : 'text-gray-300 hover:text-white hover:bg-gray-600'
-            }`}
+            tabIndex={-1}
+            style={{
+              flex: 1,
+              padding: '8px 12px',
+              background: activeTab === 'paths' ? '#89b4fa' : 'transparent',
+              border: `1px solid ${activeTab === 'paths' ? '#89b4fa' : '#5c5c5c'}`,
+              borderRadius: '3px',
+              color: activeTab === 'paths' ? '#1e1e2e' : '#fcfcfa',
+              fontSize: '11px',
+              fontWeight: activeTab === 'paths' ? 'bold' : 'normal',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              opacity: activeTab === 'paths' ? 1 : 0.7
+            }}
+            onMouseEnter={(e) => {
+              if (activeTab !== 'paths') {
+                e.currentTarget.style.opacity = '1'
+                e.currentTarget.style.backgroundColor = '#5c5c5c33'
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activeTab !== 'paths') {
+                e.currentTarget.style.opacity = '0.7'
+                e.currentTarget.style.backgroundColor = 'transparent'
+              }
+            }}
           >
             Paths
           </button>
@@ -314,8 +385,8 @@ export function Sidebar() {
           flexDirection: 'column'
         }}>
           {activeTab === 'queue' && <EnhancedCraftingQueue />}
-          {activeTab === 'resources' && <ResourceSummary className="h-full" />}
-          {activeTab === 'paths' && <CraftingPaths className="h-full" />}
+          {activeTab === 'resources' && <ResourceSummary />}
+          {activeTab === 'paths' && <CraftingPaths />}
         </div>
       </div>
       
