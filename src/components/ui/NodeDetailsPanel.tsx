@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react'
-import { useSelectedNode, useGraphData, useSelectNode, useAddToEnhancedQueue } from '../../lib/store'
+import { useSelectedNode, useGraphData, useSelectNode, useAddToEnhancedQueue, useCrafts } from '../../lib/store'
 
 /**
  * Simple error boundary component for NodeDetailsPanel
@@ -388,18 +388,25 @@ interface CraftDetailsProps {
 const CraftDetails: React.FC<CraftDetailsProps> = ({ nodeId }) => {
   const graphData = useGraphData()
   const selectNode = useSelectNode()
+  const crafts = useCrafts()
   
-  // Find items that are inputs to this craft
-  const inputItems = graphData.edges
-    .filter(edge => edge.target === nodeId)
-    .map(edge => graphData.nodes.find(n => n.id === edge.source))
-    .filter(node => node && node.type === 'item')
+  // Get the actual craft data
+  const craftData = crafts[nodeId]
+  
+  // Find items that are inputs to this craft with quantities
+  const inputItems = craftData?.materials?.map(material => {
+    const node = graphData.nodes.find(n => n.id === material.item)
+    return node ? { node, quantity: material.qty } : null
+  }).filter(Boolean) || []
 
-  // Find items that are outputs from this craft
-  const outputItems = graphData.edges
-    .filter(edge => edge.source === nodeId)
-    .map(edge => graphData.nodes.find(n => n.id === edge.target))
-    .filter(node => node && node.type === 'item')
+  // Find items that are outputs from this craft with quantities
+  const outputItems = craftData?.outputs?.map(output => {
+    const node = graphData.nodes.find(n => n.id === output.item)
+    return node ? { 
+      node, 
+      quantity: output.qty
+    } : null
+  }).filter(Boolean) || []
 
   const handleItemClick = (itemId: string) => {
     selectNode(itemId)
@@ -427,9 +434,9 @@ const CraftDetails: React.FC<CraftDetailsProps> = ({ nodeId }) => {
           <div className="item-list">
             {inputItems.map(item => (
               <button
-                key={item!.id} 
+                key={item!.node.id} 
                 className="item-entry clickable navigation-button"
-                onClick={() => handleItemClick(item!.id)}
+                onClick={() => handleItemClick(item!.node.id)}
                 tabIndex={0}
                 style={{
                   background: 'transparent',
@@ -468,14 +475,14 @@ const CraftDetails: React.FC<CraftDetailsProps> = ({ nodeId }) => {
                 <span 
                   className="item-color-dot"
                   style={{ 
-                    backgroundColor: item!.data.color,
+                    backgroundColor: item!.node.data.color,
                     width: '12px',
                     height: '12px',
                     borderRadius: '50%',
                     flexShrink: 0
                   }}
                 />
-                <span className="item-name">{item!.data.name}</span>
+                <span className="item-name">{item!.node.data.name} x{item!.quantity}</span>
               </button>
             ))}
           </div>
@@ -488,9 +495,9 @@ const CraftDetails: React.FC<CraftDetailsProps> = ({ nodeId }) => {
           <div className="item-list">
             {outputItems.map(item => (
               <button
-                key={item!.id} 
+                key={item!.node.id} 
                 className="item-entry clickable navigation-button"
-                onClick={() => handleItemClick(item!.id)}
+                onClick={() => handleItemClick(item!.node.id)}
                 tabIndex={0}
                 style={{
                   background: 'transparent',
@@ -529,14 +536,14 @@ const CraftDetails: React.FC<CraftDetailsProps> = ({ nodeId }) => {
                 <span 
                   className="item-color-dot"
                   style={{ 
-                    backgroundColor: item!.data.color,
+                    backgroundColor: item!.node.data.color,
                     width: '12px',
                     height: '12px',
                     borderRadius: '50%',
                     flexShrink: 0
                   }}
                 />
-                <span className="item-name">{item!.data.name}</span>
+                <span className="item-name">{item!.node.data.name} x{item!.quantity}</span>
               </button>
             ))}
           </div>

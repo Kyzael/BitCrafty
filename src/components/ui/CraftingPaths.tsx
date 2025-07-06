@@ -151,20 +151,6 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = () => {
               </div>
             )}
           </div>
-
-          {/* Base Resource Badge */}
-          {path.isBaseResource && (
-            <div style={{
-              fontSize: '10px',
-              backgroundColor: '#89b4fa',
-              color: '#1e1e2e',
-              padding: '2px 6px',
-              borderRadius: '3px',
-              fontWeight: 'bold'
-            }}>
-              Base
-            </div>
-          )}
         </div>
 
         {/* Dependencies */}
