@@ -1,4 +1,4 @@
-import { ItemData, CraftData, ProfessionData, QueueItem } from './data'
+import { ItemData, CraftData, ProfessionData, RequirementData, QueueItem } from './data'
 import { GraphData } from './graph'
 import { EnhancedQueueItem, QueueSummary, DragState, SharedSurplus, CraftingPath } from './crafting'
 
@@ -8,6 +8,7 @@ export interface AppState {
   items: Record<string, ItemData>
   crafts: Record<string, CraftData>
   professions: Record<string, ProfessionData>
+  requirements: Record<string, RequirementData>
   baseResources: Set<string> // Dynamically identified base resources
   
   // UI state

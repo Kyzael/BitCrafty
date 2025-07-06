@@ -20,6 +20,7 @@ const initialState: AppState = {
   items: {},
   crafts: {},
   professions: {},
+  requirements: {},
   baseResources: new Set(),
   
   // UI state
@@ -70,7 +71,8 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
         console.log('Store: Data loaded:', {
           items: data.items.length,
           crafts: data.crafts.length,
-          professions: data.professions.length
+          professions: data.professions.length,
+          requirements: data.requirements.length
         })
         
         // Identify base resources by analyzing craft outputs
@@ -85,12 +87,14 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
         const itemsMap = arrayToRecord(data.items)
         const craftsMap = arrayToRecord(data.crafts)
         const professionsMap = professionsArrayToRecord(data.professions)
+        const requirementsMap = arrayToRecord(data.requirements)
         const allProfessions = new Set(data.professions.map(p => p.name))
         
         set({
           items: itemsMap,
           crafts: craftsMap,
           professions: professionsMap,
+          requirements: requirementsMap,
           baseResources,
           graphData,
           visibleProfessions: allProfessions,
@@ -408,6 +412,7 @@ export const useProfessionsArray = () => {
 export const useItems = () => useBitCraftyStore(state => state.items)
 export const useCrafts = () => useBitCraftyStore(state => state.crafts)
 export const useProfessions = () => useBitCraftyStore(state => state.professions)
+export const useRequirements = () => useBitCraftyStore(state => state.requirements)
 export const useBaseResources = () => useBitCraftyStore(state => state.baseResources)
 
 // Individual action hooks - these provide stable references

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react'
-import { useSelectedNode, useGraphData, useSelectNode, useAddToEnhancedQueue, useCrafts } from '../../lib/store'
+import { useSelectedNode, useGraphData, useSelectNode, useAddToEnhancedQueue, useCrafts, useRequirements } from '../../lib/store'
 
 /**
  * Simple error boundary component for NodeDetailsPanel
@@ -389,9 +389,13 @@ const CraftDetails: React.FC<CraftDetailsProps> = ({ nodeId }) => {
   const graphData = useGraphData()
   const selectNode = useSelectNode()
   const crafts = useCrafts()
+  const requirements = useRequirements()
   
   // Get the actual craft data
   const craftData = crafts[nodeId]
+  
+  // Get the requirement data if it exists
+  const requirementData = craftData?.requirement ? requirements[craftData.requirement] : null
   
   // Find items that are inputs to this craft with quantities
   const inputItems = craftData?.materials?.map(material => {
@@ -428,6 +432,38 @@ const CraftDetails: React.FC<CraftDetailsProps> = ({ nodeId }) => {
         </div>
       </div>
 
+      {requirementData && (
+        <div className="details-section">
+          <h4>Requires:</h4>
+          <div className="requirement-details" style={{ fontSize: '12px', color: '#a6a6a6' }}>
+            {requirementData.tool && (
+              <div>Tool: {requirementData.tool.name.replace('tool:', '')} (Level {requirementData.tool.level})</div>
+            )}
+            {requirementData.building && (
+              <div>Building: {requirementData.building.name.replace('building:', '').replace(/:/g, ' - ')} (Level {requirementData.building.level})</div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {craftData?.requirement && !requirementData && (
+        <div className="details-section">
+          <div className="info-line" style={{
+            display: 'flex',
+            gap: '12px',
+            flexWrap: 'wrap',
+            alignItems: 'center'
+          }}>
+            <div className="info-item" style={{ display: 'flex', gap: '4px' }}>
+              <span className="label">Requires:</span>
+              <span className="value" style={{ fontSize: '11px' }}>
+                {craftData.requirement.replace('requirement:', '').replace(/:/g, ' - ')}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {inputItems.length > 0 && (
         <div className="details-section">
           <h4>Required Materials ({inputItems.length})</h4>
@@ -442,16 +478,16 @@ const CraftDetails: React.FC<CraftDetailsProps> = ({ nodeId }) => {
                   background: 'transparent',
                   border: '1px solid #5c5c5c',
                   borderRadius: '4px',
-                  padding: '8px 12px',
+                  padding: '6px 10px',
                   color: '#fcfcfa',
                   cursor: 'pointer',
                   width: '100%',
                   textAlign: 'left',
-                  marginBottom: '4px',
+                  marginBottom: '3px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px',
-                  transition: 'all 0.2s ease'
+                  gap: '6px',
+                  transition: 'all 0.2s ease',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = '#78dce8'
@@ -476,13 +512,15 @@ const CraftDetails: React.FC<CraftDetailsProps> = ({ nodeId }) => {
                   className="item-color-dot"
                   style={{ 
                     backgroundColor: item!.node.data.color,
-                    width: '12px',
-                    height: '12px',
+                    width: '10px',
+                    height: '10px',
                     borderRadius: '50%',
                     flexShrink: 0
                   }}
                 />
-                <span className="item-name">{item!.node.data.name} x{item!.quantity}</span>
+                <span className="item-name" style={{ fontSize: '13px' }}>
+                  {item!.node.data.name} x{item!.quantity}
+                </span>
               </button>
             ))}
           </div>
@@ -503,16 +541,16 @@ const CraftDetails: React.FC<CraftDetailsProps> = ({ nodeId }) => {
                   background: 'transparent',
                   border: '1px solid #5c5c5c',
                   borderRadius: '4px',
-                  padding: '8px 12px',
+                  padding: '6px 10px',
                   color: '#fcfcfa',
                   cursor: 'pointer',
                   width: '100%',
                   textAlign: 'left',
-                  marginBottom: '4px',
+                  marginBottom: '3px',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '8px',
-                  transition: 'all 0.2s ease'
+                  gap: '6px',
+                  transition: 'all 0.2s ease',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = '#78dce8'
@@ -537,13 +575,15 @@ const CraftDetails: React.FC<CraftDetailsProps> = ({ nodeId }) => {
                   className="item-color-dot"
                   style={{ 
                     backgroundColor: item!.node.data.color,
-                    width: '12px',
-                    height: '12px',
+                    width: '10px',
+                    height: '10px',
                     borderRadius: '50%',
                     flexShrink: 0
                   }}
                 />
-                <span className="item-name">{item!.node.data.name} x{item!.quantity}</span>
+                <span className="item-name" style={{ fontSize: '13px' }}>
+                  {item!.node.data.name} x{item!.quantity}
+                </span>
               </button>
             ))}
           </div>

@@ -100,13 +100,27 @@ const EnhancedCraftingQueue: React.FC = () => {
 
   if (queue.length === 0) {
     return (
-      <div className="crafting-queue-empty">
-        <div className="empty-message">
-          <p>Crafting queue is empty</p>
-          <p className="text-sm text-gray-500">
-            Select an item and press <kbd>+</kbd> to add to queue quickly!
-          </p>
-        </div>
+      <div style={{
+        backgroundColor: '#2d2a2e',
+        borderRadius: '6px',
+        border: '1px solid #5c5c5c',
+        padding: '1rem',
+        height: '100%'
+      }}>
+        <h3 style={{
+          fontSize: '14px',
+          fontWeight: 'bold',
+          color: '#fcfcfa',
+          marginBottom: '0.5rem'
+        }}>
+          Crafting Queue
+        </h3>
+        <p style={{
+          color: '#a6a6a6',
+          fontSize: '11px'
+        }}>
+          No items in queue. Add items to see your crafting queue.
+        </p>
       </div>
     )
   }

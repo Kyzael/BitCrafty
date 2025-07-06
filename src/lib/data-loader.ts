@@ -1,4 +1,4 @@
-import { ItemData, CraftData, ProfessionData } from '../types'
+import { ItemData, CraftData, ProfessionData, RequirementData } from '../types'
 import { BASE_CRAFT_ITEMS } from './constants'
 
 /**
@@ -8,13 +8,15 @@ export async function loadBitCraftyData(): Promise<{
   items: ItemData[]
   crafts: CraftData[]
   professions: ProfessionData[]
+  requirements: RequirementData[]
 }> {
   try {
     // Fetch all data files in parallel
-    const [itemsRes, craftsRes, professionsRes] = await Promise.all([
+    const [itemsRes, craftsRes, professionsRes, requirementsRes] = await Promise.all([
       fetch('/data/items.json'),
       fetch('/data/crafts.json'),
-      fetch('/data/metadata/professions.json')
+      fetch('/data/metadata/professions.json'),
+      fetch('/data/requirements.json')
     ])
 
     // Check if all requests were successful
@@ -27,12 +29,16 @@ export async function loadBitCraftyData(): Promise<{
     if (!professionsRes.ok) {
       throw new Error(`Failed to fetch professions.json: ${professionsRes.status}`)
     }
+    if (!requirementsRes.ok) {
+      throw new Error(`Failed to fetch requirements.json: ${requirementsRes.status}`)
+    }
 
     // Parse JSON data
-    const [items, crafts, professions] = await Promise.all([
+    const [items, crafts, professions, requirements] = await Promise.all([
       itemsRes.json(),
       craftsRes.json(),
-      professionsRes.json()
+      professionsRes.json(),
+      requirementsRes.json()
     ])
 
     // Validate data structure
@@ -45,13 +51,16 @@ export async function loadBitCraftyData(): Promise<{
     if (!Array.isArray(professions)) {
       throw new Error('Professions data is not an array')
     }
+    if (!Array.isArray(requirements)) {
+      throw new Error('Requirements data is not an array')
+    }
 
     // Validate required fields exist
     validateItemsData(items)
     validateCraftsData(crafts)
     validateProfessionsData(professions)
 
-    return { items, crafts, professions }
+    return { items, crafts, professions, requirements }
   } catch (error) {
     console.error('Error loading BitCrafty data:', error)
     throw error

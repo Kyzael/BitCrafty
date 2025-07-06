@@ -41,6 +41,23 @@ export interface RequirementData {
   }
 }
 
+export interface RequirementData {
+  id: string
+  name: string
+  profession?: {
+    name: string
+    level: number
+  }
+  tool?: {
+    name: string
+    level: number
+  }
+  building?: {
+    name: string
+    level: number
+  }
+}
+
 export interface ProfessionData {
   id: string
   name: string
