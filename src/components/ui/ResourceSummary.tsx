@@ -5,7 +5,6 @@
 
 import React from 'react'
 import { useQueueSummary, useItems } from '../../lib/store'
-import { formatResourceSummary } from '../../lib/resource-calculator'
 
 interface ResourceSummaryProps {
   // No props needed currently
@@ -51,7 +50,7 @@ export const ResourceSummary: React.FC<ResourceSummaryProps> = () => {
                      Object.keys(queueSummary.baseResources).length > 5 ? 'moderate' : 'simple') as 'simple' | 'moderate' | 'complex'
   }
 
-  const formatted = formatResourceSummary(resourceSummary)
+  const baseResourceCount = Object.keys(queueSummary.baseResources).length
 
   return (
     <div style={{
@@ -64,9 +63,6 @@ export const ResourceSummary: React.FC<ResourceSummaryProps> = () => {
       flexDirection: 'column'
     }}>
       <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
         marginBottom: '0.75rem'
       }}>
         <h3 style={{
@@ -76,16 +72,6 @@ export const ResourceSummary: React.FC<ResourceSummaryProps> = () => {
         }}>
           Resource Summary
         </h3>
-        <div style={{
-          fontSize: '10px',
-          padding: '4px 8px',
-          borderRadius: '3px',
-          backgroundColor: '#3e3e3e',
-          border: '1px solid #5c5c5c',
-          color: '#a6a6a6'
-        }}>
-          {formatted.complexityDescription}
-        </div>
       </div>
 
       {/* Summary Stats */}
@@ -107,7 +93,7 @@ export const ResourceSummary: React.FC<ResourceSummaryProps> = () => {
             fontWeight: 'bold',
             fontSize: '12px'
           }}>
-            {formatted.baseResourceCount}
+            {baseResourceCount}
           </div>
           <div style={{
             color: '#a6a6a6',
@@ -222,73 +208,6 @@ export const ResourceSummary: React.FC<ResourceSummaryProps> = () => {
         </div>
       </div>
 
-      {/* Surplus Resources (if any) */}
-      {Object.keys(queueSummary.surplus).length > 0 && (
-        <div style={{
-          marginTop: '1rem',
-          display: 'flex',
-          flexDirection: 'column'
-        }}>
-          <h4 style={{
-            fontSize: '11px',
-            fontWeight: 'bold',
-            color: '#a6a6a6',
-            borderBottom: '1px solid #5c5c5c',
-            paddingBottom: '0.25rem',
-            marginBottom: '0.5rem'
-          }}>
-            Surplus Resources
-          </h4>
-          <div style={{
-            maxHeight: '120px',
-            overflowY: 'auto',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '0.25rem'
-          }}>
-            {Object.entries(queueSummary.surplus)
-              .sort(([, a], [, b]) => b - a)
-              .map(([itemId, qty]) => {
-                const item = items[itemId]
-                return (
-                  <div key={itemId} style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    backgroundColor: '#3e3e3e',
-                    border: '1px solid #5c5c5c',
-                    borderRadius: '3px',
-                    padding: '0.5rem 0.75rem',
-                    fontSize: '11px'
-                  }}>
-                    <div style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem'
-                    }}>
-                      <div style={{
-                        width: '6px',
-                        height: '6px',
-                        borderRadius: '50%',
-                        backgroundColor: '#a6e3a1'
-                      }} />
-                      <span style={{ color: '#fcfcfa' }}>
-                        {item?.name || itemId.split(':').pop()}
-                      </span>
-                    </div>
-                    <div style={{
-                      color: '#a6e3a1',
-                      fontWeight: 'bold'
-                    }}>
-                      +{qty}
-                    </div>
-                  </div>
-                )
-              })}
-          </div>
-        </div>
-      )}
-
       {/* Help Text */}
       <div style={{
         marginTop: '1rem',
@@ -299,8 +218,7 @@ export const ResourceSummary: React.FC<ResourceSummaryProps> = () => {
           fontSize: '10px',
           color: '#a6a6a6'
         }}>
-          Base resources are materials you need to gather or farm. 
-          Surplus shows extra items produced by crafting.
+          Base resources are materials you need to gather or farm to complete your queue.
         </p>
       </div>
     </div>
