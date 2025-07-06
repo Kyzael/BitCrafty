@@ -55,6 +55,12 @@ describe('NodeDetailsPanel Component Tests', () => {
       'Should use graph data selector')
     assert.ok(componentSource.includes('useSelectNode'), 
       'Should use node selection action')
+    assert.ok(componentSource.includes('useAddToEnhancedQueue'), 
+      'Should use enhanced queue action')
+    assert.ok(componentSource.includes('useCrafts'), 
+      'Should use crafts selector')
+    assert.ok(componentSource.includes('useRequirements'), 
+      'Should use requirements selector')
   })
 
   test('should render different content for items vs crafts', () => {

@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 import { useMemo } from 'react'
-import { AppState, AppActions, QueueItem, GraphData, EnhancedQueueItem, QueueSummary, DragState, SharedSurplus } from '../types'
+import { AppState, AppActions, GraphData, EnhancedQueueItem, QueueSummary, DragState, SharedSurplus } from '../types'
 import { loadBitCraftyData, arrayToRecord, professionsArrayToRecord, identifyBaseResources } from './data-loader'
 import { buildGraphData } from './graph-builder'
 import { calculateQueueResources, generateCraftingPaths } from './resource-calculator'
@@ -31,7 +31,6 @@ const initialState: AppState = {
   searchQuery: '',
   searchMode: 'all',
   visibleProfessions: new Set(),
-  craftingQueue: [],
   
   // Enhanced crafting queue state (Phase 4)
   enhancedQueue: [],
@@ -174,30 +173,6 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
     setVisibleProfessions: (professions: Set<string>) => {
       console.log('Store: setVisibleProfessions called with:', Array.from(professions))
       set({ visibleProfessions: new Set(professions) })
-    },
-
-    // Queue actions
-    addToQueue: (item: QueueItem) => {
-      const { craftingQueue } = get()
-      set({ craftingQueue: [...craftingQueue, item] })
-    },
-
-    removeFromQueue: (index: number) => {
-      const { craftingQueue } = get()
-      const newQueue = craftingQueue.filter((_, i) => i !== index)
-      set({ craftingQueue: newQueue })
-    },
-
-    clearQueue: () => {
-      set({ craftingQueue: [] })
-    },
-
-    updateQueueItem: (index: number, updates: Partial<QueueItem>) => {
-      const { craftingQueue } = get()
-      const newQueue = craftingQueue.map((item, i) => 
-        i === index ? { ...item, ...updates } : item
-      )
-      set({ craftingQueue: newQueue })
     },
 
     // Enhanced queue actions (Phase 4)
@@ -378,7 +353,6 @@ export const useSearchResults = () => useBitCraftyStore(state => state.searchRes
 export const useSearchQuery = () => useBitCraftyStore(state => state.searchQuery)
 export const useSearchMode = () => useBitCraftyStore(state => state.searchMode)
 export const useVisibleProfessions = () => useBitCraftyStore(state => state.visibleProfessions)
-export const useCraftingQueue = () => useBitCraftyStore(state => state.craftingQueue)
 export const useEnhancedQueue = () => useBitCraftyStore(state => state.enhancedQueue)
 export const useQueueSummary = () => useBitCraftyStore(state => state.queueSummary)
 export const useDragState = () => useBitCraftyStore(state => state.dragState)
@@ -424,10 +398,6 @@ export const useSetSearchMode = () => useBitCraftyStore(state => state.setSearch
 export const useSetSearchResults = () => useBitCraftyStore(state => state.setSearchResults)
 export const useToggleProfession = () => useBitCraftyStore(state => state.toggleProfession)
 export const useSetVisibleProfessions = () => useBitCraftyStore(state => state.setVisibleProfessions)
-export const useAddToQueue = () => useBitCraftyStore(state => state.addToQueue)
-export const useRemoveFromQueue = () => useBitCraftyStore(state => state.removeFromQueue)
-export const useClearQueue = () => useBitCraftyStore(state => state.clearQueue)
-export const useUpdateQueueItem = () => useBitCraftyStore(state => state.updateQueueItem)
 
 // Enhanced queue action hooks (Phase 4)
 export const useAddToEnhancedQueue = () => useBitCraftyStore(state => state.addToEnhancedQueue)

@@ -123,10 +123,12 @@ describe('Zustand Store Tests', () => {
       'Should log errors for debugging')
   })
 
-  test('should implement crafting queue functionality', () => {
-    assert.ok(storeSource.includes('craftingQueue'), 
-      'Should track crafting queue')
-    assert.ok(storeSource.includes('QueueItem'), 
-      'Should use QueueItem type')
+  test('should implement enhanced queue functionality', () => {
+    assert.ok(storeSource.includes('enhancedQueue'), 
+      'Should track enhanced queue')
+    assert.ok(storeSource.includes('addToEnhancedQueue'), 
+      'Should have addToEnhancedQueue action')
+    assert.ok(storeSource.includes('removeFromEnhancedQueue'), 
+      'Should have removeFromEnhancedQueue action')
   })
 })

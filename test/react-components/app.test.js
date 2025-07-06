@@ -85,18 +85,22 @@ describe('React App Architecture Tests', () => {
       'Should call loadData on mount')
   })
 
-  test('Sidebar should implement filtering', () => {
+  test('Sidebar should implement enhanced queue and tabs', () => {
     assert.ok(sidebarSource.includes('SearchInput'), 
       'Should include SearchInput component')
     assert.ok(sidebarSource.includes('NodeDetailsPanel'), 
       'Should include NodeDetailsPanel component')
-    assert.ok(sidebarSource.includes('profession'), 
-      'Should handle profession filtering')
-    assert.ok(sidebarSource.includes('toggleProfession'), 
-      'Should implement profession toggle')
+    assert.ok(sidebarSource.includes('EnhancedCraftingQueue'), 
+      'Should include EnhancedCraftingQueue component')
+    assert.ok(sidebarSource.includes('ResourceSummary'), 
+      'Should include ResourceSummary component')
+    assert.ok(sidebarSource.includes('CraftingPaths'), 
+      'Should include CraftingPaths component')
+    assert.ok(sidebarSource.includes('activeTab'), 
+      'Should implement tab navigation')
   })
 
-  test('Sidebar should use memoized selectors', () => {
+  test('Sidebar should use enhanced queue selectors', () => {
     assert.ok(sidebarSource.includes('useItemsArray'), 
       'Should use items selector')
     assert.ok(sidebarSource.includes('useCraftsArray'), 
@@ -105,6 +109,10 @@ describe('React App Architecture Tests', () => {
       'Should use professions selector')
     assert.ok(sidebarSource.includes('useVisibleProfessions'), 
       'Should use visible professions selector')
+    assert.ok(sidebarSource.includes('useEnhancedQueue'), 
+      'Should use enhanced queue selector')
+    assert.ok(sidebarSource.includes('useQueueSummary'), 
+      'Should use queue summary selector')
   })
 
   test('Header should provide application info', () => {

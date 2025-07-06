@@ -1,4 +1,4 @@
-import { ItemData, CraftData, ProfessionData, RequirementData, QueueItem } from './data'
+import { ItemData, CraftData, ProfessionData, RequirementData } from './data'
 import { GraphData } from './graph'
 import { EnhancedQueueItem, QueueSummary, DragState, SharedSurplus, CraftingPath } from './crafting'
 
@@ -19,7 +19,6 @@ export interface AppState {
   searchResults: Set<string>
   searchMode: 'name' | 'profession' | 'all'
   visibleProfessions: Set<string>
-  craftingQueue: QueueItem[]
   
   // Enhanced crafting queue state (Phase 4)
   enhancedQueue: EnhancedQueueItem[]
@@ -51,12 +50,6 @@ export interface AppActions {
   // Filter actions
   toggleProfession: (professionName: string) => void
   setVisibleProfessions: (professions: Set<string>) => void
-  
-  // Legacy queue actions (maintain compatibility)
-  addToQueue: (item: QueueItem) => void
-  removeFromQueue: (index: number) => void
-  clearQueue: () => void
-  updateQueueItem: (index: number, updates: Partial<QueueItem>) => void
   
   // Enhanced queue actions (Phase 4)
   addToEnhancedQueue: (itemId: string, qty: number, notes?: string) => void

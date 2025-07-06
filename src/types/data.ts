@@ -74,11 +74,5 @@ export interface BuildingData {
   name: string
 }
 
-// Queue types
-export interface QueueItem {
-  itemId: string
-  qty: number
-}
-
 // Entity type for validation
 export type EntityType = 'item' | 'craft' | 'requirement' | 'profession' | 'tool' | 'building'
