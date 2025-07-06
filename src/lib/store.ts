@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 import { useMemo } from 'react'
-import { AppState, AppActions, QueueItem, GraphData } from '../types'
+import { AppState, AppActions, QueueItem, GraphData, EnhancedQueueItem, QueueSummary, DragState, SharedSurplus } from '../types'
 import { loadBitCraftyData, arrayToRecord, professionsArrayToRecord } from './data-loader'
 import { buildGraphData } from './graph-builder'
 import { SearchMode } from './utils'
@@ -29,6 +29,16 @@ const initialState: AppState = {
   searchMode: 'all',
   visibleProfessions: new Set(),
   craftingQueue: [],
+  
+  // Enhanced crafting queue state (Phase 4)
+  enhancedQueue: [],
+  queueSummary: null,
+  dragState: {
+    isDragging: false,
+    draggedItemId: null,
+    dropTargetIndex: null
+  },
+  sharedSurplus: {},
   
   // Graph state
   graphData: { nodes: [], edges: [] },
@@ -180,6 +190,144 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
       set({ craftingQueue: newQueue })
     },
 
+    // Enhanced queue actions (Phase 4)
+    addToEnhancedQueue: (itemId: string, qty: number, notes?: string) => {
+      const { enhancedQueue } = get()
+      
+      // Check if item already exists in queue
+      const existingItemIndex = enhancedQueue.findIndex(item => item.itemId === itemId)
+      
+      if (existingItemIndex !== -1) {
+        // Update existing item quantity
+        const newQueue = enhancedQueue.map((item, index) => 
+          index === existingItemIndex 
+            ? { 
+                ...item, 
+                qty: item.qty + qty,
+                notes: notes ? `${item.notes ? item.notes + '; ' : ''}${notes}` : item.notes,
+                addedAt: new Date() // Update timestamp to show recent activity
+              }
+            : item
+        )
+        set({ enhancedQueue: newQueue })
+      } else {
+        // Add new item
+        const newItem: EnhancedQueueItem = {
+          id: `queue-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          itemId,
+          qty,
+          priority: enhancedQueue.length,
+          dependencies: [],
+          status: 'pending',
+          notes,
+          addedAt: new Date()
+        }
+        const newQueue = [...enhancedQueue, newItem]
+        set({ enhancedQueue: newQueue })
+      }
+      
+      // Trigger summary recalculation
+      get().calculateQueueSummary()
+    },
+
+    removeFromEnhancedQueue: (id: string) => {
+      const { enhancedQueue } = get()
+      const newQueue = enhancedQueue.filter(item => item.id !== id)
+      // Reorder priorities
+      const reorderedQueue = newQueue.map((item, index) => ({
+        ...item,
+        priority: index
+      }))
+      set({ enhancedQueue: reorderedQueue })
+      get().calculateQueueSummary()
+    },
+
+    updateEnhancedQueueItem: (id: string, updates: Partial<EnhancedQueueItem>) => {
+      const { enhancedQueue } = get()
+      const newQueue = enhancedQueue.map(item => 
+        item.id === id ? { ...item, ...updates } : item
+      )
+      set({ enhancedQueue: newQueue })
+      get().calculateQueueSummary()
+    },
+
+    reorderEnhancedQueue: (fromIndex: number, toIndex: number) => {
+      const { enhancedQueue } = get()
+      const newQueue = [...enhancedQueue]
+      const [moved] = newQueue.splice(fromIndex, 1)
+      newQueue.splice(toIndex, 0, moved)
+      
+      // Update priorities to match new order
+      const reorderedQueue = newQueue.map((item, index) => ({
+        ...item,
+        priority: index
+      }))
+      
+      set({ enhancedQueue: reorderedQueue })
+      get().calculateQueueSummary()
+    },
+
+    clearEnhancedQueue: () => {
+      set({ 
+        enhancedQueue: [],
+        queueSummary: null,
+        sharedSurplus: {}
+      })
+    },
+
+    calculateQueueSummary: () => {
+      const { enhancedQueue, items, crafts } = get()
+      
+      if (enhancedQueue.length === 0) {
+        set({ queueSummary: null })
+        return
+      }
+
+      // Basic summary calculation - can be enhanced later
+      const summary: QueueSummary = {
+        totalItems: enhancedQueue.length,
+        baseResources: {},
+        surplus: {},
+        bottlenecks: []
+      }
+
+      set({ queueSummary: summary })
+    },
+
+    // Drag and drop actions
+    setDragState: (state: Partial<DragState>) => {
+      const { dragState } = get()
+      set({ dragState: { ...dragState, ...state } })
+    },
+
+    resetDragState: () => {
+      set({ 
+        dragState: {
+          isDragging: false,
+          draggedItemId: null,
+          dropTargetIndex: null
+        }
+      })
+    },
+
+    // Resource management
+    updateSharedSurplus: (itemId: string, qty: number) => {
+      const { sharedSurplus } = get()
+      const newSurplus = { ...sharedSurplus }
+      
+      if (qty <= 0) {
+        delete newSurplus[itemId]
+      } else {
+        newSurplus[itemId] = qty
+      }
+      
+      set({ sharedSurplus: newSurplus })
+    },
+
+    clearSharedSurplus: () => {
+      set({ sharedSurplus: {} })
+    },
+
     // Graph actions
     updateGraphData: (data: GraphData) => {
       set({ graphData: data })
@@ -213,6 +361,10 @@ export const useSearchQuery = () => useBitCraftyStore(state => state.searchQuery
 export const useSearchMode = () => useBitCraftyStore(state => state.searchMode)
 export const useVisibleProfessions = () => useBitCraftyStore(state => state.visibleProfessions)
 export const useCraftingQueue = () => useBitCraftyStore(state => state.craftingQueue)
+export const useEnhancedQueue = () => useBitCraftyStore(state => state.enhancedQueue)
+export const useQueueSummary = () => useBitCraftyStore(state => state.queueSummary)
+export const useDragState = () => useBitCraftyStore(state => state.dragState)
+export const useSharedSurplus = () => useBitCraftyStore(state => state.sharedSurplus)
 export const useGraphData = () => useBitCraftyStore(state => state.graphData)
 export const useFocusMode = () => useBitCraftyStore(state => state.focusMode)
 export const useIsLoading = () => useBitCraftyStore(state => state.isLoading)
@@ -256,5 +408,18 @@ export const useAddToQueue = () => useBitCraftyStore(state => state.addToQueue)
 export const useRemoveFromQueue = () => useBitCraftyStore(state => state.removeFromQueue)
 export const useClearQueue = () => useBitCraftyStore(state => state.clearQueue)
 export const useUpdateQueueItem = () => useBitCraftyStore(state => state.updateQueueItem)
+
+// Enhanced queue action hooks (Phase 4)
+export const useAddToEnhancedQueue = () => useBitCraftyStore(state => state.addToEnhancedQueue)
+export const useRemoveFromEnhancedQueue = () => useBitCraftyStore(state => state.removeFromEnhancedQueue)
+export const useUpdateEnhancedQueueItem = () => useBitCraftyStore(state => state.updateEnhancedQueueItem)
+export const useReorderEnhancedQueue = () => useBitCraftyStore(state => state.reorderEnhancedQueue)
+export const useClearEnhancedQueue = () => useBitCraftyStore(state => state.clearEnhancedQueue)
+export const useCalculateQueueSummary = () => useBitCraftyStore(state => state.calculateQueueSummary)
+export const useSetDragState = () => useBitCraftyStore(state => state.setDragState)
+export const useResetDragState = () => useBitCraftyStore(state => state.resetDragState)
+export const useUpdateSharedSurplus = () => useBitCraftyStore(state => state.updateSharedSurplus)
+export const useClearSharedSurplus = () => useBitCraftyStore(state => state.clearSharedSurplus)
+
 export const useUpdateGraphData = () => useBitCraftyStore(state => state.updateGraphData)
 export const useSetFocusMode = () => useBitCraftyStore(state => state.setFocusMode)

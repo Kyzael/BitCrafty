@@ -1,5 +1,52 @@
-import React, { useRef, useEffect } from 'react'
-import { useSelectedNode, useGraphData, useSelectNode } from '../../lib/store'
+import React, { useRef, useEffect, useState } from 'react'
+import { useSelectedNode, useGraphData, useSelectNode, useAddToEnhancedQueue } from '../../lib/store'
+
+/**
+ * Simple error boundary component for NodeDetailsPanel
+ */
+class NodeDetailsErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error?: Error }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props)
+    this.state = { hasError: false }
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error }
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('NodeDetailsPanel error:', error, errorInfo)
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="details-panel-error">
+          <p>Error loading node details</p>
+          <button 
+            onClick={() => this.setState({ hasError: false })}
+            style={{
+              marginTop: '8px',
+              padding: '4px 8px',
+              background: '#89b4fa',
+              border: 'none',
+              borderRadius: '3px',
+              color: '#1e1e2e',
+              cursor: 'pointer'
+            }}
+          >
+            Retry
+          </button>
+        </div>
+      )
+    }
+
+    return this.props.children
+  }
+}
 
 /**
  * NodeDetailsPanel displays comprehensive information about the selected node
@@ -8,10 +55,41 @@ import { useSelectedNode, useGraphData, useSelectNode } from '../../lib/store'
  * - Enter key to activate focused buttons
  * - Keyboard accessibility for all interactive elements
  */
-export const NodeDetailsPanel: React.FC = () => {
+const NodeDetailsPanelInner: React.FC = () => {
   const selectedNode = useSelectedNode()
   const graphData = useGraphData()
   const panelRef = useRef<HTMLDivElement>(null)
+  const titleRef = useRef<HTMLHeadingElement>(null)
+  const [titleFontSize, setTitleFontSize] = useState(18)
+
+  // Auto-scale title text to fit
+  useEffect(() => {
+    if (!titleRef.current || !selectedNode) return
+
+    const adjustFontSize = () => {
+      const element = titleRef.current!
+      const container = element.parentElement!
+      
+      // Reset to max size
+      let fontSize = 18
+      element.style.fontSize = `${fontSize}px`
+      
+      // Get available width (container minus padding and badge space)
+      const containerWidth = container.clientWidth - 100 // Reserve space for profession badge
+      
+      // Reduce font size until text fits
+      while (fontSize > 10 && element.scrollWidth > containerWidth) {
+        fontSize -= 0.5
+        element.style.fontSize = `${fontSize}px`
+      }
+      
+      setTitleFontSize(fontSize)
+    }
+
+    // Adjust on mount and when selected node changes
+    const timeoutId = setTimeout(adjustFontSize, 0)
+    return () => clearTimeout(timeoutId)
+  }, [selectedNode])
 
   // Set up keyboard navigation for the details panel
   useEffect(() => {
@@ -75,7 +153,21 @@ export const NodeDetailsPanel: React.FC = () => {
   return (
     <div className="details-panel sidebar-details" ref={panelRef} tabIndex={-1}>
       <div className="details-header">
-        <h3>{node.data.name}</h3>
+        <h3 
+          ref={titleRef}
+          style={{
+            fontSize: `${titleFontSize}px`,
+            margin: 0,
+            fontWeight: 'bold',
+            color: '#fcfcfa',
+            flex: 1,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}
+        >
+          {node.data.name}
+        </h3>
         <span 
           className="profession-badge"
           style={{ 
@@ -113,6 +205,8 @@ interface ItemDetailsProps {
 const ItemDetails: React.FC<ItemDetailsProps> = ({ nodeId, nodeData }) => {
   const graphData = useGraphData()
   const selectNode = useSelectNode()
+  const addToEnhancedQueue = useAddToEnhancedQueue()
+  const [queueQuantity, setQueueQuantity] = useState<number>(1)
   
   // Find crafts that use this item as input
   const usedInCrafts = graphData.edges
@@ -130,10 +224,13 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({ nodeId, nodeData }) => {
     selectNode(craftId)
   }
 
+  const handleAddToEnhancedQueue = () => {
+    addToEnhancedQueue(nodeId, queueQuantity, `Added from item details: ${nodeData.name}`)
+  }
+
   return (
     <div className="item-details">
       <div className="details-section">
-        <h4>Item Information</h4>
         <div className="info-grid">
           <div className="info-item">
             <span className="label">Type:</span>
@@ -255,6 +352,28 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({ nodeId, nodeData }) => {
           <p className="no-connections">No crafting connections found</p>
         </div>
       )}
+
+      {/* Streamlined Queue Controls */}
+      <div className="details-section">
+        <div className="inline-queue-controls">
+          <input
+            type="number"
+            min="1"
+            max="999"
+            value={queueQuantity}
+            onChange={(e) => setQueueQuantity(parseInt(e.target.value) || 1)}
+            className="inline-qty-input"
+            title="Quantity to add to queue"
+          />
+          <button
+            onClick={handleAddToEnhancedQueue}
+            className="inline-queue-btn"
+            title="Add to crafting queue"
+          >
+            Queue
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
@@ -290,7 +409,6 @@ const CraftDetails: React.FC<CraftDetailsProps> = ({ nodeId }) => {
   return (
     <div className="craft-details">
       <div className="details-section">
-        <h4>Craft Information</h4>
         <div className="info-grid">
           <div className="info-item">
             <span className="label">Type:</span>
@@ -427,5 +545,16 @@ const CraftDetails: React.FC<CraftDetailsProps> = ({ nodeId }) => {
         </div>
       )}
     </div>
+  )
+}
+
+/**
+ * Main export with error boundary
+ */
+export const NodeDetailsPanel: React.FC = () => {
+  return (
+    <NodeDetailsErrorBoundary>
+      <NodeDetailsPanelInner />
+    </NodeDetailsErrorBoundary>
   )
 }

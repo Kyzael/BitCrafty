@@ -7,7 +7,7 @@ import {
 } from '../../lib/store'
 import { useBitCraftyStore } from '../../lib'
 import { NodeDetailsPanel } from './NodeDetailsPanel'
-import { CraftingQueue } from './CraftingQueue'
+import EnhancedCraftingQueue from './EnhancedCraftingQueue'
 
 export function Sidebar() {
   // Data from store using memoized selectors
@@ -273,21 +273,22 @@ export function Sidebar() {
             Node Details
           </h3>
           <div style={{
-            height: '200px',
+            minHeight: '100px',
+            maxHeight: '400px',
             border: '1px solid #444',
             borderRadius: '4px',
-            overflow: 'hidden'
+            overflow: 'auto'
           }}>
             <NodeDetailsPanel />
           </div>
         </div>
         
-        {/* Crafting Queue Section */}
+        {/* Enhanced Crafting Queue Section */}
         <div style={{ 
           flex: 1,
           minHeight: '150px'
         }}>
-          <CraftingQueue />
+          <EnhancedCraftingQueue />
         </div>
       </div>
       

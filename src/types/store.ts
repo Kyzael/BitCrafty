@@ -1,5 +1,6 @@
 import { ItemData, CraftData, ProfessionData, QueueItem } from './data'
 import { GraphData } from './graph'
+import { EnhancedQueueItem, QueueSummary, DragState, SharedSurplus } from './crafting'
 
 // Store state types (based on existing state.js)
 export interface AppState {
@@ -17,6 +18,12 @@ export interface AppState {
   searchMode: 'name' | 'profession' | 'all'
   visibleProfessions: Set<string>
   craftingQueue: QueueItem[]
+  
+  // Enhanced crafting queue state (Phase 4)
+  enhancedQueue: EnhancedQueueItem[]
+  queueSummary: QueueSummary | null
+  dragState: DragState
+  sharedSurplus: SharedSurplus
   
   // Sidebar state
   sidebarCollapsed: boolean
@@ -43,11 +50,27 @@ export interface AppActions {
   toggleProfession: (professionName: string) => void
   setVisibleProfessions: (professions: Set<string>) => void
   
-  // Queue actions
+  // Legacy queue actions (maintain compatibility)
   addToQueue: (item: QueueItem) => void
   removeFromQueue: (index: number) => void
   clearQueue: () => void
   updateQueueItem: (index: number, updates: Partial<QueueItem>) => void
+  
+  // Enhanced queue actions (Phase 4)
+  addToEnhancedQueue: (itemId: string, qty: number, notes?: string) => void
+  removeFromEnhancedQueue: (id: string) => void
+  updateEnhancedQueueItem: (id: string, updates: Partial<EnhancedQueueItem>) => void
+  reorderEnhancedQueue: (fromIndex: number, toIndex: number) => void
+  clearEnhancedQueue: () => void
+  calculateQueueSummary: () => void
+  
+  // Drag and drop actions
+  setDragState: (state: Partial<DragState>) => void
+  resetDragState: () => void
+  
+  // Resource management
+  updateSharedSurplus: (itemId: string, qty: number) => void
+  clearSharedSurplus: () => void
   
   // Graph actions
   updateGraphData: (data: GraphData) => void

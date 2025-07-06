@@ -32,6 +32,39 @@ export function Header() {
         <SearchInput />
       </div>
       
+      {/* Keyboard Shortcuts Hint */}
+      <div style={{
+        fontSize: '12px',
+        color: '#727072',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px'
+      }}>
+        <span>Quick Keys:</span>
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <kbd style={{
+            background: '#403e41',
+            color: '#a9dc76',
+            padding: '2px 6px',
+            borderRadius: '3px',
+            border: '1px solid #5a5a5a',
+            fontSize: '11px',
+            fontWeight: 'bold'
+          }}>+</kbd>
+          <span style={{ fontSize: '10px' }}>Add</span>
+          <kbd style={{
+            background: '#403e41',
+            color: '#ff6188',
+            padding: '2px 6px',
+            borderRadius: '3px',
+            border: '1px solid #5a5a5a',
+            fontSize: '11px',
+            fontWeight: 'bold'
+          }}>−</kbd>
+          <span style={{ fontSize: '10px' }}>Remove</span>
+        </div>
+      </div>
+      
       {/* Data Summary on the right */}
       <div style={{ 
         display: 'flex',
