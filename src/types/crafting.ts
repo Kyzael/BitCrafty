@@ -36,6 +36,17 @@ export interface ResourceCalculation {
   dependencies: string[]                     // Items this depends on
 }
 
+export interface CraftingPath {
+  itemId: string
+  itemName: string
+  requiredQty: number
+  craftId?: string
+  craftName?: string
+  dependencies: CraftingPath[]
+  isBaseResource: boolean
+  profession?: string
+}
+
 export interface CraftingPlan {
   id: string
   name: string

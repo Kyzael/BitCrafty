@@ -8,6 +8,8 @@ import {
 import { useBitCraftyStore } from '../../lib'
 import { NodeDetailsPanel } from './NodeDetailsPanel'
 import EnhancedCraftingQueue from './EnhancedCraftingQueue'
+import ResourceSummary from './ResourceSummary'
+import CraftingPaths from './CraftingPaths'
 
 export function Sidebar() {
   // Data from store using memoized selectors
@@ -16,8 +18,9 @@ export function Sidebar() {
   const sidebarCollapsed = useSidebarCollapsed()
   const sidebarWidth = useSidebarWidth()
   
-  // State for resizing
+  // State for resizing and tabs
   const [isResizing, setIsResizing] = useState(false)
+  const [activeTab, setActiveTab] = useState<'queue' | 'resources' | 'paths'>('queue')
   const sidebarRef = useRef<HTMLDivElement>(null)
   
   // Safe access to store actions
@@ -269,12 +272,50 @@ export function Sidebar() {
           </div>
         </div>
         
-        {/* Enhanced Crafting Queue Section */}
+        {/* Tab Navigation */}
+        <div className="flex bg-gray-700 rounded-lg p-1 mb-4">
+          <button
+            onClick={() => setActiveTab('queue')}
+            className={`flex-1 px-3 py-2 text-sm rounded font-medium transition-colors ${
+              activeTab === 'queue' 
+                ? 'bg-blue-600 text-white' 
+                : 'text-gray-300 hover:text-white hover:bg-gray-600'
+            }`}
+          >
+            Queue
+          </button>
+          <button
+            onClick={() => setActiveTab('resources')}
+            className={`flex-1 px-3 py-2 text-sm rounded font-medium transition-colors ${
+              activeTab === 'resources' 
+                ? 'bg-blue-600 text-white' 
+                : 'text-gray-300 hover:text-white hover:bg-gray-600'
+            }`}
+          >
+            Resources
+          </button>
+          <button
+            onClick={() => setActiveTab('paths')}
+            className={`flex-1 px-3 py-2 text-sm rounded font-medium transition-colors ${
+              activeTab === 'paths' 
+                ? 'bg-blue-600 text-white' 
+                : 'text-gray-300 hover:text-white hover:bg-gray-600'
+            }`}
+          >
+            Paths
+          </button>
+        </div>
+        
+        {/* Tab Content */}
         <div style={{ 
           flex: 1,
-          minHeight: '150px'
+          minHeight: '150px',
+          display: 'flex',
+          flexDirection: 'column'
         }}>
-          <EnhancedCraftingQueue />
+          {activeTab === 'queue' && <EnhancedCraftingQueue />}
+          {activeTab === 'resources' && <ResourceSummary className="h-full" />}
+          {activeTab === 'paths' && <CraftingPaths className="h-full" />}
         </div>
       </div>
       

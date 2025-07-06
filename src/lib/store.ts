@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { AppState, AppActions, QueueItem, GraphData, EnhancedQueueItem, QueueSummary, DragState, SharedSurplus } from '../types'
 import { loadBitCraftyData, arrayToRecord, professionsArrayToRecord } from './data-loader'
 import { buildGraphData } from './graph-builder'
+import { calculateQueueResources, generateCraftingPaths } from './resource-calculator'
 import { SearchMode } from './utils'
 
 // Combined store interface
@@ -276,19 +277,21 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
     },
 
     calculateQueueSummary: () => {
-      const { enhancedQueue } = get()
+      const { enhancedQueue, items, crafts } = get()
       
       if (enhancedQueue.length === 0) {
         set({ queueSummary: null })
         return
       }
 
-      // Basic summary calculation - can be enhanced later
+      // Use resource calculator to get accurate summary
+      const resourceSummary = calculateQueueResources(enhancedQueue, items, crafts)
+      
       const summary: QueueSummary = {
         totalItems: enhancedQueue.length,
-        baseResources: {},
-        surplus: {},
-        bottlenecks: []
+        baseResources: resourceSummary.baseResources,
+        surplus: resourceSummary.surplus,
+        bottlenecks: [] // TODO: Implement bottleneck detection
       }
 
       set({ queueSummary: summary })
@@ -326,6 +329,12 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
 
     clearSharedSurplus: () => {
       set({ sharedSurplus: {} as SharedSurplus })
+    },
+
+    // Get crafting paths for the queue
+    getCraftingPaths: () => {
+      const { enhancedQueue, items, crafts } = get()
+      return generateCraftingPaths(enhancedQueue, items, crafts)
     },
 
     // Graph actions
@@ -420,6 +429,7 @@ export const useSetDragState = () => useBitCraftyStore(state => state.setDragSta
 export const useResetDragState = () => useBitCraftyStore(state => state.resetDragState)
 export const useUpdateSharedSurplus = () => useBitCraftyStore(state => state.updateSharedSurplus)
 export const useClearSharedSurplus = () => useBitCraftyStore(state => state.clearSharedSurplus)
+export const useGetCraftingPaths = () => useBitCraftyStore(state => state.getCraftingPaths)
 
 export const useUpdateGraphData = () => useBitCraftyStore(state => state.updateGraphData)
 export const useSetFocusMode = () => useBitCraftyStore(state => state.setFocusMode)

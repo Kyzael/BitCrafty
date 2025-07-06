@@ -1,6 +1,6 @@
 import { ItemData, CraftData, ProfessionData, QueueItem } from './data'
 import { GraphData } from './graph'
-import { EnhancedQueueItem, QueueSummary, DragState, SharedSurplus } from './crafting'
+import { EnhancedQueueItem, QueueSummary, DragState, SharedSurplus, CraftingPath } from './crafting'
 
 // Store state types (based on existing state.js)
 export interface AppState {
@@ -71,6 +71,7 @@ export interface AppActions {
   // Resource management
   updateSharedSurplus: (itemId: string, qty: number) => void
   clearSharedSurplus: () => void
+  getCraftingPaths: () => CraftingPath[]
   
   // Graph actions
   updateGraphData: (data: GraphData) => void
