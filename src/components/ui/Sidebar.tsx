@@ -80,31 +80,46 @@ export function Sidebar() {
     return (
       <div style={{
         position: 'relative',
-        width: '60px',
+        width: '40px',
         background: '#1e1e2e',
         borderRight: '1px solid #727072',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: '1rem 0.5rem'
+        justifyContent: 'center'
       }}>
-        {/* Expand button */}
+        {/* Expand button positioned on the border */}
         <button
           onClick={toggleSidebar}
           style={{
-            width: '40px',
-            height: '40px',
+            position: 'absolute',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            right: '-12px',
+            width: '24px',
+            height: '24px',
             background: '#89b4fa',
             border: 'none',
-            borderRadius: '6px',
+            borderRadius: '50%',
             color: '#1e1e2e',
-            fontSize: '18px',
+            fontSize: '12px',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+            zIndex: 10,
+            transition: 'all 0.2s ease'
           }}
           title="Expand sidebar"
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)'
+            e.currentTarget.style.background = '#a1c5ff'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(-50%) scale(1)'
+            e.currentTarget.style.background = '#89b4fa'
+          }}
         >
           →
         </button>
