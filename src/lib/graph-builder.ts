@@ -10,11 +10,6 @@ export function buildGraphData(
   crafts: CraftData[],
   professions: ProfessionData[]
 ): GraphData {
-  console.log('Building graph data from:', {
-    items: items.length,
-    crafts: crafts.length,
-    professions: professions.length
-  })
   
   // Create profession color lookup
   const professionColors = professions.reduce((acc, profession) => {
@@ -24,11 +19,9 @@ export function buildGraphData(
 
   // Generate item nodes
   const itemNodes: GraphNode[] = items.map(item => createItemNode(item, professionColors))
-  console.log('Created item nodes:', itemNodes.length)
   
   // Generate craft nodes
   const craftNodes: GraphNode[] = crafts.map(craft => createCraftNode(craft, professionColors))
-  console.log('Created craft nodes:', craftNodes.length)
   
   // Generate edges
   const edges: GraphEdge[] = []
@@ -61,17 +54,13 @@ export function buildGraphData(
     }
   })
   
-  console.log('Created edges:', edges.length)
-  
   // Combine all nodes
   const allNodes = [...itemNodes, ...craftNodes]
-  console.log('Total nodes before layout:', allNodes.length)
   
   // Apply hierarchical layout using Dagre - but make it safe
   let layoutedNodes: GraphNode[]
   try {
     layoutedNodes = calculateLayout(allNodes, edges)
-    console.log('Layout calculation successful')
   } catch (error) {
     console.error('Layout calculation failed, using basic positioning:', error)
     // Fallback to simple grid layout
@@ -89,7 +78,6 @@ export function buildGraphData(
     edges
   }
   
-  console.log('Graph data build complete:', result)
   return result
 }
 

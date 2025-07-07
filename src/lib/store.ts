@@ -7,6 +7,90 @@ import { buildGraphData } from './graph-builder'
 import { calculateQueueResources, generateCraftingPaths } from './resource-calculator'
 import { SearchMode } from './utils'
 
+// Helper function to calculate subtree nodes for subtree selection
+function calculateSubtreeNodes(
+  rootNodeId: string, 
+  crafts: Record<string, any>,
+  baseResources: Set<string>
+): Set<string> {
+  const subtreeNodes = new Set<string>()
+  const visited = new Set<string>()
+  
+  // Add the root node
+  subtreeNodes.add(rootNodeId)
+  
+  // Function to get all craft dependencies (crafting path TO the node)
+  function addCraftingPath(nodeId: string) {
+    if (visited.has(nodeId)) return
+    visited.add(nodeId)
+    subtreeNodes.add(nodeId)
+    
+    // If it's an item, find crafts that produce it
+    // BUT stop if this item is a base resource
+    if (nodeId.startsWith('item:')) {
+      // Don't traverse further if this is a base resource
+      if (baseResources.has(nodeId)) {
+        return // Stop here - base resources are gathered, not crafted
+      }
+      
+      Object.values(crafts).forEach((craft: any) => {
+        if (craft.outputs && craft.outputs.some((output: any) => output.item === nodeId)) {
+          addCraftingPath(craft.id)
+        }
+      })
+    }
+    
+    // If it's a craft, add all its input materials and their crafting paths
+    if (nodeId.startsWith('craft:')) {
+      const craft = crafts[nodeId]
+      if (craft && craft.materials) {
+        craft.materials.forEach((material: any) => {
+          addCraftingPath(material.item)
+        })
+      }
+    }
+  }
+  
+  // Function to get direct children (1 step down FROM the node)
+  function addDirectChildren(nodeId: string) {
+    // If it's an item, find crafts that use it as material
+    if (nodeId.startsWith('item:')) {
+      Object.values(crafts).forEach((craft: any) => {
+        if (craft.materials && craft.materials.some((material: any) => material.item === nodeId)) {
+          subtreeNodes.add(craft.id)
+          // Add the outputs of those crafts too
+          if (craft.outputs) {
+            craft.outputs.forEach((output: any) => {
+              subtreeNodes.add(output.item)
+            })
+          }
+        }
+      })
+    }
+    
+    // If it's a craft, add all its output items
+    if (nodeId.startsWith('craft:')) {
+      const craft = crafts[nodeId]
+      if (craft && craft.outputs) {
+        craft.outputs.forEach((output: any) => {
+          subtreeNodes.add(output.item)
+        })
+      }
+    }
+  }
+  
+  // Calculate the full crafting path to the root node
+  addCraftingPath(rootNodeId)
+  
+  // Reset visited for direct children calculation (but keep subtreeNodes)
+  visited.clear()
+  
+  // Add direct children (1 step down) from the root node
+  addDirectChildren(rootNodeId)
+  
+  return subtreeNodes
+}
+
 // Combined store interface
 interface BitCraftyStore extends AppState, AppActions {
   // Loading state
@@ -46,6 +130,11 @@ const initialState: AppState = {
   graphData: { nodes: [], edges: [] },
   focusMode: false,
   
+  // Subtree selection state
+  subtreeMode: false,
+  subtreeRootNode: null,
+  subtreeNodes: new Set(),
+  
   // Sidebar state
   sidebarCollapsed: false,
   sidebarWidth: 280
@@ -62,26 +151,15 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
 
     // Enhanced data loading
     loadData: async () => {
-      console.log('Store: Starting data load')
       set({ isLoading: true, loadError: null })
       
       try {
         const data = await loadBitCraftyData()
-        console.log('Store: Data loaded:', {
-          items: data.items.length,
-          crafts: data.crafts.length,
-          professions: data.professions.length,
-          requirements: data.requirements.length
-        })
         
         // Identify base resources by analyzing craft outputs
         const baseResources = identifyBaseResources(data.items, data.crafts)
         
         const graphData = buildGraphData(data.items, data.crafts, data.professions)
-        console.log('Store: Graph data built:', {
-          nodes: graphData.nodes.length,
-          edges: graphData.edges.length
-        })
         
         const itemsMap = arrayToRecord(data.items)
         const craftsMap = arrayToRecord(data.crafts)
@@ -101,7 +179,6 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
           loadError: null
         })
         
-        console.log('Store: Data loading complete')
       } catch (error) {
         console.error('Failed to load BitCrafty data:', error)
         set({ 
@@ -126,13 +203,11 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
           highlightedEdges: new Set(connectedEdges)
         })
         
-        console.log('Node selected:', nodeId, 'Connected edges:', connectedEdges.length)
       } else {
         set({ 
           selectedNode: null,
           highlightedEdges: new Set()
         })
-        console.log('Node deselected')
       }
     },
 
@@ -154,24 +229,19 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
 
     // Filter actions
     toggleProfession: (professionName: string) => {
-      console.log('Store: toggleProfession called with:', professionName)
       const { visibleProfessions } = get()
       const newVisible = new Set(visibleProfessions)
       
       if (newVisible.has(professionName)) {
         newVisible.delete(professionName)
-        console.log('Store: Removed profession:', professionName)
       } else {
         newVisible.add(professionName)
-        console.log('Store: Added profession:', professionName)
       }
       
-      console.log('Store: New visible professions:', Array.from(newVisible))
       set({ visibleProfessions: newVisible })
     },
 
     setVisibleProfessions: (professions: Set<string>) => {
-      console.log('Store: setVisibleProfessions called with:', Array.from(professions))
       set({ visibleProfessions: new Set(professions) })
     },
 
@@ -332,14 +402,40 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
     
     // Sidebar actions
     setSidebarCollapsed: (collapsed: boolean) => {
-      console.log('Store: setSidebarCollapsed called:', collapsed)
       set({ sidebarCollapsed: collapsed })
     },
 
     setSidebarWidth: (width: number) => {
       const clampedWidth = Math.max(200, Math.min(600, width)) // Min 200px, max 600px
-      console.log('Store: setSidebarWidth called:', width, 'clamped to:', clampedWidth)
       set({ sidebarWidth: clampedWidth })
+    },
+
+    // Subtree selection actions
+    enableSubtreeMode: (rootNodeId: string) => {
+      const state = get()
+      const subtreeNodes = calculateSubtreeNodes(rootNodeId, state.crafts, state.baseResources)
+      
+      // Calculate highlighted edges for all nodes in the subtree (ant trail effect)
+      const subtreeEdges = state.graphData.edges
+        .filter(edge => subtreeNodes.has(edge.source) && subtreeNodes.has(edge.target))
+        .map(edge => edge.id)
+      
+      set({ 
+        subtreeMode: true, 
+        subtreeRootNode: rootNodeId,
+        subtreeNodes,
+        selectedNode: rootNodeId, // Also select the root node
+        highlightedEdges: new Set(subtreeEdges) // Add ant trail highlighting for subtree
+      })
+    },
+
+    disableSubtreeMode: () => {
+      set({ 
+        subtreeMode: false, 
+        subtreeRootNode: null,
+        subtreeNodes: new Set(),
+        highlightedEdges: new Set() // Clear ant trail highlighting when exiting subtree mode
+      })
     }
   }))
 )
@@ -363,6 +459,11 @@ export const useIsLoading = () => useBitCraftyStore(state => state.isLoading)
 export const useLoadError = () => useBitCraftyStore(state => state.loadError)
 export const useSidebarCollapsed = () => useBitCraftyStore(state => state.sidebarCollapsed)
 export const useSidebarWidth = () => useBitCraftyStore(state => state.sidebarWidth)
+
+// Subtree selection selectors
+export const useSubtreeMode = () => useBitCraftyStore(state => state.subtreeMode)
+export const useSubtreeRootNode = () => useBitCraftyStore(state => state.subtreeRootNode)
+export const useSubtreeNodes = () => useBitCraftyStore(state => state.subtreeNodes)
 
 // Memoized data array selectors
 // These ensure Object.values() calls don't create new arrays on every render
@@ -414,3 +515,7 @@ export const useGetCraftingPaths = () => useBitCraftyStore(state => state.getCra
 
 export const useUpdateGraphData = () => useBitCraftyStore(state => state.updateGraphData)
 export const useSetFocusMode = () => useBitCraftyStore(state => state.setFocusMode)
+
+// Subtree action hooks
+export const useEnableSubtreeMode = () => useBitCraftyStore(state => state.enableSubtreeMode)
+export const useDisableSubtreeMode = () => useBitCraftyStore(state => state.disableSubtreeMode)

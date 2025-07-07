@@ -25,16 +25,13 @@ export function Sidebar() {
   
   // Safe access to store actions
   const toggleProfession = useCallback((professionName: string) => {
-    console.log('Toggling profession:', professionName)
     useBitCraftyStore.getState().toggleProfession(professionName)
   }, [])
   
   const showAllProfessions = useCallback(() => {
-    console.log('Show All button clicked')
     // Get profession names directly from the store to avoid the dependency
     const allProfessionNames = useBitCraftyStore.getState().professions
     const professionNames = Object.values(allProfessionNames).map(p => p.name)
-    console.log('Setting visible professions to:', professionNames)
     useBitCraftyStore.getState().setVisibleProfessions(new Set(professionNames))
   }, [])
   

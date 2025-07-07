@@ -13,6 +13,7 @@ export interface ItemNodeData extends ItemData {
   isSelected?: boolean // Selection state from store
   isHovered?: boolean // Hover state from store
   isSearchHighlighted?: boolean // Search highlighting state
+  isSubtreeFaded?: boolean // Subtree mode fading state
 }
 
 export interface CraftNodeData extends CraftData {
@@ -25,6 +26,7 @@ export interface CraftNodeData extends CraftData {
   isSelected?: boolean // Selection state from store
   isHovered?: boolean // Hover state from store
   isSearchHighlighted?: boolean // Search highlighting state
+  isSubtreeFaded?: boolean // Subtree mode fading state
 }
 
 export type NodeData = ItemNodeData | CraftNodeData

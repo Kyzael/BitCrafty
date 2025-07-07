@@ -53,6 +53,12 @@ export const CraftNode = memo<CraftNodeProps>(({ data, isSelected = false, isHov
     if (!isVisible) {
       return 0.2
     }
+    
+    // Also fade out nodes marked as subtree faded
+    if (data.isSubtreeFaded) {
+      return 0.15
+    }
+    
     return 1
   }
   

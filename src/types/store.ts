@@ -33,6 +33,11 @@ export interface AppState {
   // Graph state
   graphData: GraphData
   focusMode: boolean
+  
+  // Subtree selection state
+  subtreeMode: boolean
+  subtreeRootNode: string | null
+  subtreeNodes: Set<string>
 }
 
 // Action types for store mutations
@@ -75,4 +80,8 @@ export interface AppActions {
   // Sidebar actions
   setSidebarCollapsed: (collapsed: boolean) => void
   setSidebarWidth: (width: number) => void
+  
+  // Subtree selection actions
+  enableSubtreeMode: (rootNodeId: string) => void
+  disableSubtreeMode: () => void
 }

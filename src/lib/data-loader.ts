@@ -187,14 +187,6 @@ export function identifyBaseResources(
     }
   }
   
-  console.log('Identified base resources:', {
-    total: baseResources.size,
-    reliablyProduced: reliablyProducedItems.size,
-    allItems: allItemIds.size,
-    hardcodedIncluded: BASE_CRAFT_ITEMS.size,
-    baseResourceIds: Array.from(baseResources).slice(0, 10) // Log first 10 for debugging
-  })
-  
   return baseResources
 }
 

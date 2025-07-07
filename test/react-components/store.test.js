@@ -131,4 +131,28 @@ describe('Zustand Store Tests', () => {
     assert.ok(storeSource.includes('removeFromEnhancedQueue'), 
       'Should have removeFromEnhancedQueue action')
   })
+
+  test('should implement subtree selection functionality', () => {
+    assert.ok(storeSource.includes('subtreeMode'), 
+      'Should track subtree mode state')
+    assert.ok(storeSource.includes('subtreeNodes'), 
+      'Should track subtree nodes')
+    assert.ok(storeSource.includes('enableSubtreeMode'), 
+      'Should have enableSubtreeMode action')
+    assert.ok(storeSource.includes('disableSubtreeMode'), 
+      'Should have disableSubtreeMode action')
+    assert.ok(storeSource.includes('calculateSubtreeNodes'), 
+      'Should have subtree calculation function')
+  })
+
+  test('should implement subtree selection functionality', () => {
+    assert.ok(storeSource.includes('subtreeMode'), 
+      'Should track subtree mode')
+    assert.ok(storeSource.includes('enableSubtreeMode'), 
+      'Should have enableSubtreeMode action')
+    assert.ok(storeSource.includes('disableSubtreeMode'), 
+      'Should have disableSubtreeMode action')
+    assert.ok(storeSource.includes('calculateSubtreeNodes'), 
+      'Should have subtree calculation function')
+  })
 })

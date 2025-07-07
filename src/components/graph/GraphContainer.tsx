@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import ReactFlow, { useNodesState, useEdgesState, Panel, Node } from 'reactflow'
 import { filterGraphData } from '../../lib/utils'
-import { useIsLoading, useGraphData, useVisibleProfessions, useSearchResults, useSelectedNode, useHoveredNode, useHighlightedEdges, useSelectNode, useSetHoveredNode } from '../../lib/store'
+import { useIsLoading, useGraphData, useVisibleProfessions, useSearchResults, useSelectedNode, useHoveredNode, useHighlightedEdges, useSelectNode, useSetHoveredNode, useSubtreeMode, useSubtreeNodes, useEnableSubtreeMode, useDisableSubtreeMode } from '../../lib/store'
 import { useFlowContext } from '../BitCraftyFlowProvider'
 import { ItemNodeWrapper, CraftNodeWrapper } from './nodes/NodeWrappers'
 
@@ -24,6 +24,13 @@ function GraphContainerInner() {
   const highlightedEdges = useHighlightedEdges()
   const selectNode = useSelectNode()
   const setHoveredNode = useSetHoveredNode()
+  
+  // Subtree mode state and actions
+  const subtreeMode = useSubtreeMode()
+  const subtreeNodes = useSubtreeNodes()
+  const enableSubtreeMode = useEnableSubtreeMode()
+  const disableSubtreeMode = useDisableSubtreeMode()
+  
   const { setRfInstance, rfInstance } = useFlowContext()
   
   const [nodes, setNodes, onNodesChange] = useNodesState([])
@@ -44,8 +51,6 @@ function GraphContainerInner() {
     
     // Toggle selection: if already selected, deselect; otherwise select
     selectNode(isCurrentlySelected ? null : nodeId)
-    
-    console.log('Node clicked:', nodeId, 'Selected:', !isCurrentlySelected)
   }, [selectedNode, selectNode])
 
   // Handle node hover for hover state
@@ -57,59 +62,92 @@ function GraphContainerInner() {
     setHoveredNode(null)
   }, [setHoveredNode])
 
-  // Handle double-click for smooth navigation and zoom
+  // Handle double-click for subtree selection
   const onNodeDoubleClick = useCallback((event: React.MouseEvent, node: Node) => {
     event.stopPropagation()
     event.preventDefault()
     
     const nodeId = node.id
-    console.log('Node double-clicked:', nodeId)
     
-    // Select the node if not already selected
-    if (selectedNode !== nodeId) {
-      selectNode(nodeId)
-    }
+    // Enable subtree mode for this node
+    enableSubtreeMode(nodeId)
     
-    // Focus and zoom to the node using React Flow instance
+    // Pan to the node without zooming when entering subtree mode
     if (rfInstance) {
       const reactFlowNode = rfInstance.getNode(nodeId)
       if (reactFlowNode) {
+        const currentViewport = rfInstance.getViewport()
         const x = reactFlowNode.position.x + (reactFlowNode.width || 120) / 2
         const y = reactFlowNode.position.y + (reactFlowNode.height || 40) / 2
         
-        rfInstance.setCenter(x, y, {
-          zoom: 1.2,
-          duration: 800
-        })
+        // Calculate new viewport position to center the node while preserving zoom
+        const containerRect = containerRef.current?.getBoundingClientRect()
+        if (containerRect) {
+          const newX = containerRect.width / 2 - x * currentViewport.zoom
+          const newY = containerRect.height / 2 - y * currentViewport.zoom
+          
+          rfInstance.setViewport({
+            x: newX,
+            y: newY,
+            zoom: currentViewport.zoom // Preserve current zoom level
+          }, {
+            duration: 800
+          })
+        }
       }
     }
-  }, [selectedNode, selectNode, rfInstance])
+  }, [enableSubtreeMode, rfInstance])
 
   // Navigate to node when selectedNode changes (for search selection)
   useEffect(() => {
     if (selectedNode && rfInstance) {
       const reactFlowNode = rfInstance.getNode(selectedNode)
       if (reactFlowNode) {
+        const currentViewport = rfInstance.getViewport()
         const x = reactFlowNode.position.x + (reactFlowNode.width || 120) / 2
         const y = reactFlowNode.position.y + (reactFlowNode.height || 40) / 2
         
-        rfInstance.setCenter(x, y, {
-          zoom: 1.2,
-          duration: 800
-        })
+        // Calculate new viewport position to center the node while preserving zoom
+        const containerRect = containerRef.current?.getBoundingClientRect()
+        if (containerRect) {
+          const newX = containerRect.width / 2 - x * currentViewport.zoom
+          const newY = containerRect.height / 2 - y * currentViewport.zoom
+          
+          rfInstance.setViewport({
+            x: newX,
+            y: newY,
+            zoom: currentViewport.zoom // Preserve current zoom level
+          }, {
+            duration: 800
+          })
+        }
         
-        console.log('Navigated to selected node:', selectedNode)
       }
     }
   }, [selectedNode, rfInstance])
 
-  // Handle background clicks to deselect
+  // Handle background clicks to deselect or exit subtree mode
   const onPaneClick = useCallback(() => {
-    if (selectedNode) {
+    if (subtreeMode) {
+      // If in subtree mode, exit subtree mode on background click
+      disableSubtreeMode()
+    } else if (selectedNode) {
+      // Otherwise, just deselect the node
       selectNode(null)
-      console.log('Background clicked, deselecting node')
     }
-  }, [selectedNode, selectNode])
+  }, [selectedNode, subtreeMode, selectNode, disableSubtreeMode])
+
+  // Handle keyboard events for subtree mode
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && subtreeMode) {
+        disableSubtreeMode()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [subtreeMode, disableSubtreeMode])
 
   // Measure container dimensions
   useEffect(() => {
@@ -118,7 +156,6 @@ function GraphContainerInner() {
     const updateDimensions = () => {
       const { width, height } = containerRef.current?.getBoundingClientRect() || { width: 0, height: 0 }
       setDimensions({ width, height })
-      console.log('ReactFlow container dimensions:', { width, height })
     }
     
     // Initial measurement
@@ -135,7 +172,7 @@ function GraphContainerInner() {
     }
   }, [])
 
-  // Apply visibility filtering based on visible professions
+  // Apply visibility filtering based on visible professions and subtree mode
   const filteredData = useMemo(() => {
     if (isLoading || !graphData?.nodes?.length) {
       return { nodes: [], edges: [] }
@@ -150,27 +187,39 @@ function GraphContainerInner() {
       uniqueProfessions.add(professionName);
     });
     
+    // First apply profession-based filtering
     const filtered = filterGraphData(
       graphData.nodes,
       graphData.edges,
       visibleProfessions
     )
     
-    console.log('DEBUG - Visibility filtering:', { 
-      uniqueProfessions: Array.from(uniqueProfessions).sort(),
-      visibleProfessions: Array.from(visibleProfessions).sort(),
-      totalNodes: graphData.nodes.length,
-      visibleNodes: filtered.nodes.filter(n => n.data.isVisible).length,
-      fadedNodes: filtered.nodes.filter(n => !n.data.isVisible).length
-    });
+    // Then apply subtree filtering if in subtree mode
+    let finalNodes = filtered.nodes
+    let finalEdges = filtered.edges
     
-    return filtered
-  }, [graphData, visibleProfessions, isLoading])
+    if (subtreeMode && subtreeNodes.size > 0) {
+      // In subtree mode, show all subtree nodes regardless of profession filtering
+      finalNodes = filtered.nodes.map(node => ({
+        ...node,
+        data: {
+          ...node.data,
+          isVisible: subtreeNodes.has(node.id), // Show if in subtree, regardless of profession
+          isSubtreeFaded: !subtreeNodes.has(node.id) // Mark nodes outside subtree as faded
+        }
+      }))
+      
+      // Filter edges to only show edges between subtree nodes
+      finalEdges = filtered.edges.filter(edge => 
+        subtreeNodes.has(edge.source) && subtreeNodes.has(edge.target)
+      )
+    }
+    
+    return { nodes: finalNodes, edges: finalEdges }
+  }, [graphData, visibleProfessions, subtreeMode, subtreeNodes, isLoading])
 
   // Update nodes and edges when filtered data changes
   useEffect(() => {
-    console.log('GraphContainer: Setting filtered data with', filteredData.nodes.length, 'nodes and', filteredData.edges.length, 'edges')
-    
     // Enhance nodes with selection, hover, search, and visibility state
     const enhancedNodes = filteredData.nodes.map(node => ({
       ...node,
@@ -256,6 +305,7 @@ function GraphContainerInner() {
           onInit={onInit}
           fitView
           fitViewOptions={{ padding: 0.2 }}
+          zoomOnDoubleClick={false}
           style={{ 
             background: '#2d2a2e',
             width: `${dimensions.width}px`,
@@ -271,6 +321,11 @@ function GraphContainerInner() {
             {visibleProfessions.size < 11 && (
               <div style={{ fontSize: '10px', color: '#f38ba8' }}>
                 {nodes.filter(n => n.data.isVisible).length} visible · {nodes.filter(n => !n.data.isVisible).length} faded
+              </div>
+            )}
+            {subtreeMode && (
+              <div style={{ fontSize: '10px', color: '#a6e3a1', marginTop: '2px' }}>
+                🌳 Subtree Mode · ESC or click background to exit
               </div>
             )}
           </Panel>

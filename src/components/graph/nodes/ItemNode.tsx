@@ -53,6 +53,12 @@ export const ItemNode = memo<ItemNodeProps>(({ data, isSelected = false, isHover
     if (!isVisible) {
       return 0.2
     }
+    
+    // Also fade out nodes marked as subtree faded
+    if (data.isSubtreeFaded) {
+      return 0.15
+    }
+    
     return 1
   }
   
