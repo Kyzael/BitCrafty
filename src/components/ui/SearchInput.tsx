@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react'
-import { useSearchQuery, useSetSearchQuery, useSetSearchResults, useSelectNode } from '../../lib/store'
+import { useSearchQuery, useSetSearchQuery, useSetSearchResults, useSelectNode, useThemeColors } from '../../lib/store'
 import { useGraphData } from '../../lib/store'
 
 /**
@@ -15,6 +15,7 @@ export const SearchInput: React.FC = () => {
   const setSearchResults = useSetSearchResults()
   const selectNode = useSelectNode()
   const graphData = useGraphData()
+  const themeColors = useThemeColors()
 
   const [localQuery, setLocalQuery] = useState(searchQuery)
   const [showDropdown, setShowDropdown] = useState(false)
@@ -164,32 +165,71 @@ export const SearchInput: React.FC = () => {
   }, [handleSearchChange])
 
   return (
-    <div className="search-container">
-      <div className="search-input-group">
-        <div className="search-input-wrapper">
+    <div style={{ marginBottom: '8px' }}>
+      <div style={{ position: 'relative' }}>
+        <div style={{ position: 'relative' }}>
           <input
             ref={inputRef}
             type="text"
             value={localQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
             onKeyDown={handleKeyDown}
-            onFocus={() => localQuery.trim() && setShowDropdown(true)}
-            onBlur={handleInputBlur}
+            onFocus={(e) => {
+              e.currentTarget.style.borderColor = themeColors.iris
+              localQuery.trim() && setShowDropdown(true)
+            }}
+            onBlur={(e) => {
+              e.currentTarget.style.borderColor = themeColors.overlay
+              handleInputBlur()
+            }}
             placeholder="Search items..."
-            className="search-input"
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              border: `2px solid ${themeColors.overlay}`,
+              borderRadius: '4px',
+              backgroundColor: themeColors.surface,
+              color: themeColors.text,
+              fontSize: '14px',
+              outline: 'none',
+              transition: 'border-color 0.2s ease'
+            }}
           />
           {showDropdown && searchResults.length > 0 && (
-            <div className="search-dropdown">
+            <div style={{
+              position: 'absolute',
+              top: '100%',
+              left: 0,
+              right: 0,
+              backgroundColor: themeColors.surface,
+              border: `2px solid ${themeColors.overlay}`,
+              borderTop: 'none',
+              borderRadius: '0 0 4px 4px',
+              maxHeight: '200px',
+              overflowY: 'auto',
+              zIndex: 1000,
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)'
+            }}>
               {searchResults.map((result, index) => (
                 <div
                   key={result.id}
-                  className={`search-dropdown-item ${index === selectedIndex ? 'selected' : ''}`}
                   onClick={() => handleItemSelect(result.id)}
                   style={{
-                    backgroundColor: index === selectedIndex ? '#49483e' : 'transparent'
+                    padding: '10px 12px',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s ease',
+                    borderBottom: index < searchResults.length - 1 ? `1px solid ${themeColors.overlay}` : 'none',
+                    backgroundColor: index === selectedIndex ? themeColors.overlay : 'transparent',
+                    color: themeColors.text
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = themeColors.overlay
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = index === selectedIndex ? themeColors.overlay : 'transparent'
                   }}
                 >
-                  <div className="search-dropdown-item-name">{result.name}</div>
+                  <div>{result.name}</div>
                 </div>
               ))}
             </div>
@@ -198,7 +238,11 @@ export const SearchInput: React.FC = () => {
       </div>
       
       {localQuery && searchResults.length === 0 && (
-        <div className="search-no-results">
+        <div style={{ 
+          color: themeColors.muted,
+          fontSize: '14px',
+          marginTop: '8px'
+        }}>
           No items found for "{localQuery}"
         </div>
       )}

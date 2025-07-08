@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react'
-import { useEnhancedQueue, useGetCraftingPaths, useItems, useCrafts } from '../../lib/store'
+import { useEnhancedQueue, useGetCraftingPaths, useItems, useCrafts, useThemeColors } from '../../lib/store'
 import type { CraftingPath } from '../../types/crafting'
 
 interface CraftingPathsProps {
@@ -16,27 +16,28 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = () => {
   const getCraftingPaths = useGetCraftingPaths()
   const items = useItems()
   const crafts = useCrafts()
+  const themeColors = useThemeColors()
   const [expandedPaths, setExpandedPaths] = useState<Set<string>>(new Set())
 
   if (enhancedQueue.length === 0) {
     return (
       <div style={{
-        backgroundColor: '#2d2a2e',
+        backgroundColor: themeColors.surface,
         borderRadius: '6px',
-        border: '1px solid #5c5c5c',
+        border: `1px solid ${themeColors.overlay}`,
         padding: '1rem',
         height: '100%'
       }}>
         <h3 style={{
           fontSize: '14px',
           fontWeight: 'bold',
-          color: '#fcfcfa',
+          color: themeColors.text,
           marginBottom: '0.5rem'
         }}>
           Crafting Paths
         </h3>
         <p style={{
-          color: '#a6a6a6',
+          color: themeColors.muted,
           fontSize: '11px'
         }}>
           Add items to queue to see crafting dependencies.

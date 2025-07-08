@@ -1,10 +1,12 @@
 import { SearchInput } from './SearchInput'
 import { LayoutToggle } from './LayoutToggle'
+import { ThemeSelector } from './ThemeSelector'
 import { 
   useIsLoading, 
   useItemsArray, 
   useCraftsArray, 
-  useProfessionsArray 
+  useProfessionsArray,
+  useThemeColors
 } from '../../lib/store'
 
 export function Header() {
@@ -13,18 +15,19 @@ export function Header() {
   const crafts = useCraftsArray()
   const professions = useProfessionsArray()
   const isLoading = useIsLoading()
+  const themeColors = useThemeColors()
 
   return (
     <header style={{ 
       height: '60px', 
-      background: '#1e1e2e', 
-      borderBottom: '1px solid #727072',
+      background: themeColors.surface, 
+      borderBottom: `1px solid ${themeColors.overlay}`,
       display: 'flex',
       alignItems: 'center',
       padding: '0 1rem',
       gap: '1rem'
     }}>
-      <h1 style={{ color: '#fcfcfa', margin: 0 }}>BitCrafty</h1>
+      <h1 style={{ color: themeColors.text, margin: 0 }}>BitCrafty</h1>
       
       {/* Search and shortcuts section */}
       <div style={{ 
@@ -45,7 +48,7 @@ export function Header() {
         {/* Keyboard Shortcuts Hint */}
         <div style={{
           fontSize: '12px',
-          color: '#727072',
+          color: themeColors.muted,
           display: 'flex',
           alignItems: 'center',
           gap: '12px'
@@ -53,21 +56,21 @@ export function Header() {
           <span>Quick Keys:</span>
           <div style={{ display: 'flex', gap: '8px' }}>
             <kbd style={{
-              background: '#403e41',
-              color: '#a9dc76',
+              background: themeColors.overlay,
+              color: themeColors.iris,
               padding: '2px 6px',
               borderRadius: '3px',
-              border: '1px solid #5a5a5a',
+              border: `1px solid ${themeColors.muted}`,
               fontSize: '11px',
               fontWeight: 'bold'
             }}>+</kbd>
             <span style={{ fontSize: '10px' }}>Add</span>
             <kbd style={{
-              background: '#403e41',
-              color: '#ff6188',
+              background: themeColors.overlay,
+              color: themeColors.love,
               padding: '2px 6px',
               borderRadius: '3px',
-              border: '1px solid #5a5a5a',
+              border: `1px solid ${themeColors.muted}`,
               fontSize: '11px',
               fontWeight: 'bold'
             }}>−</kbd>
@@ -77,6 +80,9 @@ export function Header() {
         
         {/* Layout Toggle */}
         <LayoutToggle />
+        
+        {/* Theme Selector */}
+        <ThemeSelector />
       </div>
       
       {/* Data Summary on the right */}
@@ -88,7 +94,7 @@ export function Header() {
       }}>
         {isLoading ? (
           <div style={{ 
-            color: '#f38ba8', 
+            color: themeColors.love, 
             fontSize: '14px',
             display: 'flex',
             alignItems: 'center',
@@ -97,7 +103,7 @@ export function Header() {
             <div style={{
               width: '16px',
               height: '16px',
-              border: '2px solid #f38ba8',
+              border: `2px solid ${themeColors.love}`,
               borderTop: '2px solid transparent',
               borderRadius: '50%',
               animation: 'spin 1s linear infinite'
@@ -112,33 +118,33 @@ export function Header() {
             fontSize: '14px'
           }}>
             <div style={{ 
-              color: '#a6e3a1',
+              color: themeColors.iris,
               display: 'flex',
               alignItems: 'center',
               gap: '0.25rem'
             }}>
               <span style={{ fontWeight: 'bold' }}>{items.length}</span>
-              <span style={{ color: '#727072' }}>items</span>
+              <span style={{ color: themeColors.muted }}>items</span>
             </div>
-            <div style={{ color: '#727072' }}>•</div>
+            <div style={{ color: themeColors.muted }}>•</div>
             <div style={{ 
-              color: '#89b4fa',
+              color: themeColors.pine,
               display: 'flex',
               alignItems: 'center',
               gap: '0.25rem'
             }}>
               <span style={{ fontWeight: 'bold' }}>{crafts.length}</span>
-              <span style={{ color: '#727072' }}>crafts</span>
+              <span style={{ color: themeColors.muted }}>crafts</span>
             </div>
-            <div style={{ color: '#727072' }}>•</div>
+            <div style={{ color: themeColors.muted }}>•</div>
             <div style={{ 
-              color: '#f9e2af',
+              color: themeColors.gold,
               display: 'flex',
               alignItems: 'center',
               gap: '0.25rem'
             }}>
               <span style={{ fontWeight: 'bold' }}>{professions.length}</span>
-              <span style={{ color: '#727072' }}>professions</span>
+              <span style={{ color: themeColors.muted }}>professions</span>
             </div>
           </div>
         )}

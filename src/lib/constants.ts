@@ -47,30 +47,92 @@ export const DEFAULT_LAYOUT_OPTIONS = {
 // Layout presets for different visualization approaches
 export const LAYOUT_PRESETS = {
   spacious: {
-    direction: 'TB' as const,
-    nodeSpacing: 160,
-    rankSpacing: 220,
-    layoutType: 'hierarchical' as const
+    name: 'Spacious Flow',
+    spacing: { x: 300, y: 200 },
+    algorithm: 'dagre',
+    direction: 'TB'
   },
   radial: {
-    direction: 'TB' as const,
-    nodeSpacing: 220,
-    rankSpacing: 280,
-    layoutType: 'radial' as const
+    name: 'Spider Web',
+    spacing: { x: 150, y: 150 },
+    algorithm: 'radial',
+    center: { x: 600, y: 500 }
   },
   workflow: {
-    direction: 'LR' as const,
-    nodeSpacing: 120,
-    rankSpacing: 200,
-    layoutType: 'hierarchical' as const
+    name: 'Workflow Chain',
+    spacing: { x: 200, y: 150 },
+    algorithm: 'dagre',
+    direction: 'LR'
   },
   subway: {
-    direction: 'LR' as const,
-    nodeSpacing: 80,
-    rankSpacing: 300,
-    layoutType: 'subway' as const,
-    align: 'UL' as const,
-    ranker: 'longest-path' as const
+    name: 'Subway Map',
+    spacing: { x: 250, y: 120 },
+    algorithm: 'dagre',
+    direction: 'TB'
+  }
+} as const
+
+// Theme presets for different color schemes
+export const THEME_PRESETS = {
+  'rose-pine': {
+    name: 'Rosé Pine',
+    variant: 'main',
+    colors: {
+      background: '#191724',
+      surface: '#1f1d2e',
+      overlay: '#26233a',
+      muted: '#6e6a86',
+      subtle: '#908caa',
+      text: '#e0def4',
+      love: '#eb6f92',
+      gold: '#f6c177',
+      rose: '#ebbcba',
+      pine: '#31748f',
+      foam: '#9ccfd8',
+      iris: '#c4a7e7',
+      highlight: 'rgba(224, 222, 244, 0.1)',
+      accent: '#eb6f92'
+    }
+  },
+  'rose-pine-moon': {
+    name: 'Rosé Pine Moon',
+    variant: 'moon',
+    colors: {
+      background: '#232136',
+      surface: '#2a273f',
+      overlay: '#393552',
+      muted: '#6e6a86',
+      subtle: '#908caa',
+      text: '#e0def4',
+      love: '#eb6f92',
+      gold: '#f6c177',
+      rose: '#ea9a97',
+      pine: '#3e8fb0',
+      foam: '#9ccfd8',
+      iris: '#c4a7e7',
+      highlight: 'rgba(224, 222, 244, 0.1)',
+      accent: '#eb6f92'
+    }
+  },
+  'monokai': {
+    name: 'Monokai',
+    variant: 'dark',
+    colors: {
+      background: '#2d2a2e',
+      surface: '#403e41',
+      overlay: '#5b595c',
+      muted: '#939293',
+      subtle: '#c1c0c0',
+      text: '#fcfcfa',
+      love: '#ff6188',
+      gold: '#ffd866',
+      rose: '#ff8cc8',
+      pine: '#78dce8',
+      foam: '#ab9df2',
+      iris: '#a9dc76',
+      highlight: 'rgba(252, 252, 250, 0.1)',
+      accent: '#ff6188'
+    }
   }
 } as const
 

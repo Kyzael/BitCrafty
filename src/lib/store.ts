@@ -1,12 +1,12 @@
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 import { useMemo } from 'react'
-import { AppState, AppActions, GraphData, EnhancedQueueItem, QueueSummary, DragState, SharedSurplus, LayoutPreset, LayoutOptions } from '../types'
+import { AppState, AppActions, GraphData, EnhancedQueueItem, QueueSummary, DragState, SharedSurplus, LayoutPreset, LayoutOptions, ThemePreset } from '../types'
 import { loadBitCraftyData, arrayToRecord, professionsArrayToRecord, identifyBaseResources } from './data-loader'
 import { buildGraphData } from './graph-builder'
 import { calculateQueueResources, generateCraftingPaths } from './resource-calculator'
 import { SearchMode } from './utils'
-import { LAYOUT_PRESETS } from './constants'
+import { LAYOUT_PRESETS, THEME_PRESETS } from './constants'
 
 // Helper function to calculate subtree nodes for subtree selection
 function calculateSubtreeNodes(
@@ -131,7 +131,16 @@ const initialState: AppState = {
   graphData: { nodes: [], edges: [] },
   focusMode: false,
   layoutPreset: 'spacious' as LayoutPreset,
-  layoutOptions: LAYOUT_PRESETS.spacious,
+  layoutOptions: {
+    direction: 'TB',
+    nodeSpacing: 300,
+    rankSpacing: 200,
+    layoutType: 'hierarchical'
+  },
+  
+  // Theme state
+  themePreset: 'rose-pine' as ThemePreset,
+  themeColors: THEME_PRESETS['rose-pine'].colors,
   
   // Subtree selection state
   subtreeMode: false,
@@ -404,7 +413,16 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
     },
     
     setLayoutPreset: (preset: LayoutPreset) => {
-      const newLayoutOptions = LAYOUT_PRESETS[preset]
+      const layoutPreset = LAYOUT_PRESETS[preset]
+      
+      // Convert new layout preset format to LayoutOptions
+      const newLayoutOptions: LayoutOptions = {
+        direction: ('direction' in layoutPreset ? layoutPreset.direction : 'TB') as 'TB' | 'BT' | 'LR' | 'RL',
+        nodeSpacing: layoutPreset.spacing?.x || 160,
+        rankSpacing: layoutPreset.spacing?.y || 220,
+        layoutType: layoutPreset.algorithm === 'dagre' ? 'hierarchical' : layoutPreset.algorithm as any
+      }
+      
       set({ 
         layoutPreset: preset,
         layoutOptions: newLayoutOptions
@@ -439,6 +457,15 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
         )
         set({ graphData: newGraphData })
       }
+    },
+    
+    // Theme actions
+    setThemePreset: (preset: ThemePreset) => {
+      const themeColors = THEME_PRESETS[preset].colors
+      set({ 
+        themePreset: preset,
+        themeColors: themeColors
+      })
     },
     
     // Sidebar actions
@@ -507,6 +534,13 @@ export const useSidebarWidth = () => useBitCraftyStore(state => state.sidebarWid
 export const useSubtreeMode = () => useBitCraftyStore(state => state.subtreeMode)
 export const useSubtreeRootNode = () => useBitCraftyStore(state => state.subtreeRootNode)
 export const useSubtreeNodes = () => useBitCraftyStore(state => state.subtreeNodes)
+
+// Theme selectors
+export const useThemePreset = () => useBitCraftyStore(state => state.themePreset)
+export const useThemeColors = () => useBitCraftyStore(state => state.themeColors)
+
+// Theme actions
+export const useSetThemePreset = () => useBitCraftyStore(state => state.setThemePreset)
 
 // Memoized data array selectors
 // These ensure Object.values() calls don't create new arrays on every render

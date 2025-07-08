@@ -4,7 +4,7 @@
  */
 
 import React from 'react'
-import { useQueueSummary, useItems } from '../../lib/store'
+import { useQueueSummary, useItems, useThemeColors } from '../../lib/store'
 
 interface ResourceSummaryProps {
   // No props needed currently
@@ -13,26 +13,27 @@ interface ResourceSummaryProps {
 export const ResourceSummary: React.FC<ResourceSummaryProps> = () => {
   const queueSummary = useQueueSummary()
   const items = useItems()
+  const themeColors = useThemeColors()
 
   if (!queueSummary || Object.keys(queueSummary.baseResources).length === 0) {
     return (
       <div style={{
-        backgroundColor: '#2d2a2e',
+        backgroundColor: themeColors.surface,
         borderRadius: '6px',
-        border: '1px solid #5c5c5c',
+        border: `1px solid ${themeColors.overlay}`,
         padding: '1rem',
         height: '100%'
       }}>
         <h3 style={{
           fontSize: '14px',
           fontWeight: 'bold',
-          color: '#fcfcfa',
+          color: themeColors.text,
           marginBottom: '0.5rem'
         }}>
           Resource Summary
         </h3>
         <p style={{
-          color: '#a6a6a6',
+          color: themeColors.muted,
           fontSize: '11px'
         }}>
           No resources calculated. Add items to queue to see requirements.

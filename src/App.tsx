@@ -3,7 +3,7 @@ import { useBitCraftyStore } from './lib'
 import { Header } from './components/ui/Header'
 import { Sidebar } from './components/ui/Sidebar'
 import { GraphContainer } from './components/graph/GraphContainer'
-import { useIsLoading, useLoadError, useSidebarCollapsed, useSidebarWidth, useSelectedNode, useAddToEnhancedQueue, useRemoveFromEnhancedQueue, useEnhancedQueue, useItemsArray, useUpdateEnhancedQueueItem } from './lib/store'
+import { useIsLoading, useLoadError, useSidebarCollapsed, useSidebarWidth, useSelectedNode, useAddToEnhancedQueue, useRemoveFromEnhancedQueue, useEnhancedQueue, useItemsArray, useUpdateEnhancedQueueItem, useThemeColors } from './lib/store'
 import 'reactflow/dist/style.css'
 
 function App() {
@@ -12,6 +12,7 @@ function App() {
   const loadError = useLoadError()
   const sidebarCollapsed = useSidebarCollapsed()
   const sidebarWidth = useSidebarWidth()
+  const themeColors = useThemeColors()
   
   // Queue management hooks
   const selectedNode = useSelectedNode()
@@ -92,8 +93,8 @@ function App() {
         display: 'flex', 
         alignItems: 'center', 
         justifyContent: 'center',
-        background: '#2d2a2e',
-        color: '#fcfcfa',
+        background: themeColors.background,
+        color: themeColors.text,
         fontSize: '18px'
       }}>
         <div>Loading BitCrafty data...</div>
@@ -109,23 +110,23 @@ function App() {
         flexDirection: 'column',
         alignItems: 'center', 
         justifyContent: 'center',
-        background: '#2d2a2e',
-        color: '#f38ba8',
+        background: themeColors.background,
+        color: themeColors.love,
         fontSize: '18px',
         textAlign: 'center',
         padding: '20px'
       }}>
         <div style={{ marginBottom: '10px' }}>Error loading data:</div>
-        <div style={{ fontSize: '14px', color: '#727072' }}>{loadError}</div>
+        <div style={{ fontSize: '14px', color: themeColors.muted }}>{loadError}</div>
         <button 
           onClick={() => useBitCraftyStore.getState().loadData()}
           style={{
             marginTop: '20px',
             padding: '10px 20px',
-            background: '#89b4fa',
+            background: themeColors.accent,
             border: 'none',
             borderRadius: '4px',
-            color: '#1e1e2e',
+            color: themeColors.background,
             cursor: 'pointer'
           }}
         >
@@ -136,12 +137,13 @@ function App() {
   }
 
   return (
-    <div className="app">
+    <div className="app" style={{ backgroundColor: themeColors.background }}>
       <Header />
       <div 
         className="app-content"
         style={{
-          '--sidebar-width': sidebarCollapsed ? '60px' : `${sidebarWidth}px`
+          '--sidebar-width': sidebarCollapsed ? '60px' : `${sidebarWidth}px`,
+          backgroundColor: themeColors.background
         } as React.CSSProperties}
       >
         <Sidebar />
@@ -152,7 +154,8 @@ function App() {
             height: '100%', 
             position: 'relative',
             minWidth: '500px',
-            minHeight: '500px'
+            minHeight: '500px',
+            backgroundColor: themeColors.background
           }}
         >
           <GraphContainer />

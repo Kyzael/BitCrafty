@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { useLayoutPreset, useSetLayoutPreset } from '../../lib/store'
+import { useLayoutPreset, useSetLayoutPreset, useThemeColors } from '../../lib/store'
 import { LayoutPreset } from '../../types'
 
 const LAYOUT_OPTIONS: { value: LayoutPreset; label: string; description: string; icon: string }[] = [
@@ -12,6 +12,7 @@ const LAYOUT_OPTIONS: { value: LayoutPreset; label: string; description: string;
 export function LayoutToggle() {
   const currentPreset = useLayoutPreset()
   const setLayoutPreset = useSetLayoutPreset()
+  const themeColors = useThemeColors()
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
@@ -38,19 +39,19 @@ export function LayoutToggle() {
           alignItems: 'center',
           gap: '4px',
           padding: '4px 8px',
-          background: '#403e41',
-          border: '1px solid #5a5a5a',
+          background: themeColors.surface,
+          border: `1px solid ${themeColors.overlay}`,
           borderRadius: '4px',
-          color: '#fcfcfa',
+          color: themeColors.text,
           fontSize: '12px',
           cursor: 'pointer',
           transition: 'all 0.2s ease'
         }}
         onMouseEnter={(e) => {
-          e.currentTarget.style.background = '#5a5a5a'
+          e.currentTarget.style.background = themeColors.overlay
         }}
         onMouseLeave={(e) => {
-          e.currentTarget.style.background = '#403e41'
+          e.currentTarget.style.background = themeColors.surface
         }}
         title={`Layout: ${currentOption?.description || 'Unknown'}`}
       >
@@ -68,8 +69,8 @@ export function LayoutToggle() {
           top: '100%',
           left: 0,
           marginTop: '4px',
-          background: '#2d2a2e',
-          border: '1px solid #5a5a5a',
+          background: themeColors.surface,
+          border: `1px solid ${themeColors.overlay}`,
           borderRadius: '4px',
           boxShadow: '0 4px 8px rgba(0,0,0,0.3)',
           zIndex: 1000,
@@ -86,10 +87,10 @@ export function LayoutToggle() {
                 display: 'block',
                 width: '100%',
                 padding: '8px 12px',
-                background: currentPreset === option.value ? '#89b4fa33' : 'transparent',
+                background: currentPreset === option.value ? `${themeColors.accent}33` : 'transparent',
                 border: 'none',
-                borderBottom: '1px solid #5a5a5a',
-                color: '#fcfcfa',
+                borderBottom: `1px solid ${themeColors.overlay}`,
+                color: themeColors.text,
                 fontSize: '12px',
                 textAlign: 'left',
                 cursor: 'pointer',
@@ -97,7 +98,7 @@ export function LayoutToggle() {
               }}
               onMouseEnter={(e) => {
                 if (currentPreset !== option.value) {
-                  e.currentTarget.style.background = '#5a5a5a33'
+                  e.currentTarget.style.background = `${themeColors.overlay}33`
                 }
               }}
               onMouseLeave={(e) => {
@@ -115,12 +116,12 @@ export function LayoutToggle() {
                 <span>{option.icon}</span>
                 <span>{option.label}</span>
                 {currentPreset === option.value && (
-                  <span style={{ marginLeft: 'auto', color: '#89b4fa' }}>✓</span>
+                  <span style={{ marginLeft: 'auto', color: themeColors.accent }}>✓</span>
                 )}
               </div>
               <div style={{ 
                 fontSize: '10px', 
-                color: '#727072', 
+                color: themeColors.muted, 
                 marginTop: '2px' 
               }}>
                 {option.description}

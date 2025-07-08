@@ -5,6 +5,26 @@ import { EnhancedQueueItem, QueueSummary, DragState, SharedSurplus, CraftingPath
 // Layout preset types
 export type LayoutPreset = 'spacious' | 'radial' | 'workflow' | 'subway'
 
+// Theme preset types
+export type ThemePreset = 'rose-pine' | 'rose-pine-moon' | 'monokai'
+
+export interface ThemeColors {
+  background: string
+  surface: string
+  overlay: string
+  muted: string
+  subtle: string
+  text: string
+  love: string
+  gold: string
+  rose: string
+  pine: string
+  foam: string
+  iris: string
+  highlight: string
+  accent: string
+}
+
 // Store state types (based on existing state.js)
 export interface AppState {
   // Data
@@ -38,6 +58,10 @@ export interface AppState {
   focusMode: boolean
   layoutPreset: LayoutPreset
   layoutOptions: LayoutOptions
+  
+  // Theme state
+  themePreset: ThemePreset
+  themeColors: ThemeColors
   
   // Subtree selection state
   subtreeMode: boolean
@@ -83,6 +107,9 @@ export interface AppActions {
   setFocusMode: (enabled: boolean) => void
   setLayoutPreset: (preset: LayoutPreset) => void
   updateLayoutOptions: (options: Partial<LayoutOptions>) => void
+  
+  // Theme actions
+  setThemePreset: (preset: ThemePreset) => void
   
   // Sidebar actions
   setSidebarCollapsed: (collapsed: boolean) => void

@@ -3,7 +3,8 @@ import {
   useProfessionsArray, 
   useVisibleProfessions,
   useSidebarCollapsed,
-  useSidebarWidth
+  useSidebarWidth,
+  useThemeColors
 } from '../../lib/store'
 import { useBitCraftyStore } from '../../lib'
 import { NodeDetailsPanel } from './NodeDetailsPanel'
@@ -17,6 +18,7 @@ export function Sidebar() {
   const visibleProfessions = useVisibleProfessions()
   const sidebarCollapsed = useSidebarCollapsed()
   const sidebarWidth = useSidebarWidth()
+  const themeColors = useThemeColors()
   
   // State for resizing and tabs
   const [isResizing, setIsResizing] = useState(false)
@@ -132,8 +134,8 @@ export function Sidebar() {
       ref={sidebarRef}
       style={{ 
         width: `${sidebarWidth}px`, 
-        background: '#1e1e2e', 
-        borderRight: '1px solid #727072',
+        background: themeColors.surface, 
+        borderRight: `1px solid ${themeColors.overlay}`,
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
@@ -152,7 +154,7 @@ export function Sidebar() {
         {/* Profession Filters */}
         <div style={{ marginBottom: '1rem' }}>
           <h3 style={{ 
-            color: '#fcfcfa', 
+            color: themeColors.text, 
             fontSize: '14px', 
             marginBottom: '0.5rem',
             display: 'flex',
@@ -160,7 +162,7 @@ export function Sidebar() {
             alignItems: 'center'
           }}>
             Professions
-            <span style={{ fontSize: '12px', color: '#727072' }}>
+            <span style={{ fontSize: '12px', color: themeColors.muted }}>
               {visibleProfessions.size}/{professions.length}
             </span>
           </h3>
@@ -186,9 +188,9 @@ export function Sidebar() {
                     : 'transparent',
                   border: `1px solid ${visibleProfessions.has(profession.name) 
                     ? profession.color 
-                    : '#5c5c5c'}`,
+                    : themeColors.muted}`,
                   transition: 'all 0.2s ease',
-                  color: '#fcfcfa',
+                  color: themeColors.text,
                   fontSize: '10px',
                   fontWeight: visibleProfessions.has(profession.name) ? 'bold' : 'normal',
                   opacity: visibleProfessions.has(profession.name) ? 1 : 0.7,
@@ -228,10 +230,10 @@ export function Sidebar() {
             style={{
               width: '100%',
               padding: '6px 10px',
-              background: '#89b4fa',
+              background: themeColors.accent,
               border: 'none',
               borderRadius: '3px',
-              color: '#1e1e2e',
+              color: themeColors.background,
               fontSize: '11px',
               fontWeight: 'bold',
               cursor: 'pointer',
@@ -253,7 +255,7 @@ export function Sidebar() {
           marginBottom: '1rem'
         }}>
           <h3 style={{ 
-            color: '#fcfcfa', 
+            color: themeColors.text, 
             fontSize: '14px', 
             marginBottom: '0.5rem'
           }}>
@@ -262,7 +264,7 @@ export function Sidebar() {
           <div style={{
             minHeight: '100px',
             maxHeight: '400px',
-            border: '1px solid #444',
+            border: `1px solid ${themeColors.overlay}`,
             borderRadius: '4px',
             overflow: 'auto'
           }}>
@@ -276,9 +278,9 @@ export function Sidebar() {
           gap: '4px',
           marginBottom: '1rem',
           padding: '4px',
-          backgroundColor: '#2d2a2e',
+          backgroundColor: themeColors.surface,
           borderRadius: '6px',
-          border: '1px solid #5c5c5c'
+          border: `1px solid ${themeColors.overlay}`
         }}>
           <button
             onClick={() => setActiveTab('queue')}
@@ -286,10 +288,10 @@ export function Sidebar() {
             style={{
               flex: 1,
               padding: '8px 12px',
-              background: activeTab === 'queue' ? '#89b4fa' : 'transparent',
-              border: `1px solid ${activeTab === 'queue' ? '#89b4fa' : '#5c5c5c'}`,
+              background: activeTab === 'queue' ? themeColors.accent : 'transparent',
+              border: `1px solid ${activeTab === 'queue' ? themeColors.accent : themeColors.muted}`,
               borderRadius: '3px',
-              color: activeTab === 'queue' ? '#1e1e2e' : '#fcfcfa',
+              color: activeTab === 'queue' ? themeColors.background : themeColors.text,
               fontSize: '11px',
               fontWeight: activeTab === 'queue' ? 'bold' : 'normal',
               cursor: 'pointer',
@@ -299,7 +301,7 @@ export function Sidebar() {
             onMouseEnter={(e) => {
               if (activeTab !== 'queue') {
                 e.currentTarget.style.opacity = '1'
-                e.currentTarget.style.backgroundColor = '#5c5c5c33'
+                e.currentTarget.style.backgroundColor = themeColors.overlay + '33'
               }
             }}
             onMouseLeave={(e) => {
@@ -317,10 +319,10 @@ export function Sidebar() {
             style={{
               flex: 1,
               padding: '8px 12px',
-              background: activeTab === 'resources' ? '#89b4fa' : 'transparent',
-              border: `1px solid ${activeTab === 'resources' ? '#89b4fa' : '#5c5c5c'}`,
+              background: activeTab === 'resources' ? themeColors.accent : 'transparent',
+              border: `1px solid ${activeTab === 'resources' ? themeColors.accent : themeColors.muted}`,
               borderRadius: '3px',
-              color: activeTab === 'resources' ? '#1e1e2e' : '#fcfcfa',
+              color: activeTab === 'resources' ? themeColors.background : themeColors.text,
               fontSize: '11px',
               fontWeight: activeTab === 'resources' ? 'bold' : 'normal',
               cursor: 'pointer',
@@ -330,7 +332,7 @@ export function Sidebar() {
             onMouseEnter={(e) => {
               if (activeTab !== 'resources') {
                 e.currentTarget.style.opacity = '1'
-                e.currentTarget.style.backgroundColor = '#5c5c5c33'
+                e.currentTarget.style.backgroundColor = themeColors.overlay + '33'
               }
             }}
             onMouseLeave={(e) => {
@@ -348,10 +350,10 @@ export function Sidebar() {
             style={{
               flex: 1,
               padding: '8px 12px',
-              background: activeTab === 'paths' ? '#89b4fa' : 'transparent',
-              border: `1px solid ${activeTab === 'paths' ? '#89b4fa' : '#5c5c5c'}`,
+              background: activeTab === 'paths' ? themeColors.accent : 'transparent',
+              border: `1px solid ${activeTab === 'paths' ? themeColors.accent : themeColors.muted}`,
               borderRadius: '3px',
-              color: activeTab === 'paths' ? '#1e1e2e' : '#fcfcfa',
+              color: activeTab === 'paths' ? themeColors.background : themeColors.text,
               fontSize: '11px',
               fontWeight: activeTab === 'paths' ? 'bold' : 'normal',
               cursor: 'pointer',
@@ -361,7 +363,7 @@ export function Sidebar() {
             onMouseEnter={(e) => {
               if (activeTab !== 'paths') {
                 e.currentTarget.style.opacity = '1'
-                e.currentTarget.style.backgroundColor = '#5c5c5c33'
+                e.currentTarget.style.backgroundColor = themeColors.overlay + '33'
               }
             }}
             onMouseLeave={(e) => {
@@ -395,13 +397,13 @@ export function Sidebar() {
         left: 0,
         right: 0,
         padding: '8px 12px',
-        borderTop: '1px solid #5c5c5c',
+        borderTop: `1px solid ${themeColors.overlay}`,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         gap: '6px',
-        background: '#1e1e2e',
+        background: themeColors.surface,
         zIndex: 5,
         minHeight: '60px'
       }}>
@@ -455,10 +457,10 @@ export function Sidebar() {
           right: '-12px',
           width: '24px',
           height: '24px',
-          background: '#89b4fa',
+          background: themeColors.accent,
           border: 'none',
           borderRadius: '50%',
-          color: '#1e1e2e',
+          color: themeColors.background,
           fontSize: '12px',
           cursor: 'pointer',
           display: 'flex',
@@ -471,11 +473,11 @@ export function Sidebar() {
         title="Collapse sidebar"
         onMouseEnter={(e) => {
           e.currentTarget.style.transform = 'translateY(-50%) scale(1.1)'
-          e.currentTarget.style.background = '#a1c5ff'
+          e.currentTarget.style.background = themeColors.love
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.transform = 'translateY(-50%) scale(1)'
-          e.currentTarget.style.background = '#89b4fa'
+          e.currentTarget.style.background = themeColors.accent
         }}
       >
         ←

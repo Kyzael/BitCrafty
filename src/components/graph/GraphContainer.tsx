@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react'
 import ReactFlow, { useNodesState, useEdgesState, Panel, Node } from 'reactflow'
 import { filterGraphData } from '../../lib/utils'
-import { useIsLoading, useGraphData, useVisibleProfessions, useSearchResults, useSelectedNode, useHoveredNode, useHighlightedEdges, useSelectNode, useSetHoveredNode, useSubtreeMode, useSubtreeNodes, useEnableSubtreeMode, useDisableSubtreeMode } from '../../lib/store'
+import { useIsLoading, useGraphData, useVisibleProfessions, useSearchResults, useSelectedNode, useHoveredNode, useHighlightedEdges, useSelectNode, useSetHoveredNode, useSubtreeMode, useSubtreeNodes, useEnableSubtreeMode, useDisableSubtreeMode, useThemeColors } from '../../lib/store'
 import { useFlowContext } from '../BitCraftyFlowProvider'
 import { ItemNodeWrapper, CraftNodeWrapper } from './nodes/NodeWrappers'
 
@@ -24,6 +24,7 @@ function GraphContainerInner() {
   const highlightedEdges = useHighlightedEdges()
   const selectNode = useSelectNode()
   const setHoveredNode = useSetHoveredNode()
+  const themeColors = useThemeColors()
   
   // Subtree mode state and actions
   const subtreeMode = useSubtreeMode()
@@ -255,8 +256,8 @@ function GraphContainerInner() {
         display: 'flex', 
         alignItems: 'center', 
         justifyContent: 'center',
-        background: '#2d2a2e',
-        color: '#fcfcfa' 
+        background: themeColors.background,
+        color: themeColors.text 
       }}>
         Loading graph...
       </div>
@@ -270,8 +271,8 @@ function GraphContainerInner() {
         display: 'flex', 
         alignItems: 'center', 
         justifyContent: 'center',
-        background: '#2d2a2e',
-        color: '#f38ba8' 
+        background: themeColors.background,
+        color: themeColors.love 
       }}>
         No graph data available
       </div>
@@ -307,7 +308,7 @@ function GraphContainerInner() {
           fitViewOptions={{ padding: 0.2 }}
           zoomOnDoubleClick={false}
           style={{ 
-            background: '#2d2a2e',
+            background: themeColors.background,
             width: `${dimensions.width}px`,
             height: `${dimensions.height}px`
           }}
@@ -316,15 +317,15 @@ function GraphContainerInner() {
           maxZoom={2}
           defaultViewport={{ x: 0, y: 0, zoom: 0.8 }}
         >
-          <Panel position="top-left" style={{ background: 'rgba(45, 42, 46, 0.8)', padding: '5px', borderRadius: '4px', color: '#fcfcfa', fontSize: '12px' }}>
+          <Panel position="top-left" style={{ background: `${themeColors.surface}cc`, padding: '5px', borderRadius: '4px', color: themeColors.text, fontSize: '12px' }}>
             {nodes.length} nodes · {edges.length} connections
             {visibleProfessions.size < 11 && (
-              <div style={{ fontSize: '10px', color: '#f38ba8' }}>
+              <div style={{ fontSize: '10px', color: themeColors.love }}>
                 {nodes.filter(n => n.data.isVisible).length} visible · {nodes.filter(n => !n.data.isVisible).length} faded
               </div>
             )}
             {subtreeMode && (
-              <div style={{ fontSize: '10px', color: '#a6e3a1', marginTop: '2px' }}>
+              <div style={{ fontSize: '10px', color: themeColors.foam, marginTop: '2px' }}>
                 🌳 Subtree Mode · ESC or click background to exit
               </div>
             )}

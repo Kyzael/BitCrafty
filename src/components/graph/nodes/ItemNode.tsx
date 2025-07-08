@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import { Handle, Position, NodeProps } from 'reactflow'
 import { ItemNodeData } from '../../../types'
-import { useLayoutPreset } from '../../../lib/store'
+import { useLayoutPreset, useThemeColors } from '../../../lib/store'
 
 interface ItemNodeProps extends NodeProps<ItemNodeData> {
   isSelected?: boolean
@@ -37,10 +37,11 @@ function calculateRadialHandlePositions(nodePosition: { x: number; y: number }) 
 
 export const ItemNode = memo<ItemNodeProps>(({ data, isSelected = false, isHovered = false, isSearchHighlighted = false, ...nodeProps }) => {
   const layoutPreset = useLayoutPreset()
+  const themeColors = useThemeColors()
   const isRadialLayout = layoutPreset === 'radial'
   
   // Use the color stored in the data by graph-builder
-  const color = data.color || '#727072'
+  const color = data.color || themeColors.muted
   
   // Check if node is visible based on profession filtering
   const isVisible = data.isVisible !== false // Default to visible if not specified
@@ -52,7 +53,7 @@ export const ItemNode = memo<ItemNodeProps>(({ data, isSelected = false, isHover
     } else if (isHovered) {
       return `2px solid ${color}`
     } else if (isSearchHighlighted) {
-      return `2px solid #78dce8` // Search highlight color
+      return `2px solid ${themeColors.iris}` // Search highlight color
     } else {
       return `2px solid ${color}`
     }
@@ -64,7 +65,7 @@ export const ItemNode = memo<ItemNodeProps>(({ data, isSelected = false, isHover
     } else if (isHovered) {
       return `0 0 8px ${color}40` // 25% opacity
     } else if (isSearchHighlighted) {
-      return `0 0 8px #78dce840` // Search highlight glow
+      return `0 0 8px ${themeColors.iris}40` // Search highlight glow
     } else {
       return 'none'
     }
@@ -72,7 +73,7 @@ export const ItemNode = memo<ItemNodeProps>(({ data, isSelected = false, isHover
   
   const getBackgroundColor = () => {
     if (isSearchHighlighted) {
-      return '#78dce820' // Light search highlight background
+      return `${themeColors.iris}20` // Light search highlight background
     } else {
       return 'transparent'
     }
@@ -129,7 +130,7 @@ export const ItemNode = memo<ItemNodeProps>(({ data, isSelected = false, isHover
         border: getBorderStyle(),
         borderRadius: '8px',
         padding: '8px 12px',
-        color: '#fcfcfa',
+        color: themeColors.text,
         fontSize: '13px',
         fontWeight: 'bold',
         minWidth: '120px',

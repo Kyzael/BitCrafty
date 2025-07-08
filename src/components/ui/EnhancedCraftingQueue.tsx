@@ -8,7 +8,8 @@ import {
   useDragState,
   useSetDragState,
   useResetDragState,
-  useItemsArray 
+  useItemsArray,
+  useThemeColors
 } from '../../lib/store'
 import type { EnhancedQueueItem } from '../../types'
 
@@ -16,6 +17,7 @@ const EnhancedCraftingQueue: React.FC = () => {
   const queue = useEnhancedQueue()
   const dragState = useDragState()
   const items = useItemsArray()
+  const themeColors = useThemeColors()
   
   const removeFromQueue = useRemoveFromEnhancedQueue()
   const clearQueue = useClearEnhancedQueue()
@@ -101,22 +103,22 @@ const EnhancedCraftingQueue: React.FC = () => {
   if (queue.length === 0) {
     return (
       <div style={{
-        backgroundColor: '#2d2a2e',
+        backgroundColor: themeColors.surface,
         borderRadius: '6px',
-        border: '1px solid #5c5c5c',
+        border: `1px solid ${themeColors.overlay}`,
         padding: '1rem',
         height: '100%'
       }}>
         <h3 style={{
           fontSize: '14px',
           fontWeight: 'bold',
-          color: '#fcfcfa',
+          color: themeColors.text,
           marginBottom: '0.5rem'
         }}>
           Crafting Queue
         </h3>
         <p style={{
-          color: '#a6a6a6',
+          color: themeColors.muted,
           fontSize: '11px'
         }}>
           No items in queue. Add items to see your crafting queue.

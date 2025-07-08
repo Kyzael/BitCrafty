@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react'
-import { useSelectedNode, useGraphData, useSelectNode, useAddToEnhancedQueue, useCrafts, useRequirements } from '../../lib/store'
+import { useSelectedNode, useGraphData, useSelectNode, useAddToEnhancedQueue, useCrafts, useRequirements, useThemeColors } from '../../lib/store'
 
 /**
  * Simple error boundary component for NodeDetailsPanel
@@ -24,14 +24,19 @@ class NodeDetailsErrorBoundary extends React.Component<
   render() {
     if (this.state.hasError) {
       return (
-        <div className="details-panel-error">
+        <div style={{
+          padding: '12px',
+          textAlign: 'center',
+          color: '#ff6188', // Using a fallback error color since we can't access theme here
+          fontSize: '14px'
+        }}>
           <p>Error loading node details</p>
           <button 
             onClick={() => this.setState({ hasError: false })}
             style={{
               marginTop: '8px',
               padding: '4px 8px',
-              background: '#89b4fa',
+              background: '#ff6188',
               border: 'none',
               borderRadius: '3px',
               color: '#1e1e2e',
@@ -58,6 +63,7 @@ class NodeDetailsErrorBoundary extends React.Component<
 const NodeDetailsPanelInner: React.FC = () => {
   const selectedNode = useSelectedNode()
   const graphData = useGraphData()
+  const themeColors = useThemeColors()
   const panelRef = useRef<HTMLDivElement>(null)
 
   // Set up keyboard navigation for the details panel
@@ -95,8 +101,17 @@ const NodeDetailsPanelInner: React.FC = () => {
 
   if (!selectedNode) {
     return (
-      <div className="details-panel sidebar-details" ref={panelRef}>
-        <div className="details-panel-empty">
+      <div style={{ 
+        padding: '12px',
+        background: themeColors.surface,
+        border: `1px solid ${themeColors.overlay}`,
+        borderRadius: '4px'
+      }} ref={panelRef}>
+        <div style={{
+          textAlign: 'center',
+          color: themeColors.muted,
+          fontSize: '14px'
+        }}>
           <p>Select a node to view details</p>
         </div>
       </div>
@@ -107,8 +122,17 @@ const NodeDetailsPanelInner: React.FC = () => {
   const node = graphData.nodes.find(n => n.id === selectedNode)
   if (!node) {
     return (
-      <div className="details-panel sidebar-details" ref={panelRef}>
-        <div className="details-panel-error">
+      <div style={{ 
+        padding: '12px',
+        background: themeColors.surface,
+        border: `1px solid ${themeColors.overlay}`,
+        borderRadius: '4px'
+      }} ref={panelRef}>
+        <div style={{
+          textAlign: 'center',
+          color: themeColors.love,
+          fontSize: '14px'
+        }}>
           <p>Selected node not found</p>
         </div>
       </div>
@@ -120,14 +144,24 @@ const NodeDetailsPanelInner: React.FC = () => {
   const color = node.data.color || '#727072'
 
   return (
-    <div className="details-panel sidebar-details" ref={panelRef} tabIndex={-1}>
-      <div className="details-header">
+    <div style={{ 
+      padding: '12px',
+      background: themeColors.surface,
+      border: `1px solid ${themeColors.overlay}`,
+      borderRadius: '4px'
+    }} ref={panelRef} tabIndex={-1}>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '12px'
+      }}>
         <h3 
           style={{
             fontSize: '12px',
             margin: 0,
             fontWeight: 'bold',
-            color: '#fcfcfa',
+            color: themeColors.text,
             flex: 1,
             whiteSpace: 'nowrap',
             overflow: 'hidden',
@@ -137,7 +171,6 @@ const NodeDetailsPanelInner: React.FC = () => {
           {node.data.name}
         </h3>
         <span 
-          className="profession-badge"
           style={{ 
             backgroundColor: color,
             color: '#fff',
@@ -151,7 +184,12 @@ const NodeDetailsPanelInner: React.FC = () => {
         </span>
       </div>
 
-      <div className="details-content">
+      <div style={{ 
+        background: themeColors.background,
+        border: `1px solid ${themeColors.overlay}`,
+        borderRadius: '4px',
+        padding: '8px'
+      }}>
         {isItem ? (
           <ItemDetails nodeId={selectedNode} nodeData={node.data} />
         ) : (
