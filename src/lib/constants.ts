@@ -39,9 +39,40 @@ export const BASE_CRAFT_ITEMS = new Set([
 // Default graph layout options
 export const DEFAULT_LAYOUT_OPTIONS = {
   direction: 'TB' as const,
-  nodeSpacing: 100,
-  rankSpacing: 150
+  nodeSpacing: 160,
+  rankSpacing: 220,
+  layoutType: 'hierarchical' as const
 }
+
+// Layout presets for different visualization approaches
+export const LAYOUT_PRESETS = {
+  spacious: {
+    direction: 'TB' as const,
+    nodeSpacing: 160,
+    rankSpacing: 220,
+    layoutType: 'hierarchical' as const
+  },
+  radial: {
+    direction: 'TB' as const,
+    nodeSpacing: 220,
+    rankSpacing: 280,
+    layoutType: 'radial' as const
+  },
+  workflow: {
+    direction: 'LR' as const,
+    nodeSpacing: 120,
+    rankSpacing: 200,
+    layoutType: 'hierarchical' as const
+  },
+  subway: {
+    direction: 'LR' as const,
+    nodeSpacing: 80,
+    rankSpacing: 300,
+    layoutType: 'subway' as const,
+    align: 'UL' as const,
+    ranker: 'longest-path' as const
+  }
+} as const
 
 // Default focus options
 export const DEFAULT_FOCUS_OPTIONS = {

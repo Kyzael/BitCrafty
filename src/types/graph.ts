@@ -46,6 +46,9 @@ export interface LayoutOptions {
   direction?: 'TB' | 'BT' | 'LR' | 'RL'
   nodeSpacing?: number
   rankSpacing?: number
+  layoutType?: 'hierarchical' | 'radial' | 'subway'
+  align?: 'UL' | 'UR' | 'DL' | 'DR'
+  ranker?: 'network-simplex' | 'tight-tree' | 'longest-path'
 }
 
 // Focus options for node selection

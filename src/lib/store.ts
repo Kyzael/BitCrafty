@@ -1,11 +1,12 @@
 import { create } from 'zustand'
 import { subscribeWithSelector } from 'zustand/middleware'
 import { useMemo } from 'react'
-import { AppState, AppActions, GraphData, EnhancedQueueItem, QueueSummary, DragState, SharedSurplus } from '../types'
+import { AppState, AppActions, GraphData, EnhancedQueueItem, QueueSummary, DragState, SharedSurplus, LayoutPreset, LayoutOptions } from '../types'
 import { loadBitCraftyData, arrayToRecord, professionsArrayToRecord, identifyBaseResources } from './data-loader'
 import { buildGraphData } from './graph-builder'
 import { calculateQueueResources, generateCraftingPaths } from './resource-calculator'
 import { SearchMode } from './utils'
+import { LAYOUT_PRESETS } from './constants'
 
 // Helper function to calculate subtree nodes for subtree selection
 function calculateSubtreeNodes(
@@ -129,6 +130,8 @@ const initialState: AppState = {
   // Graph state
   graphData: { nodes: [], edges: [] },
   focusMode: false,
+  layoutPreset: 'spacious' as LayoutPreset,
+  layoutOptions: LAYOUT_PRESETS.spacious,
   
   // Subtree selection state
   subtreeMode: false,
@@ -159,7 +162,7 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
         // Identify base resources by analyzing craft outputs
         const baseResources = identifyBaseResources(data.items, data.crafts)
         
-        const graphData = buildGraphData(data.items, data.crafts, data.professions)
+        const graphData = buildGraphData(data.items, data.crafts, data.professions, get().layoutOptions)
         
         const itemsMap = arrayToRecord(data.items)
         const craftsMap = arrayToRecord(data.crafts)
@@ -400,6 +403,44 @@ export const useBitCraftyStore = create<BitCraftyStore>()(
       set({ focusMode: enabled })
     },
     
+    setLayoutPreset: (preset: LayoutPreset) => {
+      const newLayoutOptions = LAYOUT_PRESETS[preset]
+      set({ 
+        layoutPreset: preset,
+        layoutOptions: newLayoutOptions
+      })
+      
+      // Rebuild graph with new layout
+      const { items, crafts, professions } = get()
+      if (Object.keys(items).length > 0) {
+        const newGraphData = buildGraphData(
+          Object.values(items), 
+          Object.values(crafts), 
+          Object.values(professions),
+          newLayoutOptions
+        )
+        set({ graphData: newGraphData })
+      }
+    },
+
+    updateLayoutOptions: (options: Partial<LayoutOptions>) => {
+      const current = get().layoutOptions
+      const newLayoutOptions = { ...current, ...options }
+      set({ layoutOptions: newLayoutOptions })
+      
+      // Rebuild graph with new layout
+      const { items, crafts, professions } = get()
+      if (Object.keys(items).length > 0) {
+        const newGraphData = buildGraphData(
+          Object.values(items), 
+          Object.values(crafts), 
+          Object.values(professions),
+          newLayoutOptions
+        )
+        set({ graphData: newGraphData })
+      }
+    },
+    
     // Sidebar actions
     setSidebarCollapsed: (collapsed: boolean) => {
       set({ sidebarCollapsed: collapsed })
@@ -455,6 +496,8 @@ export const useDragState = () => useBitCraftyStore(state => state.dragState)
 export const useSharedSurplus = () => useBitCraftyStore(state => state.sharedSurplus)
 export const useGraphData = () => useBitCraftyStore(state => state.graphData)
 export const useFocusMode = () => useBitCraftyStore(state => state.focusMode)
+export const useLayoutPreset = () => useBitCraftyStore(state => state.layoutPreset)
+export const useLayoutOptions = () => useBitCraftyStore(state => state.layoutOptions)
 export const useIsLoading = () => useBitCraftyStore(state => state.isLoading)
 export const useLoadError = () => useBitCraftyStore(state => state.loadError)
 export const useSidebarCollapsed = () => useBitCraftyStore(state => state.sidebarCollapsed)
@@ -515,6 +558,8 @@ export const useGetCraftingPaths = () => useBitCraftyStore(state => state.getCra
 
 export const useUpdateGraphData = () => useBitCraftyStore(state => state.updateGraphData)
 export const useSetFocusMode = () => useBitCraftyStore(state => state.setFocusMode)
+export const useSetLayoutPreset = () => useBitCraftyStore(state => state.setLayoutPreset)
+export const useUpdateLayoutOptions = () => useBitCraftyStore(state => state.updateLayoutOptions)
 
 // Subtree action hooks
 export const useEnableSubtreeMode = () => useBitCraftyStore(state => state.enableSubtreeMode)

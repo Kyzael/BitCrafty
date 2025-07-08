@@ -1,4 +1,5 @@
 import { SearchInput } from './SearchInput'
+import { LayoutToggle } from './LayoutToggle'
 import { 
   useIsLoading, 
   useItemsArray, 
@@ -73,6 +74,9 @@ export function Header() {
             <span style={{ fontSize: '10px' }}>Remove</span>
           </div>
         </div>
+        
+        {/* Layout Toggle */}
+        <LayoutToggle />
       </div>
       
       {/* Data Summary on the right */}

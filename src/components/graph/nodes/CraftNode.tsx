@@ -1,6 +1,7 @@
 import { memo } from 'react'
 import { Handle, Position, NodeProps } from 'reactflow'
 import { CraftNodeData } from '../../../types'
+import { useLayoutPreset } from '../../../lib/store'
 
 interface CraftNodeProps extends NodeProps<CraftNodeData> {
   isSelected?: boolean
@@ -8,7 +9,36 @@ interface CraftNodeProps extends NodeProps<CraftNodeData> {
   isSearchHighlighted?: boolean
 }
 
-export const CraftNode = memo<CraftNodeProps>(({ data, isSelected = false, isHovered = false, isSearchHighlighted = false }) => {
+// Calculate handle positions for radial layout
+function calculateRadialHandlePositions(nodePosition: { x: number; y: number }) {
+  const centerX = 600 // Match the center from radial layout
+  const centerY = 500
+  
+  // Calculate angle from center to node
+  const dx = nodePosition.x - centerX
+  const dy = nodePosition.y - centerY
+  const angle = Math.atan2(dy, dx)
+  
+  // Calculate positions for input (toward center) and output (away from center) handles
+  const handleOffset = 25 // Distance from node center to handle (smaller for craft nodes)
+  
+  const inputHandle = {
+    x: -Math.cos(angle) * handleOffset,
+    y: -Math.sin(angle) * handleOffset,
+  }
+  
+  const outputHandle = {
+    x: Math.cos(angle) * handleOffset,
+    y: Math.sin(angle) * handleOffset,
+  }
+  
+  return { inputHandle, outputHandle }
+}
+
+export const CraftNode = memo<CraftNodeProps>(({ data, isSelected = false, isHovered = false, isSearchHighlighted = false, ...nodeProps }) => {
+  const layoutPreset = useLayoutPreset()
+  const isRadialLayout = layoutPreset === 'radial'
+  
   // Use the color stored in the data by graph-builder
   const color = data.color || '#727072'
   
@@ -62,6 +92,36 @@ export const CraftNode = memo<CraftNodeProps>(({ data, isSelected = false, isHov
     return 1
   }
   
+  // Calculate handle positions for radial layout
+  let inputHandleStyle: React.CSSProperties = { opacity: 0, pointerEvents: 'none' }
+  let outputHandleStyle: React.CSSProperties = { opacity: 0, pointerEvents: 'none' }
+  let inputPosition = Position.Top
+  let outputPosition = Position.Bottom
+  
+  if (isRadialLayout && nodeProps.xPos !== undefined && nodeProps.yPos !== undefined) {
+    const positions = calculateRadialHandlePositions({ x: nodeProps.xPos, y: nodeProps.yPos })
+    
+    inputHandleStyle = {
+      opacity: 0,
+      pointerEvents: 'none',
+      left: `calc(50% + ${positions.inputHandle.x}px)`,
+      top: `calc(50% + ${positions.inputHandle.y}px)`,
+      position: 'absolute'
+    }
+    
+    outputHandleStyle = {
+      opacity: 0,
+      pointerEvents: 'none',
+      left: `calc(50% + ${positions.outputHandle.x}px)`,
+      top: `calc(50% + ${positions.outputHandle.y}px)`,
+      position: 'absolute'
+    }
+    
+    // Use Left position with custom positioning for radial layout
+    inputPosition = Position.Left
+    outputPosition = Position.Left
+  }
+  
   return (
     <div 
       style={{
@@ -88,14 +148,14 @@ export const CraftNode = memo<CraftNodeProps>(({ data, isSelected = false, isHov
     >
       <Handle 
         type="target" 
-        position={Position.Top} 
-        style={{ opacity: 0, pointerEvents: 'none' }} 
+        position={inputPosition}
+        style={inputHandleStyle}
       />
       {data.name}
       <Handle 
         type="source" 
-        position={Position.Bottom} 
-        style={{ opacity: 0, pointerEvents: 'none' }} 
+        position={outputPosition}
+        style={outputHandleStyle}
       />
     </div>
   )
@@ -108,6 +168,10 @@ export const CraftNode = memo<CraftNodeProps>(({ data, isSelected = false, isHov
     prevProps.data.isVisible === nextProps.data.isVisible &&
     prevProps.isSelected === nextProps.isSelected &&
     prevProps.isHovered === nextProps.isHovered &&
-    prevProps.isSearchHighlighted === nextProps.isSearchHighlighted
+    prevProps.isSearchHighlighted === nextProps.isSearchHighlighted &&
+    prevProps.xPos === nextProps.xPos &&
+    prevProps.yPos === nextProps.yPos
   )
 })
+
+CraftNode.displayName = 'CraftNode'

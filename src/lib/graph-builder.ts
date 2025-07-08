@@ -1,4 +1,4 @@
-import { ItemData, CraftData, ProfessionData, GraphNode, GraphEdge, GraphData } from '../types'
+import { ItemData, CraftData, ProfessionData, GraphNode, GraphEdge, GraphData, LayoutOptions } from '../types'
 import { calculateLayout, extractProfessionFromId } from './utils'
 import { PROFESSION_COLORS } from './constants'
 
@@ -8,7 +8,8 @@ import { PROFESSION_COLORS } from './constants'
 export function buildGraphData(
   items: ItemData[],
   crafts: CraftData[],
-  professions: ProfessionData[]
+  professions: ProfessionData[],
+  layoutOptions?: LayoutOptions
 ): GraphData {
   
   // Create profession color lookup
@@ -60,7 +61,7 @@ export function buildGraphData(
   // Apply hierarchical layout using Dagre - but make it safe
   let layoutedNodes: GraphNode[]
   try {
-    layoutedNodes = calculateLayout(allNodes, edges)
+    layoutedNodes = calculateLayout(allNodes, edges, layoutOptions)
   } catch (error) {
     console.error('Layout calculation failed, using basic positioning:', error)
     // Fallback to simple grid layout

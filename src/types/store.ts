@@ -1,6 +1,9 @@
 import { ItemData, CraftData, ProfessionData, RequirementData } from './data'
-import { GraphData } from './graph'
+import { GraphData, LayoutOptions } from './graph'
 import { EnhancedQueueItem, QueueSummary, DragState, SharedSurplus, CraftingPath } from './crafting'
+
+// Layout preset types
+export type LayoutPreset = 'spacious' | 'radial' | 'workflow' | 'subway'
 
 // Store state types (based on existing state.js)
 export interface AppState {
@@ -33,6 +36,8 @@ export interface AppState {
   // Graph state
   graphData: GraphData
   focusMode: boolean
+  layoutPreset: LayoutPreset
+  layoutOptions: LayoutOptions
   
   // Subtree selection state
   subtreeMode: boolean
@@ -76,6 +81,8 @@ export interface AppActions {
   // Graph actions
   updateGraphData: (data: GraphData) => void
   setFocusMode: (enabled: boolean) => void
+  setLayoutPreset: (preset: LayoutPreset) => void
+  updateLayoutOptions: (options: Partial<LayoutOptions>) => void
   
   // Sidebar actions
   setSidebarCollapsed: (collapsed: boolean) => void

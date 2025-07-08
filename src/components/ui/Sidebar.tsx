@@ -146,7 +146,8 @@ export function Sidebar() {
       <div style={{
         flex: 1,
         overflowY: 'auto',
-        padding: '1rem'
+        padding: '1rem',
+        paddingBottom: '80px' // Add space for fixed footer (increased for stacked badges)
       }}>
         {/* Profession Filters */}
         <div style={{ marginBottom: '1rem' }}>
@@ -385,6 +386,63 @@ export function Sidebar() {
           {activeTab === 'resources' && <ResourceSummary />}
           {activeTab === 'paths' && <CraftingPaths />}
         </div>
+      </div>
+
+      {/* Fixed Footer with badges */}
+      <div style={{
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        padding: '8px 12px',
+        borderTop: '1px solid #5c5c5c',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '6px',
+        background: '#1e1e2e',
+        zIndex: 5,
+        minHeight: '60px'
+      }}>
+        <a
+          href="https://github.com/Kyzael/BitCrafty"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            textDecoration: 'none',
+            transition: 'opacity 0.2s ease'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
+          onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+        >
+          <img
+            src="https://img.shields.io/badge/GitHub-BitCrafty-181717?style=flat&logo=github&logoColor=white"
+            alt="GitHub Repository"
+            style={{ height: '20px' }}
+          />
+        </a>
+        <a
+          href="https://www.buymeacoffee.com/kyzael"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            textDecoration: 'none',
+            transition: 'opacity 0.2s ease'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'}
+          onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+        >
+          <img
+            src="https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Support-FFDD00?style=flat&logo=buy-me-a-coffee&logoColor=black"
+            alt="Buy Me A Coffee"
+            style={{ height: '20px' }}
+          />
+        </a>
       </div>
       
       {/* Collapse button positioned on the border */}
