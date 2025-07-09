@@ -5,12 +5,12 @@ on:
     branches: [ main ]
     paths:
       - 'data/**'
-      - 'test/**'
+      - 'test/data-validation.test.js'
   push:
     branches: [ main ]
     paths:
       - 'data/**'
-      - 'test/**'
+      - 'test/data-validation.test.js'
   workflow_dispatch: # Allow manual triggering
 
 jobs:
@@ -25,6 +25,10 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '18'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
         
     - name: Verify project structure
       run: |
@@ -38,7 +42,7 @@ jobs:
     - name: Run data validation tests
       run: |
         echo "Running data validation..."
-        node test/data-validation.test.js --github > validation_output.txt 2>&1
+        npm run validate:github > validation_output.txt 2>&1
         cat validation_output.txt
         
     - name: Generate validation summary

@@ -5,6 +5,7 @@
 
 # React development files
 node_modules/
+package-lock.json
 .env
 .env.local
 .env.development.local
@@ -52,6 +53,10 @@ coverage/
 # Cache directories
 .cache/
 .parcel-cache/
+
+# Python cache (from extractor project)
+.pytest_cache/
+__pycache__/
 
 # Temporary files
 .tmp/
