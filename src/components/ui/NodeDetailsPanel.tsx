@@ -212,6 +212,7 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({ nodeId, nodeData }) => {
   const graphData = useGraphData()
   const selectNode = useSelectNode()
   const addToEnhancedQueue = useAddToEnhancedQueue()
+  const themeColors = useThemeColors()
   const [queueQuantity, setQueueQuantity] = useState<number>(1)
   
   // Find crafts that use this item as input
@@ -392,19 +393,48 @@ const ItemDetails: React.FC<ItemDetailsProps> = ({ nodeId, nodeData }) => {
 
       {/* Streamlined Queue Controls */}
       <div className="details-section">
-        <div className="inline-queue-controls">
+        <div style={{
+          display: 'flex',
+          gap: '0.5rem',
+          alignItems: 'center'
+        }}>
           <input
             type="number"
             min="1"
             max="999"
             value={queueQuantity}
             onChange={(e) => setQueueQuantity(parseInt(e.target.value) || 1)}
-            className="inline-qty-input"
+            style={{
+              width: '60px',
+              padding: '0.25rem 0.5rem',
+              backgroundColor: themeColors.overlay,
+              border: `1px solid ${themeColors.subtle}`,
+              borderRadius: '3px',
+              color: themeColors.text,
+              fontSize: '12px',
+              textAlign: 'center'
+            }}
             title="Quantity to add to queue"
           />
           <button
             onClick={handleAddToEnhancedQueue}
-            className="inline-queue-btn"
+            style={{
+              padding: '0.25rem 0.75rem',
+              backgroundColor: themeColors.accent,
+              border: 'none',
+              borderRadius: '3px',
+              color: themeColors.background,
+              fontSize: '12px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              transition: 'background-color 0.2s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = themeColors.love
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = themeColors.accent
+            }}
             title="Add to crafting queue"
           >
             Queue
@@ -428,6 +458,7 @@ const CraftDetails: React.FC<CraftDetailsProps> = ({ nodeId }) => {
   const selectNode = useSelectNode()
   const crafts = useCrafts()
   const requirements = useRequirements()
+  const themeColors = useThemeColors()
   
   // Get the actual craft data
   const craftData = crafts[nodeId]
@@ -473,7 +504,7 @@ const CraftDetails: React.FC<CraftDetailsProps> = ({ nodeId }) => {
       {requirementData && (
         <div className="details-section">
           <h4>Requires:</h4>
-          <div className="requirement-details" style={{ fontSize: '12px', color: '#a6a6a6' }}>
+          <div className="requirement-details" style={{ fontSize: '12px', color: themeColors.muted }}>
             {requirementData.tool && (
               <div>Tool: {requirementData.tool.name.replace('tool:', '')} (Level {requirementData.tool.level})</div>
             )}

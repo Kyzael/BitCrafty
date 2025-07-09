@@ -72,8 +72,8 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = () => {
             alignItems: 'center',
             gap: '0.5rem',
             padding: '0.5rem 0.75rem',
-            backgroundColor: '#3e3e3e',
-            border: '1px solid #5c5c5c',
+            backgroundColor: themeColors.overlay,
+            border: `1px solid ${themeColors.subtle}`,
             borderRadius: '3px',
             cursor: hasChildren ? 'pointer' : 'default',
             transition: 'background-color 0.2s ease',
@@ -82,11 +82,11 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = () => {
           onClick={() => hasChildren && togglePathExpanded(pathId)}
           onMouseEnter={(e) => {
             if (hasChildren) {
-              e.currentTarget.style.backgroundColor = '#4a4a4a'
+              e.currentTarget.style.backgroundColor = themeColors.highlight
             }
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#3e3e3e'
+            e.currentTarget.style.backgroundColor = themeColors.overlay
           }}
         >
           {/* Expand/Collapse Icon */}
@@ -97,7 +97,7 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#a6a6a6',
+              color: themeColors.muted,
               fontSize: '10px'
             }}>
               {isExpanded ? '▼' : '▶'}
@@ -110,7 +110,7 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = () => {
             width: '8px',
             height: '8px',
             borderRadius: '50%',
-            backgroundColor: path.isBaseResource ? '#89b4fa' : '#fab387'
+            backgroundColor: path.isBaseResource ? themeColors.accent : themeColors.pine
           }} />
 
           {/* Item Info */}
@@ -124,7 +124,7 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = () => {
               gap: '0.5rem'
             }}>
               <span style={{
-                color: '#fcfcfa',
+                color: themeColors.text,
                 fontWeight: 'bold',
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
@@ -134,7 +134,7 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = () => {
                 {item?.name || path.itemName}
               </span>
               <span style={{
-                color: '#a6a6a6',
+                color: themeColors.muted,
                 fontSize: '10px'
               }}>
                 × {path.requiredQty}
@@ -143,7 +143,7 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = () => {
             {craft && (
               <div style={{
                 fontSize: '10px',
-                color: '#a6a6a6',
+                color: themeColors.muted,
                 overflow: 'hidden',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap'
@@ -173,9 +173,9 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = () => {
 
   return (
     <div style={{
-      backgroundColor: '#2d2a2e',
+      backgroundColor: themeColors.surface,
       borderRadius: '6px',
-      border: '1px solid #5c5c5c',
+      border: `1px solid ${themeColors.overlay}`,
       padding: '1rem',
       height: '100%',
       display: 'flex',
@@ -190,7 +190,7 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = () => {
         <h3 style={{
           fontSize: '14px',
           fontWeight: 'bold',
-          color: '#fcfcfa'
+          color: themeColors.text
         }}>
           Crafting Paths
         </h3>
@@ -208,9 +208,9 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = () => {
               width: '6px',
               height: '6px',
               borderRadius: '50%',
-              backgroundColor: '#89b4fa'
+              backgroundColor: themeColors.accent
             }} />
-            <span style={{ color: '#a6a6a6' }}>Base</span>
+            <span style={{ color: themeColors.muted }}>Base</span>
           </div>
           <div style={{
             display: 'flex',
@@ -221,16 +221,16 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = () => {
               width: '6px',
               height: '6px',
               borderRadius: '50%',
-              backgroundColor: '#fab387'
+              backgroundColor: themeColors.pine
             }} />
-            <span style={{ color: '#a6a6a6' }}>Crafted</span>
+            <span style={{ color: themeColors.muted }}>Crafted</span>
           </div>
         </div>
       </div>
 
       {craftingPaths.length === 0 ? (
         <p style={{
-          color: '#a6a6a6',
+          color: themeColors.muted,
           fontSize: '11px'
         }}>
           No crafting paths found for queue items.
@@ -246,12 +246,12 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = () => {
         }}>
           {craftingPaths.map((path, index) => (
             <div key={`${path.itemId}-${index}`} style={{
-              borderBottom: index < craftingPaths.length - 1 ? '1px solid #5c5c5c' : 'none',
+              borderBottom: index < craftingPaths.length - 1 ? `1px solid ${themeColors.subtle}` : 'none',
               paddingBottom: index < craftingPaths.length - 1 ? '0.5rem' : '0'
             }}>
               <div style={{
                 fontSize: '11px',
-                color: '#a6a6a6',
+                color: themeColors.muted,
                 marginBottom: '0.5rem',
                 fontWeight: 'bold'
               }}>
@@ -267,11 +267,11 @@ export const CraftingPaths: React.FC<CraftingPathsProps> = () => {
       <div style={{
         marginTop: '1rem',
         paddingTop: '0.75rem',
-        borderTop: '1px solid #5c5c5c'
+        borderTop: `1px solid ${themeColors.subtle}`
       }}>
         <p style={{
           fontSize: '10px',
-          color: '#a6a6a6'
+          color: themeColors.muted
         }}>
           Click on items with arrows to expand/collapse their crafting dependencies.
         </p>

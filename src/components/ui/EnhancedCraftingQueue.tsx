@@ -128,14 +128,42 @@ const EnhancedCraftingQueue: React.FC = () => {
   }
 
   return (
-    <div className="enhanced-crafting-queue">
-      <div className="queue-header">
-        <h4 className="queue-title">
+    <div style={{
+      backgroundColor: themeColors.surface,
+      borderRadius: '6px',
+      border: `1px solid ${themeColors.overlay}`,
+      padding: '1rem',
+      height: '100%'
+    }}>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: '0.75rem'
+      }}>
+        <h4 style={{
+          fontSize: '14px',
+          fontWeight: 'bold',
+          color: themeColors.text,
+          margin: 0
+        }}>
           Crafting Queue ({queue.length})
         </h4>
         <button 
           onClick={clearQueue}
-          className="clear-queue-btn"
+          style={{
+            padding: '4px 8px',
+            background: themeColors.love,
+            border: 'none',
+            borderRadius: '3px',
+            color: themeColors.background,
+            fontSize: '10px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            transition: 'opacity 0.2s ease'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+          onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
           title="Clear entire queue"
         >
           Clear All
@@ -143,7 +171,13 @@ const EnhancedCraftingQueue: React.FC = () => {
       </div>
 
       {/* Queue Items */}
-      <div className="queue-items">
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '4px',
+        maxHeight: '300px',
+        overflowY: 'auto'
+      }}>
         {queue.map((item, index) => (
           <div
             key={item.id}
@@ -152,19 +186,40 @@ const EnhancedCraftingQueue: React.FC = () => {
             onDragOver={(e) => handleDragOver(e, index)}
             onDragEnd={handleDragEnd}
             onDrop={(e) => handleDrop(e, index)}
-            className={`
-              queue-item-compact 
-              ${dragState.isDragging && dragState.draggedItemId === item.id ? 'dragging' : ''}
-              ${dragState.dropTargetIndex === index ? 'drop-target' : ''}
-            `}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '6px 8px',
+              background: dragState.isDragging && dragState.draggedItemId === item.id 
+                ? `${themeColors.accent}20` 
+                : themeColors.background,
+              border: `1px solid ${
+                dragState.dropTargetIndex === index 
+                  ? themeColors.accent 
+                  : themeColors.overlay
+              }`,
+              borderRadius: '3px',
+              cursor: 'move',
+              transition: 'all 0.2s ease',
+              opacity: dragState.isDragging && dragState.draggedItemId === item.id ? 0.5 : 1
+            }}
           >
             {/* Drag Handle */}
-            <div className="drag-handle-compact" title="Drag to reorder">
+            <div style={{
+              color: themeColors.muted,
+              fontSize: '12px',
+              cursor: 'move',
+              userSelect: 'none'
+            }} title="Drag to reorder">
               ⋮⋮
             </div>
 
             {/* Quantity */}
-            <div className="quantity-compact">
+            <div style={{
+              minWidth: '40px',
+              textAlign: 'center'
+            }}>
               {editingId === item.id ? (
                 <input
                   type="number"
@@ -172,14 +227,33 @@ const EnhancedCraftingQueue: React.FC = () => {
                   onChange={(e) => setEditingQty(parseInt(e.target.value) || 1)}
                   onBlur={saveEdit}
                   onKeyDown={handleKeyPress}
-                  className="qty-input-compact"
+                  style={{
+                    width: '35px',
+                    padding: '2px 4px',
+                    background: themeColors.surface,
+                    border: `1px solid ${themeColors.overlay}`,
+                    borderRadius: '2px',
+                    color: themeColors.text,
+                    fontSize: '11px',
+                    textAlign: 'center'
+                  }}
                   min="1"
                   autoFocus
                 />
               ) : (
                 <span 
-                  className="qty-display-compact"
                   onClick={() => startEdit(item)}
+                  style={{
+                    color: themeColors.accent,
+                    fontSize: '11px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    padding: '2px 4px',
+                    borderRadius: '2px',
+                    transition: 'background-color 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = `${themeColors.overlay}33`}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   title="Click to edit quantity"
                 >
                   {item.qty}
@@ -188,14 +262,32 @@ const EnhancedCraftingQueue: React.FC = () => {
             </div>
 
             {/* Item Name */}
-            <div className="item-name-compact" title={`Item ID: ${item.itemId}`}>
+            <div style={{
+              flex: 1,
+              color: themeColors.text,
+              fontSize: '11px',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
+            }} title={`Item ID: ${item.itemId}`}>
               {getItemName(item.itemId)}
             </div>
 
             {/* Remove Button */}
             <button 
               onClick={() => removeFromQueue(item.id)}
-              className="remove-btn-compact"
+              style={{
+                background: 'none',
+                border: 'none',
+                color: themeColors.love,
+                fontSize: '12px',
+                cursor: 'pointer',
+                padding: '2px 4px',
+                borderRadius: '2px',
+                transition: 'background-color 0.2s ease'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = `${themeColors.love}20`}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
               title="Remove from queue"
             >
               ✕
@@ -206,7 +298,19 @@ const EnhancedCraftingQueue: React.FC = () => {
 
       {/* Drag Preview */}
       {dragState.isDragging && (
-        <div className="drag-preview">
+        <div style={{
+          position: 'absolute',
+          bottom: '10px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          background: themeColors.accent,
+          color: themeColors.background,
+          padding: '4px 8px',
+          borderRadius: '3px',
+          fontSize: '10px',
+          fontWeight: 'bold',
+          zIndex: 1000
+        }}>
           Reordering queue items...
         </div>
       )}

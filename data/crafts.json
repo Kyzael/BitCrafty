@@ -658,23 +658,6 @@
     "requirement": "requirement:cooking:basic-tools"
   },
   {
-    "id": "craft:cooking:mushroom-skewer",
-    "name": "Cook Plain Mushroom Skewer",
-    "materials": [
-      {
-        "item": "item:foraging:basic-mushroom",
-        "qty": 5
-      }
-    ],
-    "outputs": [
-      {
-        "item": "item:cooking:plain-mushroom-skewer",
-        "qty": 1
-      }
-    ],
-    "requirement": "requirement:cooking:basic-tools"
-  },
-  {
     "id": "craft:carpentry:craft-rough-plank",
     "name": "Craft Rough Plank",
     "materials": [

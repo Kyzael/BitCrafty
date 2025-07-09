@@ -55,9 +55,9 @@ export const ResourceSummary: React.FC<ResourceSummaryProps> = () => {
 
   return (
     <div style={{
-      backgroundColor: '#2d2a2e',
+      backgroundColor: themeColors.surface,
       borderRadius: '6px',
-      border: '1px solid #5c5c5c',
+      border: `1px solid ${themeColors.overlay}`,
       padding: '1rem',
       height: '100%',
       display: 'flex',
@@ -69,7 +69,7 @@ export const ResourceSummary: React.FC<ResourceSummaryProps> = () => {
         <h3 style={{
           fontSize: '14px',
           fontWeight: 'bold',
-          color: '#fcfcfa'
+          color: themeColors.text
         }}>
           Resource Summary
         </h3>
@@ -83,63 +83,63 @@ export const ResourceSummary: React.FC<ResourceSummaryProps> = () => {
         marginBottom: '1rem'
       }}>
         <div style={{
-          backgroundColor: '#3e3e3e',
-          border: '1px solid #5c5c5c',
+          backgroundColor: themeColors.background,
+          border: `1px solid ${themeColors.overlay}`,
           borderRadius: '3px',
           padding: '0.5rem',
           textAlign: 'center'
         }}>
           <div style={{
-            color: '#89b4fa',
+            color: themeColors.iris,
             fontWeight: 'bold',
             fontSize: '12px'
           }}>
             {baseResourceCount}
           </div>
           <div style={{
-            color: '#a6a6a6',
+            color: themeColors.muted,
             fontSize: '10px'
           }}>
             Base Resources
           </div>
         </div>
         <div style={{
-          backgroundColor: '#3e3e3e',
-          border: '1px solid #5c5c5c',
+          backgroundColor: themeColors.overlay,
+          border: `1px solid ${themeColors.subtle}`,
           borderRadius: '3px',
           padding: '0.5rem',
           textAlign: 'center'
         }}>
           <div style={{
-            color: '#a6e3a1',
+            color: themeColors.foam,
             fontWeight: 'bold',
             fontSize: '12px'
           }}>
             {resourceSummary.totalItemsNeeded}
           </div>
           <div style={{
-            color: '#a6a6a6',
+            color: themeColors.muted,
             fontSize: '10px'
           }}>
             Total Items
           </div>
         </div>
         <div style={{
-          backgroundColor: '#3e3e3e',
-          border: '1px solid #5c5c5c',
+          backgroundColor: themeColors.overlay,
+          border: `1px solid ${themeColors.subtle}`,
           borderRadius: '3px',
           padding: '0.5rem',
           textAlign: 'center'
         }}>
           <div style={{
-            color: '#b4befe',
+            color: themeColors.iris,
             fontWeight: 'bold',
             fontSize: '12px'
           }}>
             {queueSummary.totalItems}
           </div>
           <div style={{
-            color: '#a6a6a6',
+            color: themeColors.muted,
             fontSize: '10px'
           }}>
             Queue Items
@@ -152,8 +152,8 @@ export const ResourceSummary: React.FC<ResourceSummaryProps> = () => {
         <h4 style={{
           fontSize: '11px',
           fontWeight: 'bold',
-          color: '#a6a6a6',
-          borderBottom: '1px solid #5c5c5c',
+          color: themeColors.muted,
+          borderBottom: `1px solid ${themeColors.subtle}`,
           paddingBottom: '0.25rem',
           marginBottom: '0.5rem'
         }}>
@@ -176,8 +176,8 @@ export const ResourceSummary: React.FC<ResourceSummaryProps> = () => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  backgroundColor: '#3e3e3e',
-                  border: '1px solid #5c5c5c',
+                  backgroundColor: themeColors.overlay,
+                  border: `1px solid ${themeColors.subtle}`,
                   borderRadius: '3px',
                   padding: '0.5rem 0.75rem',
                   fontSize: '11px'
@@ -191,14 +191,14 @@ export const ResourceSummary: React.FC<ResourceSummaryProps> = () => {
                       width: '6px',
                       height: '6px',
                       borderRadius: '50%',
-                      backgroundColor: '#89b4fa'
+                      backgroundColor: themeColors.accent
                     }} />
-                    <span style={{ color: '#fcfcfa' }}>
+                    <span style={{ color: themeColors.text }}>
                       {item?.name || itemId.split(':').pop()}
                     </span>
                   </div>
                   <div style={{
-                    color: '#89b4fa',
+                    color: themeColors.accent,
                     fontWeight: 'bold'
                   }}>
                     {qty}
@@ -213,11 +213,11 @@ export const ResourceSummary: React.FC<ResourceSummaryProps> = () => {
       <div style={{
         marginTop: '1rem',
         paddingTop: '0.75rem',
-        borderTop: '1px solid #5c5c5c'
+        borderTop: `1px solid ${themeColors.subtle}`
       }}>
         <p style={{
           fontSize: '10px',
-          color: '#a6a6a6'
+          color: themeColors.muted
         }}>
           Base resources are materials you need to gather or farm to complete your queue.
         </p>
