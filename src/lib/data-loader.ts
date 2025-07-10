@@ -2,6 +2,14 @@ import { ItemData, CraftData, ProfessionData, RequirementData } from '../types'
 import { BASE_CRAFT_ITEMS } from './constants'
 
 /**
+ * Get the correct base path for assets based on environment
+ */
+function getBasePath(): string {
+  // Use the same base path that Vite was configured with
+  return import.meta.env.BASE_URL || '/'
+}
+
+/**
  * Load all BitCrafty data from JSON files
  */
 export async function loadBitCraftyData(): Promise<{
@@ -11,12 +19,14 @@ export async function loadBitCraftyData(): Promise<{
   requirements: RequirementData[]
 }> {
   try {
-    // Fetch all data files in parallel - always use root path
+    const basePath = getBasePath()
+    
+    // Fetch all data files in parallel
     const [itemsRes, craftsRes, professionsRes, requirementsRes] = await Promise.all([
-      fetch('/data/items.json'),
-      fetch('/data/crafts.json'),
-      fetch('/data/metadata/professions.json'),
-      fetch('/data/requirements.json')
+      fetch(`${basePath}data/items.json`),
+      fetch(`${basePath}data/crafts.json`),
+      fetch(`${basePath}data/metadata/professions.json`),
+      fetch(`${basePath}data/requirements.json`)
     ])
 
     // Check if all requests were successful

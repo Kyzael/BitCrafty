@@ -86,7 +86,7 @@ function copyDataPlugin() {
 
 export default defineConfig({
   plugins: [react(), copyDataPlugin()],
-  base: '/',
+  base: process.env.GITHUB_PAGES === 'true' ? '/BitCrafty/' : '/',
   root: './src',
   build: {
     outDir: '../dist-react',
