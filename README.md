@@ -7,6 +7,7 @@ BitCrafty is a React-based web application for visualizing and simplifying the l
 
 [![Unit Tests](https://github.com/Kyzael/BitCrafty/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/Kyzael/BitCrafty/actions/workflows/unit-tests.yml)
 [![Data Validation](https://github.com/Kyzael/BitCrafty/actions/workflows/data-validation.yml/badge.svg)](https://github.com/Kyzael/BitCrafty/actions/workflows/data-validation.yml)
+[![Build and Deploy Pages](https://github.com/Kyzael/BitCrafty/actions/workflows/deploy.yml/badge.svg)](https://github.com/Kyzael/BitCrafty/actions/workflows/deploy.yml)
 
 ## Project Goals
 - **Visualize and simplify** the intricate crafting and resource dependencies in BitCraft Online
