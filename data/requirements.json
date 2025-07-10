@@ -172,18 +172,6 @@
     }
   },
   {
-    "id": "requirement:cooking:basic-oven",
-    "name": "Basic Oven",
-    "profession": {
-      "name": "profession:cooking",
-      "level": 1
-    },
-    "building": {
-      "name": "building:cooking:oven",
-      "level": 1
-    }
-  },
-  {
     "id": "requirement:hunting:basic-tools",
     "name": "Basic Hunting Tools",
     "profession": {
