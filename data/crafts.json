@@ -263,7 +263,7 @@
         "qty": 1
       }
     ],
-    "requirement": "requirement:cooking:well"
+    "requirement": "requirement:cooking:tier1-well"
   },
   {
     "id": "craft:carpentry:empty-bucket",

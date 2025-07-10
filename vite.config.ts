@@ -1,10 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [react()],
+  base: command === 'build' ? '/BitCrafty/' : '/',
   root: './src',
-  publicDir: '../',
+  publicDir: '../image',
   build: {
     outDir: '../dist-react',
     emptyOutDir: true,
@@ -15,11 +16,11 @@ export default defineConfig({
         assetFileNames: 'assets/[name].[ext]'
       }
     },
-    // Specify what should be copied to the output directory
-    copyPublicDir: false
+    // Copy the image directory to output
+    copyPublicDir: true
   },
   server: {
     port: 3000,
     host: true
   }
-})
+}))
