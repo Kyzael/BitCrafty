@@ -11,7 +11,7 @@ export async function loadBitCraftyData(): Promise<{
   requirements: RequirementData[]
 }> {
   try {
-    // Fetch all data files in parallel
+    // Fetch all data files in parallel - always use root path
     const [itemsRes, craftsRes, professionsRes, requirementsRes] = await Promise.all([
       fetch('/data/items.json'),
       fetch('/data/crafts.json'),
